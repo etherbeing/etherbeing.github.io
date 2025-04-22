@@ -21,9 +21,9 @@
 ### 👨‍💻 Programming Languages
 | Language     | Proof / Repo |
 |--------------|--------------|
-| Python       | [CVE Forge](https://github.com/etherbeing/CVE-Forge) |
+| Python       | https://github.com/etherbeing/CVE-Forge |
 | Ruby         | *Coming Soon (e.g., Metasploit modules)* |
-| Java         | [TFProtocol](https://github.com/GoDjango-Development/tfprotocol) |
+| Java         | https://github.com/GoDjango-Development/tfprotocol |
 | C#           | *Coming Soon* |
 | GoLang       | *Coming Soon* |
 | JavaScript   | *Coming Soon* |

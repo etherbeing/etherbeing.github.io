@@ -2,7 +2,7 @@
 title: CV Etherbeing
 description: Personal website for showcasing projects and CV
 baseurl: "/" # The subpath of your site, e.g. /blog
-url: "https://yourusername.github.io" # Your GitHub Pages URL
+url: "https://etherbeing.github.io" # Your GitHub Pages URL
 theme: jekyll-theme-minimal
 
 # Author details
