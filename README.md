@@ -38,7 +38,7 @@
 
 | Category              | Tools / Frameworks |
 |-----------------------|--------------------|
-| Web / Backend         | Django, Graphene, Flask*, FastAPI* |
+| Web / Backend         | Django, Graphene, Flask, FastAPI, Odoo |
 | Frontend              | ReactJS, Svelte, Quik |
 | Offensive Security    | Metasploit Framework |
 | Game Dev              | Unity |
