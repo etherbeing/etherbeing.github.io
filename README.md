@@ -1,6 +1,6 @@
 # 👨‍💻 Esteban Chacon Martin
 
-**Computer Scientific | Researcher | Developer | Hacker-Mind**
+**|Computer Scientific | Researcher | Developer | Hacker-Mind|**
 
 > "I study everything from RSA and elliptic curves to compression algorithms based on Kolmogorov theory to break through entropy limits."
 
@@ -30,6 +30,7 @@
 | TypeScript   | *Coming Soon* |
 | Solidity     | *Coming Soon (Ethereum-based apps)* |
 | C / C++      | *Coming Soon (for legacy / performance dev)* |
+
 ---
 
 ### 🧰 Frameworks & Tools
@@ -46,6 +47,7 @@
 | OS / Platforms        | Kali, Black Arch, Parrot OS |
 | Blockchain            | Solidity, Bitcoin SDKs |
 | Others to consider    | Terraform*, Ansible*, Kubernetes* |
+
 ---
 
 ## 🧩 Key Projects
