@@ -30,9 +30,6 @@
 | TypeScript   | *Coming Soon* |
 | Solidity     | *Coming Soon (Ethereum-based apps)* |
 | C / C++      | *Coming Soon (for legacy / performance dev)* |
-
-> ✅ Add each missing repo as promised — even if it's just a "Hello world with smart code patterns".
-
 ---
 
 ### 🧰 Frameworks & Tools
