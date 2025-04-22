@@ -19,11 +19,12 @@
 ## 🛠️ Technical Skills & Proof of Work
 
 ### 👨‍💻 Programming Languages
+
 | Language     | Proof / Repo |
 |--------------|--------------|
-| Python       | https://github.com/etherbeing/CVE-Forge |
+| Python       | [CVE Forge](https://github.com/etherbeing/CVE-Forge) |
 | Ruby         | *Coming Soon (e.g., Metasploit modules)* |
-| Java         | https://github.com/GoDjango-Development/tfprotocol |
+| Java         | [TFProtocol](https://github.com/GoDjango-Development/tfprotocol) |
 | C#           | *Coming Soon* |
 | GoLang       | *Coming Soon* |
 | JavaScript   | *Coming Soon* |
