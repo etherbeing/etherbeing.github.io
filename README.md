@@ -1,6 +1,6 @@
 # 👨‍💻 Esteban Chacon Martin
 
-**|Computer Scientific | Researcher | Developer | Hacker-Mind|**
+**Computer Scientific | Researcher | Developer | Hacker-Mind**
 
 > "I study everything from RSA and elliptic curves to compression algorithms based on Kolmogorov theory to break through entropy limits."
 
