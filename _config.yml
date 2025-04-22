@@ -21,6 +21,6 @@ plugins:
   - jekyll-seo-tag
 
 # Markdown settings
-markdown: kramdown
-kramdown:
-  input: GFM
+# markdown: kramdown
+# kramdown:
+#   input: GFM
