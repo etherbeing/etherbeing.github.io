@@ -23,7 +23,7 @@
 |--------------|--------------|
 | Python       | [CVE Forge](https://github.com/etherbeing/CVE-Forge) |
 | Ruby         | *Coming Soon (e.g., Metasploit modules)* |
-| Java         | *Coming Soon* |
+| Java         | [TFProtocol](https://github.com/GoDjango-Development/tfprotocol) |
 | C#           | *Coming Soon* |
 | GoLang       | *Coming Soon* |
 | JavaScript   | *Coming Soon* |
@@ -49,18 +49,15 @@
 | OS / Platforms        | Kali, Black Arch, Parrot OS |
 | Blockchain            | Solidity, Bitcoin SDKs |
 | Others to consider    | Terraform*, Ansible*, Kubernetes* |
-
-> 🚧 Add repos for starred ones (*) or drop them if not used.
-
 ---
 
 ## 🧩 Key Projects
 
-### 🔹 [CVE Forge](https://github.com/etherbeing/CVE-Forge)
+### 🔹 [CVE Forge (Still Private this is a work in progress)](https://github.com/etherbeing/CVE-Forge)
 Python-based framework for building CVEs and research tools. Includes offline `pip` caching and virtualenv isolation. Designed for practical use, Metasploit-style — but easier and more pythonic.
 
 ### 🔹 TFProtocol
-A full-stack communication protocol designed on top of TCP/UDP for custom application-level messaging. Built from scratch.
+A full-stack communication protocol designed on top of TCP/UDP for custom application-level messaging. Built from scratch. [TFProtocol Github Link](https://github.com/GoDjango-Development/tfprotocol)
 
 ### 🔹 More Projects:
 ➡️ [All GitHub Repos](https://github.com/etherbeing)
@@ -91,23 +88,10 @@ A full-stack communication protocol designed on top of TCP/UDP for custom applic
 
 ---
 
-## ✍️ Writings & Publications
-
-⚠️ Will publish soon.  
-📢 Platforms to consider:
-- [Hackernoon](https://hackernoon.com/)
-- [Medium](https://medium.com/)
-- [Dev.to](https://dev.to/)
-- [Blogchain](https://blogchain.app/) for blockchain dev articles
-- [Arxiv.org](https://arxiv.org/) for technical papers
-
----
-
 ## 🌐 Contact Me
 
 - 📧 **etherbeing99@proton.me**
-- 🌐 [GitHub Profile](https://github.com/etherbeing/)
-- 🔗 LinkedIn: _Add your link here_
+- 🔗 LinkedIn: [LinkeIn](https://www.linkedin.com/in/esteban-chacon-55900b227/)
 - 🌍 Open to global opportunities
 
 ---
@@ -121,11 +105,3 @@ I’d love to work on:
 - 🧮 Math-oriented development, compression models, entropy defiance
 
 ---
-
-## ⏭️ Next Steps for You:
-
-- Tell me when you’ve added the remaining repos so I can update the Markdown.
-- Let me know if you want a **clean CV version** in `.pdf` or `.rst` for formal submission (I’ll generate both).
-- Do you want this turned into a **GitHub Pages portfolio** as well?
-
-Let me know what to tweak, and once all links are ready, we’ll upload the final version with surgical precision.

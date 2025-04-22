@@ -1,0 +1,26 @@
+# _config.yml
+title: CV Etherbeing
+description: Personal website for showcasing projects and CV
+baseurl: "/" # The subpath of your site, e.g. /blog
+url: "https://yourusername.github.io" # Your GitHub Pages URL
+theme: jekyll-theme-minimal
+
+# Author details
+author:
+  name: Esteban
+  email: etherbeing99@proton.me
+
+# Social links
+social_links:
+  github: https://github.com/etherbeing
+  linkedin: https://www.linkedin.com/in/esteban-chacon-55900b227/
+
+# Plugins
+plugins:
+  - jekyll-feed
+  - jekyll-seo-tag
+
+# Markdown settings
+markdown: kramdown
+kramdown:
+  input: GFM
