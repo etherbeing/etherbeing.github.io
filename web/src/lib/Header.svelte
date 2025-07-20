@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { Moon, Sun } from "@lucide/svelte";
     import { getContext } from "svelte";
     import { link, location, push } from "svelte-spa-router";
     import type { Writable } from "svelte/store";
@@ -9,8 +10,8 @@
         theme.set($theme === "light" ? "dark" : "light");
     };
 
-    const navigate = (ev: Event, to: string='/') => {
-        if($location !== to){
+    const navigate = (ev: Event, to: string = "/") => {
+        if ($location !== to) {
             push(to);
         }
     };
@@ -24,7 +25,11 @@
                     class="site-nav-ul js-clone-nav text-left d-none d-lg-inline-block"
                 >
                     <li class="has-children">
-                        <a href="#home-section" onclick={navigate} class="nav-link">Home</a>
+                        <a
+                            href="#home-section"
+                            onclick={navigate}
+                            class="nav-link">Home</a
+                        >
                         <ul class="dropdown">
                             <li>
                                 <a href="index.html">Hero Image BG</a>
@@ -46,15 +51,24 @@
                         </ul>
                     </li>
                     <li>
-                        <a href="#portfolio-section" onclick={navigate} class="nav-link"
-                            >Portfolio</a
+                        <a
+                            href="#portfolio-section"
+                            onclick={navigate}
+                            class="nav-link">Portfolio</a
                         >
                     </li>
                     <li>
-                        <a href="#about-section" onclick={navigate} class="nav-link">About</a>
+                        <a
+                            href="#about-section"
+                            onclick={navigate}
+                            class="nav-link">About</a
+                        >
                     </li>
                     <li>
-                        <a href="#services-section" onclick={navigate} class="nav-link">Services</a
+                        <a
+                            href="#services-section"
+                            onclick={navigate}
+                            class="nav-link">Services</a
                         >
                     </li>
                 </ul>
@@ -69,15 +83,25 @@
                     class="site-nav-ul js-clone-nav text-left d-none d-lg-inline-block"
                 >
                     <li>
-                        <a href="#skills-section" onclick={navigate} class="nav-link">Skills</a>
-                    </li>
-                    <li>
-                        <a href="#testimonial-section" onclick={navigate} class="nav-link"
-                            >Testimonial</a
+                        <a
+                            href="#skills-section"
+                            onclick={navigate}
+                            class="nav-link">Skills</a
                         >
                     </li>
                     <li>
-                        <a href="#journal-section" onclick={navigate} class="nav-link">Journal</a>
+                        <a
+                            href="#testimonial-section"
+                            onclick={navigate}
+                            class="nav-link">Testimonial</a
+                        >
+                    </li>
+                    <li>
+                        <a
+                            href="#journal-section"
+                            onclick={navigate}
+                            class="nav-link">Journal</a
+                        >
                     </li>
                     <li>
                         <a
@@ -87,7 +111,17 @@
                         >
                     </li>
                     <li>
-                        <button onclick={toggleTheme}> Theme </button>
+                        <button
+                            class={`btn ${$theme === "dark" ? "text-white" : "text-black"}`}
+                            onclick={toggleTheme}
+                        >
+                            {#if $theme === "dark"}
+                                <Sun></Sun>
+                            {/if}
+                            {#if $theme === "light"}
+                                <Moon></Moon>
+                            {/if}
+                        </button>
                     </li>
                 </ul>
 

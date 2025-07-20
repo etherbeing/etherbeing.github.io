@@ -34,7 +34,7 @@
   });
 
   const refreshUnfoldCallback = () => {
-    requestAnimationFrame(() => {
+    requestAnimationFrame(() => { // FIXME the theme isn't changing the image but without this the performance degrade as hell
       startLoader();
       // @ts-expect-error Works along with the JS implementation, this makes it actually re-render jarallax images when needed
       window.jarallax(document.querySelectorAll(".jarallax"), "destroy");
