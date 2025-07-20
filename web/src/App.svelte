@@ -23,7 +23,6 @@
   let pendingRefresh = $state(false);
 
   const refreshUnfold: Writable<() => void> = writable(() => {
-    console.log("Queue the refreshing");
     pendingRefresh = true;
   }); // makes available right away a function to refresh the page
 
@@ -35,13 +34,13 @@
   });
 
   const refreshUnfoldCallback = () => {
-    console.log("Calling refresher")
-    startLoader();
-    // @ts-expect-error Works along with the JS implementation, this makes it actually re-render jarallax images when needed
-    window.jarallax(document.querySelectorAll(".jarallax"), "destroy");
-    // @ts-expect-error now the app can refresh unfold quickly and easily
-    window.startUp();
-    console.log("StartUp called")
+    requestAnimationFrame(() => {
+      startLoader();
+      // @ts-expect-error Works along with the JS implementation, this makes it actually re-render jarallax images when needed
+      window.jarallax(document.querySelectorAll(".jarallax"), "destroy");
+      // @ts-expect-error now the app can refresh unfold quickly and easily
+      window.startUp();
+    });
   };
 
   onMount(() => {

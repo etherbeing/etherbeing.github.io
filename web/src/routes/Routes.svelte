@@ -7,7 +7,7 @@
     import PortfolioSingle3 from "../pages/public/unfold-master/PortfolioSingle3.svelte";
     import PortfolioSingle4 from "../pages/public/unfold-master/PortfolioSingle4.svelte";
     import Copyright from "../pages/public/unfold-master/Copyright.svelte";
-    import { getContext, onMount } from "svelte";
+    import { getContext } from "svelte";
     import NotFound from "../pages/public/unfold-master/NotFound.svelte";
     import { REFRESH_UNFOLD_CONTEXT_NAME } from "../consts";
     import type { Writable } from "svelte/store";
@@ -16,10 +16,10 @@
         REFRESH_UNFOLD_CONTEXT_NAME,
     );
     location.subscribe((val) => {
-        console.log(val)
-        setTimeout(()=>{ // this is needed in order to assume the page is loaded just in time before attempting to access the DOM...
+        setTimeout(() => { // TODO watch me in case of errors
+            // this is needed in order to assume the page is loaded just in time before attempting to access the DOM...
             $refreshUnfold();
-        }, 250)
+        }, 0);
     });
 
     const routes = {

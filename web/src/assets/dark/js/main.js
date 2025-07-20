@@ -428,7 +428,7 @@ var onePageNavigation = function () {
 		}
 
 		var hash = this.hash;
-		
+
 		$('html, body').animate({
 			scrollTop: $(hash).offset()?.top
 		}, 1000, 'easeInOutExpo');  // easeInOutExpo
