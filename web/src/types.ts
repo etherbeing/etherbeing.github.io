@@ -1,0 +1,1 @@
+export interface NavType { focus: Element | null }

@@ -1,0 +1,12 @@
+{
+    "demo": {
+        "title": "Check out {url}, the official Svelte app framework powered by Vite!",
+        "subtitle": "Click on the Vite and Svelte logos to learn more",
+        "count": "Count is",
+        "language_selector": "Language",
+        "backend_message": "Data from server"
+    },
+    "base": {
+        "please_wait": "Please wait..."
+    }
+}
