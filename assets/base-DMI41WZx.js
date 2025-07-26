@@ -1,0 +1,1 @@
+const e={title:"Visite {url}, el framework oficial de Svelte empoderado por Vite!",subtitle:"Toque un click en los logos de Vite y Svelte para aprender mas",count:"Cuenta es",language_selector:"Idioma",backend_message:"Datos obtenidos del servidor"},o={demo:e};export{o as default,e as demo};
