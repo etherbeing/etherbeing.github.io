@@ -1,6 +1,6 @@
 use actix_web::{get, post, web::{self, Data}, HttpResponse, Responder};
 
-use crate::presentation::serializers::data::types::{IndexResponse, Message};
+use crate::serializers::types::{IndexResponse, Message};
 
 
 #[post("/message")]

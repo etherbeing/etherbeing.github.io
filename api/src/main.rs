@@ -1,21 +1,23 @@
-mod data;
-mod network;
-mod presentation;
+mod consumers;
+mod controllers;
+mod models;
+mod serializers;
+mod core;
 
 use actix_cors::Cors;
 use actix_web::web::{self, Data};
 use actix_web::{App, HttpResponse, HttpServer};
 use async_graphql::http::GraphQLPlaygroundConfig;
 use async_graphql::{EmptyMutation, EmptySubscription, Schema};
-use presentation::serializers::handler::graphql_handler;
+use core::settings::graphql::graphql_handler;
 use sqlx::postgres::PgPoolOptions;
 use utoipa::OpenApi;
 use utoipa_swagger_ui::SwaggerUi;
 
-use crate::presentation::controllers::data::base::*;
-use crate::presentation::controllers::data::graphql::QueryRoot;
-use crate::presentation::controllers::websocket::ws_index;
-use crate::presentation::serializers::swagger::ApiDoc;
+use crate::controllers::base::*;
+use crate::controllers::graphql::QueryRoot;
+use crate::consumers::demo::ws_index;
+use crate::core::settings::swagger::ApiDoc;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
