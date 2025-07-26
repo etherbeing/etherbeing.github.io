@@ -7,8 +7,9 @@
     import PortfolioSingle3 from "../pages/public/unfold-master/PortfolioSingle3.svelte";
     import PortfolioSingle4 from "../pages/public/unfold-master/PortfolioSingle4.svelte";
     import Copyright from "../pages/public/unfold-master/Copyright.svelte";
-    import { getContext } from "svelte";
     import NotFound from "../pages/public/unfold-master/NotFound.svelte";
+    import Layout from "../pages/public/unfold-master/Layout.svelte";
+    import { getContext } from "svelte";
     import { REFRESH_UNFOLD_CONTEXT_NAME } from "../consts";
     import type { Writable } from "svelte/store";
 
@@ -34,4 +35,6 @@
     };
 </script>
 
-<Router {routes}></Router>
+<Layout>
+    <Router {routes}></Router>
+</Layout>
