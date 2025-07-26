@@ -1,20 +1,107 @@
-# Atheris: The escape from Odoo you had always been waiting
+# 👨‍💻 Esteban Chacon Martin
 
-This project is a built over the most modern framework out there for the web ecosystem, Senjor, this is the second project built by the Senjor creator, so as a summary let's tell what Senjor is:
+**Computer Scientific | Researcher | Developer | Hacker-Mind**
 
-## Senjor: What is?
-Senjor is a framework built over Django, ReactJS, Socket.IO, GraphQL, Daphne for ASGI, and natively integrated with OAuth backend like Keycloak.
+> "I study everything from RSA and elliptic curves to compression algorithms based on Kolmogorov theory to break through entropy limits."
 
-## Why Atheris?
-Atheris leverages all Senjor capabilities which in fact it does reduces the amount of features needed to built an RTC backend. Here are the benefits for devs of using Atheris :
-1. We don't handle directly authorization, instead Keycloak or your custom OAuth provider does.
-2. We don't use too much code just barely some custom controller logic, and model schema specifications, most of the code is focused on what we need.
-3. we don't hire a designer team for building interface, instead our dear Google, IBM, and many hire them for us and share their design system, so by using React (from Meta) we can just integrate quickly with many custom themes.
-4. We don't waste time trying to do something our way when there is a faster way, but rather we focus on PEP principles, explicit is better than implicit and all of that (things that Odoo never tried to do).
-5. We don't reject odoo, you're still able to be masochist and use Odoo Web Library and Odoo principles to extend Atheris as well (Are you that crazy?)
+---
 
-## Roadmap
-1. Create the core modules which includes:
-    1. Theming of the frontend allowing multiple themes like Google Material, IBM wtv theme and the others xD
-    2. Internationalization with react-i18n
-    3. 
+## 🧠 About Me
+
+- 🔭 Passionate about: Freedom, knowledge, truth, and human rights.
+- 🧩 Strongest skill: Applying logic across languages to fix bugs, build systems, and adapt instantly.
+- 📚 Interests: Philosophy, AI, Cybersecurity, Game Dev, Mathematics, Cryptography, Blockchain, Anime & Japanese culture.
+- 🏋️ Discipline: Practicing hybrid calisthenics consistently.
+- 🗣️ Languages: Spanish (native), English (fluent), French (basic reading), Japanese (basic kana/kanji).
+
+---
+
+## 🛠️ Technical Skills & Proof of Work
+
+### 👨‍💻 Programming Languages
+
+| Language     | Proof / Repo |
+|--------------|--------------|
+| Python       | [CVE Forge](https://github.com/etherbeing/CVE-Forge) |
+| Ruby         | *Coming Soon (e.g., Metasploit modules)* |
+| Java         | [TFProtocol](https://github.com/GoDjango-Development/tfprotocol) |
+| C#           | *Coming Soon* |
+| GoLang       | *Coming Soon* |
+| JavaScript   | *Coming Soon* |
+| TypeScript   | *Coming Soon* |
+| Solidity     | *Coming Soon (Ethereum-based apps)* |
+| C / C++      | *Coming Soon (for legacy / performance dev)* |
+
+---
+
+### 🧰 Frameworks & Tools
+
+| Category              | Tools / Frameworks |
+|-----------------------|--------------------|
+| Web / Backend         | Django, Graphene, Flask, FastAPI, Odoo |
+| Frontend              | ReactJS, Svelte, Quik |
+| Offensive Security    | Metasploit Framework |
+| Game Dev              | Unity |
+| DevOps                | Docker, Jenkins, GitHub Actions |
+| Infrastructure/Auth   | Keycloak, MinIO |
+| Pentesting            | Burp Suite, Wireshark, Aircrack-ng |
+| OS / Platforms        | Kali, Black Arch, Parrot OS |
+| Blockchain            | Solidity, Bitcoin SDKs |
+| Others to consider    | Terraform*, Ansible*, Kubernetes* |
+
+---
+
+## 🧩 Key Projects
+
+### 🔹 [CVE Forge (Still Private this is a work in progress)](https://github.com/etherbeing/CVE-Forge)
+Python-based framework for building CVEs and research tools. Includes offline `pip` caching and virtualenv isolation. Designed for practical use, Metasploit-style — but easier and more pythonic.
+
+### 🔹 TFProtocol
+A full-stack communication protocol designed on top of TCP/UDP for custom application-level messaging. Built from scratch. [TFProtocol Github Link](https://github.com/GoDjango-Development/tfprotocol)
+
+### 🔹 More Projects:
+➡️ [All GitHub Repos](https://github.com/etherbeing)
+
+---
+
+## 🧠 Career Experience
+
+### 🧑‍💼 Chief Technology Officer — Startup (5 years)
+**Roles**: CTO, DevOps, Backend, Frontend, Scrum Manager, Cybersecurity Lead  
+**Stack**: Full-stack dev, cloud infra, CI/CD, security design.
+
+### 🧪 Cybersecurity Pentester | Network Admin | Solo Dev
+**Focus**: Vulnerability analysis, network segmentation, endpoint hardening.
+
+### 🧠 Other Titles Held:
+- Team Lead
+- Bug Fixer
+- Research Engineer
+
+---
+
+## 🎓 Education & Formation
+
+- 🎓 Studied Informatics Engineering at **CUJAE** (2 years, dropped to found enterprise)
+- 🧠 Started self-taught journey at 14: learned C, Java, PHP, C++, cybersecurity, hacking.
+- 📚 Courses from: Coursera, Solo Learn, Hack The Box, custom Linux and crypto labs.
+
+---
+
+## 🌐 Contact Me
+
+- 📧 **etherbeing99@proton.me**
+- 🔗 LinkedIn: [LinkeIn](https://www.linkedin.com/in/esteban-chacon-55900b227/)
+- 🌍 Open to global opportunities
+
+---
+
+### 🔥 Bonus: What I’m Looking For
+
+I’d love to work on:
+- 🎮 Videogame projects (especially logic-heavy or with AI)
+- 🧠 Artificial Intelligence systems
+- 🔐 Cybersecurity tools and research
+- 🧮 Math-oriented development, compression models, entropy defiance
+
+---
