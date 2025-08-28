@@ -1,2 +1,6 @@
 /templates
 /cv.bk
+.gitsecret/keys/random_seed
+!*.secret
+web/.env
+api/.env

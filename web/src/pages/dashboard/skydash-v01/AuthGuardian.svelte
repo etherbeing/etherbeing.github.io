@@ -12,12 +12,12 @@
     const authenticated = $state(true);
 </script>
 
-{#if authenticated}
+{#if !authenticated}
     <AuthLayout>
         <Router {routes}></Router>
     </AuthLayout>
 {:else}
     <DashboardLayout>
-        {@render children()}
+        {@render children?.()}
     </DashboardLayout>
 {/if}

@@ -24,6 +24,15 @@ pub async fn add_message(pool: Data<sqlx::PgPool>, msg: web::Json<Message>) -> i
     }
 }
 
+
+#[utoipa::path(
+    get,
+    path="/message/{id}",
+    tag="public",
+    responses(
+        (status=200, description="Demo get message", body=IndexResponse)
+    )
+)]
 #[get("/message/{id}")]
 pub async fn get_message(pool: Data<sqlx::PgPool>, id: web::Path<i32>) -> impl Responder {
     let res = sqlx::query_as!(
@@ -43,6 +52,7 @@ pub async fn get_message(pool: Data<sqlx::PgPool>, id: web::Path<i32>) -> impl R
 #[utoipa::path(
     get,
     path="/",
+    tag="public",
     responses(
         (status=200, description="Main page", body=IndexResponse)
     )

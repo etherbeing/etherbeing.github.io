@@ -1,7 +1,6 @@
 use async_graphql::Object;
 
-
-pub struct QueryRoot;
+use crate::core::settings::graphql::QueryRoot;
 
 #[Object]
 impl QueryRoot {

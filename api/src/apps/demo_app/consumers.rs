@@ -1,3 +1,4 @@
+// Consumers for this app (Websocket controllers)
 use actix_web::{get, web, Responder};
 use actix_web_actors::ws;
 

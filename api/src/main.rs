@@ -1,8 +1,7 @@
-mod consumers;
 mod controllers;
-mod models;
 mod serializers;
 mod core;
+mod apps;
 
 use actix_cors::Cors;
 use actix_web::web::{self, Data};
@@ -14,9 +13,10 @@ use sqlx::postgres::PgPoolOptions;
 use utoipa::OpenApi;
 use utoipa_swagger_ui::SwaggerUi;
 
+use crate::apps::demo_app::consumers::ws_index;
+use crate::apps::security::controllers::{login, me, register};
 use crate::controllers::base::*;
-use crate::controllers::graphql::QueryRoot;
-use crate::consumers::demo::ws_index;
+use crate::core::settings::graphql::QueryRoot;
 use crate::core::settings::swagger::ApiDoc;
 
 #[actix_web::main]
@@ -41,6 +41,9 @@ async fn main() -> std::io::Result<()> {
             .app_data(Data::new(pool.clone()))
             .service(add_message)
             .service(get_message)
+            .service(me)
+            .service(login)
+            .service(register)
             .service(index)
             .service(ws_index)
             .service(

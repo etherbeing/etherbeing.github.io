@@ -1,6 +1,6 @@
 <script lang="ts">
     import Router from "svelte-spa-router";
-    export const { children } = $props();
+    // export const { children } = $props();
     
     
 
