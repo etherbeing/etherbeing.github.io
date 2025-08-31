@@ -1,19 +1,26 @@
 <script lang="ts">
-    import { push, params, location } from "svelte-spa-router";
-    import DashboardLayout from "./DashboardLayout.svelte";
-    import type { Snippet } from "svelte";
+    import Router, { params, push, location } from "svelte-spa-router";
+    import AuthLayout from "../pages/dashboard/skydash-v01/AuthLayout.svelte";
+
+    import Login from "../pages/dashboard/skydash-v01/Login.svelte";
+    import Register from "../pages/dashboard/skydash-v01/Register.svelte";
     import { getContext } from "svelte";
-    import { createMutation, createQuery } from "@tanstack/svelte-query";
+    import type { Writable } from "svelte/store";
+    import { createQuery, createMutation } from "@tanstack/svelte-query";
     import {
         meOptions,
         refreshMutation,
-    } from "../../../services/auto-openapi/@tanstack/svelte-query.gen";
-    import { type Writable } from "svelte/store";
+    } from "../services/auto-openapi/@tanstack/svelte-query.gen";
 
-    const { children }: { children: Snippet } = $props();
+    const routes = {
+        "*/login/": Login,
+        "*/register/": Register,
+        // "*": Login,
+    };
+
     const currentUserQuery = createQuery(meOptions({ credentials: "include" }));
     const refresh = createMutation(refreshMutation({ credentials: "include" }));
-    let authenticated: Writable<boolean> = getContext("authenticated");
+    const authenticated: Writable<boolean> = getContext("authenticated");
 
     $effect(() => {
         if ($currentUserQuery.isFetched) {
@@ -38,18 +45,16 @@
             }
         }
     });
-    const DEFAULT_AUTH_ROUTE = "/auth/login/";
+
     $effect(() => {
-        if (!$authenticated && $location != DEFAULT_AUTH_ROUTE) {
-            push(`${DEFAULT_AUTH_ROUTE}?to=${$location}`);
-        } else if ($authenticated) {
+        if ($authenticated) {
             push($params?.to || "/admin/dashboard/");
         }
     });
 </script>
 
-{#if $authenticated}
-    <DashboardLayout>
-        {@render children?.()}
-    </DashboardLayout>
+{#if !$authenticated}
+    <AuthLayout>
+        <Router {routes}></Router>
+    </AuthLayout>
 {/if}

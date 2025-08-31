@@ -14,8 +14,8 @@ use utoipa::OpenApi;
 use utoipa_swagger_ui::SwaggerUi;
 
 use crate::apps::demo_app::consumers::ws_index;
-use crate::apps::security::controllers::{login, me, register};
-use crate::controllers::base::*;
+use crate::apps::general::controllers::contacts::contact;
+use crate::apps::security::controllers::{login, logout, me, refresh, register};
 use crate::core::settings::graphql::QueryRoot;
 use crate::core::settings::swagger::ApiDoc;
 
@@ -39,12 +39,17 @@ async fn main() -> std::io::Result<()> {
                     .max_age(3600),
             )
             .app_data(Data::new(pool.clone()))
-            .service(add_message)
-            .service(get_message)
+            // authentications
             .service(me)
             .service(login)
+            .service(logout)
+            .service(refresh)
             .service(register)
-            .service(index)
+            // general
+                // contacts
+            .service(contact)
+                // end contacts
+            // end general
             .service(ws_index)
             .service(
                 web::scope("/graphql")

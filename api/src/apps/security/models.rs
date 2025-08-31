@@ -12,7 +12,7 @@ pub struct User {
     username: String,
     password: Option<String>,
     email: String,
-    phone: String,
+    country: i32,
     google: Option<String>, // Token for google auth
     created_at: i64,
     last_login: i64,

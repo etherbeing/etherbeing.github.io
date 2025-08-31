@@ -1,5 +1,6 @@
 /// The contact info for the site
 pub struct SiteContact {
+    id: i32,
     email: String,
     phone: String,
     address: Option<String>,
@@ -12,6 +13,7 @@ pub struct SiteContact {
 
 /// The contact info sent by public user to the owner
 pub struct ContactPost {
+    id: i32,
     name: String,
     email: String,
     message: String,

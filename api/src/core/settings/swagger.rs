@@ -1,11 +1,9 @@
 use utoipa::openapi::security::SecurityScheme::Http;
 use utoipa::{OpenApi, openapi::security::HttpBuilder};
 
+use crate::apps::general::serializers::contacts::ContactPostSerializer;
 use crate::apps::security::serializers::RegisterUser;
-use crate::{
-    apps::security::serializers::{LoginResponse, LoginUser},
-    serializers::types::IndexResponse,
-};
+use crate::{apps::security::serializers::LoginUser, serializers::types::IndexResponse};
 
 struct SecurityAddon;
 
@@ -24,9 +22,9 @@ impl utoipa::Modify for SecurityAddon {
                 )
                 .schema_from::<IndexResponse>()
                 .schema_from::<LoginUser>()
-                .schema_from::<LoginResponse>()
                 .schema_from::<RegisterUser>()
-                .build()
+                .schema_from::<ContactPostSerializer>()
+                .build(),
         )
     }
 }
@@ -44,10 +42,12 @@ impl utoipa::Modify for SecurityAddon {
         license(name = "MIT (Attribution Required)", url = "TODO")
     ),
     paths(
-        crate::controllers::base::index,
         crate::apps::security::controllers::login,
+        crate::apps::security::controllers::logout,
+        crate::apps::security::controllers::refresh,
         crate::apps::security::controllers::register,
         crate::apps::security::controllers::me,
+        crate::apps::general::controllers::contacts::contact
     ),
     modifiers(&SecurityAddon),
 )]

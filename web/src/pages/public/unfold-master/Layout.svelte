@@ -1,8 +1,6 @@
 <script lang="ts">
     // import { _ } from "svelte-i18n";
     // import { isLoading } from "svelte-i18n";
-    // import { QueryClientProvider } from "@tanstack/svelte-query";
-    // import { baseQuery } from "./services/http/rest/RestSetup";
     import { client } from "/src/services/http/graphql";
     import { setContextClient } from "@urql/svelte";
     import Header from "/src/lib/Header.svelte";
@@ -169,10 +167,4 @@
     </div>
     <!-- END .unslate_co-site-inner -->
     <Footer></Footer>
-    <!-- <QueryClientProvider client={baseQuery}>
-    {#if $isLoading}
-      Please wait...
-    {:else}
-    {/if}
-  </QueryClientProvider> -->
 </div>

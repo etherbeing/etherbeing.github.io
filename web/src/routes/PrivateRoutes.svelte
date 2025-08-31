@@ -1,6 +1,5 @@
 <script lang="ts">
     import Router from "svelte-spa-router";
-    // export const { children } = $props();
     
     
 
@@ -15,5 +14,5 @@
 </script>
 
 <AuthGuardian>
-    <Router routes={routes} prefix="/auth/"></Router>
+    <Router routes={routes}></Router>
 </AuthGuardian>

@@ -1,7 +1,6 @@
 <script lang="ts">
   // import { _ } from "svelte-i18n";
   // import { isLoading } from "svelte-i18n";
-  // import { QueryClientProvider } from "@tanstack/svelte-query";
   // import { baseQuery } from "./services/http/rest/RestSetup";
   import { client } from "./services/http/graphql";
   import { setContextClient } from "@urql/svelte";
@@ -9,6 +8,9 @@
   import { onMount, setContext } from "svelte";
   import { writable, type Writable } from "svelte/store";
   import { REFRESH_RATE, REFRESH_UNFOLD_CONTEXT_NAME } from "./consts";
+  import { QueryClient, QueryClientProvider } from "@tanstack/svelte-query";
+
+  const queryClient = new QueryClient({});
 
   setContextClient(client);
   document.title = "etherbeing";
@@ -64,6 +66,10 @@
     SITE_LOADER_WRAP.forEach((el) => el.setAttribute("style", ""));
     OVERLAYER.forEach((el) => el.setAttribute("style", ""));
   };
+  let authenticated = writable(false);
+  setContext("authenticated", authenticated);
 </script>
 
-<BaseRoutes></BaseRoutes>
+<QueryClientProvider client={queryClient}>
+  <BaseRoutes></BaseRoutes>
+</QueryClientProvider>
