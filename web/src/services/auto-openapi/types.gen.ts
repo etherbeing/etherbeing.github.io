@@ -9,6 +9,14 @@ export type AboutMe = {
     slogan: string;
 };
 
+export type Client = {
+    avatar?: string | null;
+    logo: Array<string>;
+    name: string;
+    projects: Array<PortfolioItem>;
+    role?: string | null;
+};
+
 export type ContactPostSerializer = {
     email: string;
     message: string;
@@ -26,6 +34,21 @@ export type LoginUser = {
      */
     username: string;
 };
+
+export type PortfolioItem = {
+    client?: number | null;
+    description: string;
+    image: Array<string>;
+    portfolio_type: PortfolioType;
+    project_date: number;
+    public_url?: string | null;
+    role: string;
+    subtitle: string;
+    title: string;
+    youtube_url?: string | null;
+};
+
+export type PortfolioType = 'SimpleImage' | 'SimpleVideo' | 'Detailed';
 
 export type RegisterUser = {
     country: number;
@@ -162,6 +185,19 @@ export type GetInfoAboutMeResponses = {
      */
     200: unknown;
 };
+
+export type GetPortfolioData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/public/portfolio/';
+};
+
+export type GetPortfolioResponses = {
+    200: Array<PortfolioItem>;
+};
+
+export type GetPortfolioResponse = GetPortfolioResponses[keyof GetPortfolioResponses];
 
 export type ClientOptions = {
     baseUrl: 'http://localhost:8080' | (string & {});

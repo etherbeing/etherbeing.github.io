@@ -6,6 +6,8 @@
     export const {
         options,
         option,
+        option_icon,
+        option_label
     }: {
         options: { value: string; lang: string }[];
         option: { value: string; lang: string };
@@ -14,13 +16,6 @@
     } = $props();
 </script>
 
-{#snippet option_label(option: { value: string; lang: string })}<span
-        >{option.value}</span
-    >{/snippet}
-
-{#snippet option_icon(option: { value: string; lang: string })}
-    {@render option_label(option)}
-{/snippet}
 
 <li
     class="flex flex-col justify-center items-center relative p-0 m-0"
