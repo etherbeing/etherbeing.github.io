@@ -1,7 +1,6 @@
 <script lang="ts">
   // import { _ } from "svelte-i18n";
   // import { isLoading } from "svelte-i18n";
-  // import { baseQuery } from "./services/http/rest/RestSetup";
   import { client } from "./services/http/graphql";
   import { setContextClient } from "@urql/svelte";
   import BaseRoutes from "./routes/BaseRoutes.svelte";
@@ -70,6 +69,16 @@
   setContext("authenticated", authenticated);
 </script>
 
+<svelte:head>
+  <link
+    href="/node_modules/bootstrap/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  />
+  <link
+    href="/node_modules/@mdi/font/scss/materialdesignicons.scss"
+    rel="stylesheet"
+  />
+</svelte:head>
 <QueryClientProvider client={queryClient}>
   <BaseRoutes></BaseRoutes>
 </QueryClientProvider>

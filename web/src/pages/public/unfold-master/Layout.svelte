@@ -8,6 +8,7 @@
     import { onMount, setContext } from "svelte";
     import { writable, type Writable } from "svelte/store";
     import { REFRESH_RATE, REFRESH_UNFOLD_CONTEXT_NAME } from "/src/consts";
+    import Loader from "./Loader.svelte";
 
     setContextClient(client);
     document.title = "etherbeing";
@@ -55,6 +56,11 @@
             }
         }, REFRESH_RATE); // perhaps this is too much
     });
+
+    $effect(()=>{
+        // @ts-expect-error TODO migrate me to pure svelte and gsap for animations
+        window.startUp();
+    })
 
     const SITE_LOADER_WRAP = document.querySelectorAll(".site-loader-wrap");
     const OVERLAYER = document.querySelectorAll("#unslate_co--overlayer");
@@ -133,11 +139,7 @@
         <script defer async={false} src="/src/assets/light/js/main.js"></script>
     {/if}
 </svelte:head>
-
-<div id="unslate_co--overlayer"></div>
-<div class="site-loader-wrap">
-    <div class="site-loader"></div>
-</div>
+<Loader></Loader>
 
 <nav class="unslate_co--site-mobile-menu">
     <div class="close-wrap d-flex">

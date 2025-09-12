@@ -3,6 +3,9 @@
     import { getContext } from "svelte";
     import { link, location, push } from "svelte-spa-router";
     import type { Writable } from "svelte/store";
+    import { NavLink } from "sveltestrap";
+    import Dropdown from "./Dropdown.svelte";
+    import { Es, Gb } from "svelte-flag-icons";
 
     const theme: Writable<"light" | "dark"> = getContext("theme");
 
@@ -15,6 +18,195 @@
             push(to);
         }
     };
+    function siteMenuClone() {
+        setTimeout(() => {
+            const mobile = document.querySelector(".site-mobile-inner");
+            document
+                .querySelectorAll(".js-clone-nav")
+                .forEach((element: Element) => {
+                    const newNode = element.cloneNode(true) as HTMLUListElement;
+                    mobile?.appendChild(newNode);
+                    newNode.className = "site-nav-wrap";
+                });
+
+            var counter = 0;
+            document
+                .querySelectorAll(".unslate_co--site-mobile-menu .has-children")
+                .forEach(function (element) {
+                    element.prepend('<span class="arrow-collapse collapsed">');
+
+                    element
+                        .querySelectorAll(".arrow-collapse")
+                        .forEach((el) => {
+                            (el as HTMLElement).setAttribute(
+                                "data-toggle",
+                                "collapse",
+                            );
+                            (el as HTMLElement).setAttribute(
+                                "data-target",
+                                "#collapseItem" + counter,
+                            );
+                        });
+
+                    element.querySelectorAll("> ul").forEach((el) => {
+                        el.className = "collapse";
+                        el.id = "collapseItem" + counter;
+                    });
+
+                    counter++;
+                });
+        }, 1000);
+        document.body.querySelectorAll(".arrow-collapse").forEach((el) => {
+            (el as HTMLElement).addEventListener("click", (ev) => {
+                if (
+                    el
+                        .closest("li")
+                        ?.querySelector(".collapse")
+                        ?.classList.contains("show")
+                ) {
+                    el.classList.remove("active");
+                } else {
+                    el.classList.add("active");
+                }
+                ev.preventDefault();
+            });
+        });
+
+        window.addEventListener("resize", (ev) => {
+            const w = window.innerWidth;
+            if (w > 768) {
+                if (document.body.classList.contains("offcanvas")) {
+                    document.body.classList.remove("offcanvas");
+                }
+            }
+        });
+
+        document.querySelectorAll(".js-burger-toggle-menu").forEach((el) => {
+            (el as HTMLElement).addEventListener("click", function (e) {
+                e.preventDefault();
+                if (document.body.classList.contains("offcanvas")) {
+                    document.body.classList.remove("offcanvas");
+                    document
+                        .querySelectorAll(".js-burger-toggle-menu")
+                        .forEach((el) => {
+                            el.classList.remove("open");
+                        });
+                } else {
+                    document.body.classList.add("offcanvas");
+                    document
+                        .querySelectorAll(".js-burger-toggle-menu")
+                        .forEach((el) => {
+                            el.classList.add("open");
+                        });
+                }
+            });
+        });
+    }
+
+    function mobileToggleClick() {
+        document.querySelectorAll(".js-menu-toggle").forEach((el) => {
+            (el as HTMLElement).addEventListener("click", function (e) {
+                e.preventDefault();
+                const burgers = document.querySelectorAll(
+                    ".js-burger-toggle-menu",
+                );
+
+                if (document.body.classList.contains("offcanvas")) {
+                    document.body.classList.remove("offcanvas");
+                    document
+                        .querySelectorAll(".js-menu-toggle")
+                        .forEach((el) => {
+                            el.classList.remove("active");
+                        });
+                    if (burgers.length) {
+                        burgers.forEach((el) => el.classList.remove("open"));
+                    }
+                } else {
+                    document.body.classList.add("offcanvas");
+
+                    document
+                        .querySelectorAll(".js-menu-toggle")
+                        .forEach((el) => {
+                            el.classList.add("active");
+                        });
+                    if (burgers.length) {
+                        burgers.forEach((el) => el.classList.add("open"));
+                    }
+                }
+            });
+        });
+
+        // click outisde offcanvas
+        document.addEventListener("mouseup", function (e) {
+            document
+                .querySelectorAll(".unslate_co--site-mobile-menu")
+                .forEach((container) => {
+                    let isChild = false;
+                    for (let child of container.children) {
+                        if (child.isEqualNode(e.target as HTMLElement)) {
+                            isChild = true;
+                            break;
+                        }
+                    }
+                    if (
+                        !container.isEqualNode(e.target as Element) &&
+                        !isChild
+                    ) {
+                        if (document.body.classList.contains("offcanvas")) {
+                            document.body.classList.remove("offcanvas");
+                            document.body
+                                .querySelectorAll(".js-menu-toggle")
+                                .forEach((el) => {
+                                    el.classList.remove("active");
+                                });
+                            document.body
+                                .querySelectorAll(".js-burger-toggle-menu")
+                                .forEach((el) => {
+                                    el.classList.remove("open");
+                                });
+                        }
+                    }
+                });
+        });
+    }
+
+    function onePageNavigation() {
+        // var navToggler = $(".site-menu-toggle");
+        document.body
+            .querySelectorAll(
+                ".unslate_co--site-nav .site-nav-ul li a[href^='#'], .smoothscroll[href^='#'], .unslate_co--site-mobile-menu .site-nav-wrap li a[href^='#']",
+            )
+            .forEach((el) => {
+                (el as HTMLElement).addEventListener("click", function (e) {
+                    e.preventDefault();
+
+                    if (document.body.classList.contains("offcanvas")) {
+                        document.body.classList.remove("offcanvas");
+                        document.body
+                            .querySelectorAll(".js-burger-toggle-menu")
+                            .forEach((el) => {
+                                el.classList.remove("open");
+                            });
+                    }
+                    document.querySelectorAll("html, body").forEach((el) => {
+                        el.animate(
+                            {
+                                scrollTop: el.clientTop,
+                            },
+                            {
+                                duration: 500,
+                            },
+                        );
+                    });
+                });
+            });
+    }
+
+    $effect(() => {
+        siteMenuClone();
+        mobileToggleClick();
+        onePageNavigation();
+    });
 </script>
 
 <nav class="unslate_co--site-nav site-nav-target">
@@ -22,54 +214,50 @@
         <div class="row align-items-center justify-content-between text-left">
             <div class="col-md-5 text-right">
                 <ul
-                    class="site-nav-ul js-clone-nav text-left d-none d-lg-inline-block"
+                    class="site-nav-ul js-clone-nav text-left hidden lg:flex lg:justify-end lg:items-center"
                 >
-                    <li class="has-children">
-                        <a
-                            href="#home-section"
-                            onclick={navigate}
-                            class="nav-link">Home</a
-                        >
-                        <ul class="dropdown">
-                            <li>
-                                <a href="index.html">Hero Image BG</a>
-                            </li>
-                            <li>
-                                <a href="index-video.html">Video BG</a>
-                            </li>
-                            <li>
-                                <a href="index-hero-slider.html">Hero Slider</a>
-                            </li>
-                            <li>
-                                <a href="index-sidebar-menu.html"
-                                    >Sidebar Menu</a
-                                >
-                            </li>
-                            <li>
-                                <a href="index-right-menu.html">Right Menu</a>
-                            </li>
-                        </ul>
+                    <Dropdown options={[
+                            {
+                                lang: "ES",
+                                value: "Español",
+                            },
+                            {
+                                lang: "EN",
+                                value: "English",
+                            },
+                        ]}>
+                        {#snippet option_icon(option: { lang: "ES" | "EN" })}
+                            {#if option.lang === "ES"}
+                                <Es></Es>
+                            {:else if option.lang === "EN"}
+                                <Gb></Gb>
+                            {/if}
+                        {/snippet}
+                        {#snippet option_label(option)}
+                            <span class="w-[50%] text-right">
+                                {option.value}
+                            </span>
+                        {/snippet}
+                    </Dropdown>
+                    <li>
+                        <NavLink href="#home-section" on:click={navigate}>
+                            Home
+                        </NavLink>
                     </li>
                     <li>
-                        <a
-                            href="#portfolio-section"
-                            onclick={navigate}
-                            class="nav-link">Portfolio</a
-                        >
+                        <NavLink href="#portfolio-section" on:click={navigate}>
+                            Portfolio
+                        </NavLink>
                     </li>
                     <li>
-                        <a
-                            href="#about-section"
-                            onclick={navigate}
-                            class="nav-link">About</a
-                        >
+                        <NavLink href="#about-section" on:click={navigate}>
+                            About
+                        </NavLink>
                     </li>
                     <li>
-                        <a
-                            href="#services-section"
-                            onclick={navigate}
-                            class="nav-link">Services</a
-                        >
+                        <NavLink href="#services-section" on:click={navigate}>
+                            Services
+                        </NavLink>
                     </li>
                 </ul>
             </div>
@@ -80,35 +268,30 @@
             </div>
             <div class="col-md-5 text-right text-lg-left">
                 <ul
-                    class="site-nav-ul js-clone-nav text-left d-none d-lg-inline-block"
+                    class="site-nav-ul js-clone-nav text-left hidden lg:flex lg:justify-start lg:items-center"
                 >
                     <li>
-                        <a
-                            href="#skills-section"
-                            onclick={navigate}
-                            class="nav-link">Skills</a
-                        >
+                        <NavLink href="#skills-section" on:click={navigate}>
+                            Skills
+                        </NavLink>
                     </li>
                     <li>
-                        <a
+                        <NavLink
                             href="#testimonial-section"
-                            onclick={navigate}
-                            class="nav-link">Testimonial</a
+                            on:click={navigate}
                         >
+                            Testimonial
+                        </NavLink>
                     </li>
                     <li>
-                        <a
-                            href="#journal-section"
-                            onclick={navigate}
-                            class="nav-link">Journal</a
-                        >
+                        <NavLink href="#journal-section" on:click={navigate}
+                            >Journal
+                        </NavLink>
                     </li>
                     <li>
-                        <a
-                            href="#contact-section"
-                            onclick={navigate}
-                            class="nav-link">Contact</a
-                        >
+                        <NavLink href="#contact-section" on:click={navigate}>
+                            Contact
+                        </NavLink>
                     </li>
                     <li>
                         <button

@@ -5,7 +5,7 @@ use actix_web::{
     HttpResponse, Responder, post,
     web::{self, Data},
 };
-use chrono::{Date, Utc};
+use chrono::{Utc};
 use sqlx::PgPool;
 
 #[utoipa::path(

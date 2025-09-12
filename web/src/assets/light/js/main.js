@@ -27,7 +27,6 @@ function startUp() {
 
 	});
 }
-startUp()
 
 var siteIstotope = function () {
 	var $container = $('#posts').isotope({

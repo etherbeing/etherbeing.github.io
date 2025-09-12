@@ -14,7 +14,9 @@ use utoipa::OpenApi;
 use utoipa_swagger_ui::SwaggerUi;
 
 use crate::apps::demo_app::consumers::ws_index;
+use crate::apps::general::controllers::about_me::get_info_about_me;
 use crate::apps::general::controllers::contacts::contact;
+use crate::apps::general::controllers::portfolio::get_portfolio;
 use crate::apps::security::controllers::{login, logout, me, refresh, register};
 use crate::core::settings::graphql::QueryRoot;
 use crate::core::settings::swagger::ApiDoc;
@@ -45,6 +47,8 @@ async fn main() -> std::io::Result<()> {
             .service(logout)
             .service(refresh)
             .service(register)
+            .service(get_info_about_me)
+            .service(get_portfolio)
             // general
                 // contacts
             .service(contact)

@@ -1,6 +1,5 @@
 <script lang="ts">
     import { push, params, location } from "svelte-spa-router";
-    import DashboardLayout from "./DashboardLayout.svelte";
     import type { Snippet } from "svelte";
     import { getContext } from "svelte";
     import { createMutation, createQuery } from "@tanstack/svelte-query";
@@ -39,17 +38,16 @@
         }
     });
     const DEFAULT_AUTH_ROUTE = "/auth/login/";
+
     $effect(() => {
         if (!$authenticated && $location != DEFAULT_AUTH_ROUTE) {
             push(`${DEFAULT_AUTH_ROUTE}?to=${$location}`);
-        } else if ($authenticated) {
+        } else if ($authenticated && $location.startsWith("/auth/")) {
             push($params?.to || "/admin/dashboard/");
         }
     });
 </script>
 
 {#if $authenticated}
-    <DashboardLayout>
-        {@render children?.()}
-    </DashboardLayout>
+    {@render children?.()}
 {/if}

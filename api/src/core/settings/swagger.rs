@@ -1,6 +1,9 @@
 use utoipa::openapi::security::SecurityScheme::Http;
 use utoipa::{OpenApi, openapi::security::HttpBuilder};
 
+use crate::apps::general::models::about_me::AboutMe;
+use crate::apps::general::models::clients::Client;
+use crate::apps::general::models::portfolio::{PortfolioItem, PortfolioType};
 use crate::apps::general::serializers::contacts::ContactPostSerializer;
 use crate::apps::security::serializers::RegisterUser;
 use crate::{apps::security::serializers::LoginUser, serializers::types::IndexResponse};
@@ -22,6 +25,10 @@ impl utoipa::Modify for SecurityAddon {
                 )
                 .schema_from::<IndexResponse>()
                 .schema_from::<LoginUser>()
+                .schema_from::<AboutMe>()
+                .schema_from::<PortfolioItem>()
+                .schema_from::<PortfolioType>()
+                .schema_from::<Client>()
                 .schema_from::<RegisterUser>()
                 .schema_from::<ContactPostSerializer>()
                 .build(),
@@ -47,6 +54,8 @@ impl utoipa::Modify for SecurityAddon {
         crate::apps::security::controllers::refresh,
         crate::apps::security::controllers::register,
         crate::apps::security::controllers::me,
+        crate::apps::general::controllers::about_me::get_info_about_me,
+        crate::apps::general::controllers::portfolio::get_portfolio,
         crate::apps::general::controllers::contacts::contact
     ),
     modifiers(&SecurityAddon),
