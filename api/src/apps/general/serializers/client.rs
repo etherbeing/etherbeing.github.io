@@ -1,22 +1,23 @@
 use actix_web::web::Data;
 use serde::{Deserialize, Serialize};
 use sqlx;
-use sqlx::prelude::FromRow;
 use sqlx::PgPool;
+use sqlx::prelude::FromRow;
 use utoipa::ToSchema;
 
-use super::portfolio::PortfolioItem;
+use crate::apps::general::models::portfolio::PortfolioItem;
 
-#[derive(Serialize, Debug, ToSchema, Deserialize, FromRow)]
-pub struct Client {
-    id: i64,
-    name: String,
-    role: Option<String>,
-    avatar: Option<String>,
-    logo: String,
+
+#[derive(Serialize, Debug, ToSchema, Deserialize)]
+pub struct ClientSerializer {
+    pub id: i64,
+    pub name: String,
+    pub role: Option<String>,
+    pub avatar: Option<String>,
+    pub logo: String,
 }
 
-impl Client {
+impl ClientSerializer {
     pub async fn portfolio_items(&self, pool: Data<PgPool>) -> Vec<PortfolioItem> {
         match sqlx::query_as::<_, PortfolioItem>("SELECT * FROM portfolio_item WHERE client=$0")
             .bind(self.id)

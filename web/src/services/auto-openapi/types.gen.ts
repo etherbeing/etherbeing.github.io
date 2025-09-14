@@ -9,11 +9,11 @@ export type AboutMe = {
     slogan: string;
 };
 
-export type Client = {
+export type ClientSerializer = {
     avatar?: string | null;
-    logo: Array<string>;
+    id: number;
+    logo: string;
     name: string;
-    projects: Array<PortfolioItem>;
     role?: string | null;
 };
 
@@ -35,10 +35,10 @@ export type LoginUser = {
     username: string;
 };
 
-export type PortfolioItem = {
-    client?: number | null;
+export type PortfolioItemSerializer = {
+    client: ClientSerializer;
     description: string;
-    image: Array<string>;
+    image: string;
     portfolio_type: PortfolioType;
     project_date: number;
     public_url?: string | null;
@@ -56,6 +56,27 @@ export type RegisterUser = {
     google?: string | null;
     password: string;
     username: string;
+};
+
+export type CreatePortfolioItemData = {
+    body: PortfolioItemSerializer;
+    path?: never;
+    query?: never;
+    url: '/api/admin/portfolio/';
+};
+
+export type CreatePortfolioItemErrors = {
+    /**
+     * Credentials not valid for the current request
+     */
+    403: unknown;
+};
+
+export type CreatePortfolioItemResponses = {
+    /**
+     * Portfolio Item created successfully
+     */
+    201: unknown;
 };
 
 export type LoginData = {
@@ -194,7 +215,7 @@ export type GetPortfolioData = {
 };
 
 export type GetPortfolioResponses = {
-    200: Array<PortfolioItem>;
+    200: Array<PortfolioItemSerializer>;
 };
 
 export type GetPortfolioResponse = GetPortfolioResponses[keyof GetPortfolioResponses];
