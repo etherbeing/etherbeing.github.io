@@ -1,5 +1,6 @@
 <script lang="ts">
     import { _ } from "svelte-i18n";
+    import cv from "/public/cv_etherbeing.pdf";
 
     let pitch = $state(`
     Far far away, behind the word mountains, far from the
@@ -48,7 +49,7 @@
                     {brief}
                 </p>
                 <p class="gsap-reveal">
-                    <a href="#" class="btn btn-outline-pill btn-custom-light"
+                    <a href={cv} class="btn btn-outline-pill btn-custom-light"
                         >Download my CV</a
                     >
                 </p>
