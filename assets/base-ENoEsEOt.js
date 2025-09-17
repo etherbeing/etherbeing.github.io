@@ -1,1 +1,0 @@
-const e={title:"Check out {url}, the official Svelte app framework powered by Vite!",subtitle:"Click on the Vite and Svelte logos to learn more",count:"Count is",language_selector:"Language",backend_message:"Data from server"},t={please_wait:"Please wait..."},a={demo:e,base:t};export{t as base,a as default,e as demo};
