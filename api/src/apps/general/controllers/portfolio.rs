@@ -43,6 +43,7 @@ pub async fn get_portfolio(pool: Data<PgPool>) -> impl Responder {
 )]
 #[put("/api/admin/portfolio/")]
 pub async fn create_portfolio_item(pool: Data<PgPool>, claims: Claims, MultipartForm(payload): MultipartForm<PortfolioItemSerializer>) -> impl Responder{
+    println!("I am here");
     let pt =  match &payload.metadata.portfolio_type {
         PortfolioType::SimpleImage=>{
             "SimpleImage"

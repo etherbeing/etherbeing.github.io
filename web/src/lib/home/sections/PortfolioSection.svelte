@@ -1,5 +1,26 @@
 <script lang="ts">
+    import { _ } from "svelte-i18n";
     import { link } from "svelte-spa-router";
+    interface PortfolioItem {
+        id: number;
+        name: string;
+        categories: string[];
+        showcase_image_url: string;
+    }
+    let portfolio_items: Array<PortfolioItem> = $state([
+        {
+            categories: ["web", "branding"],
+            name: "Shoe Rebranding",
+            id: 1,
+            showcase_image_url: "/src/assets/dark/images/work_1_md.jpg",
+        },
+    ]);
+    let categories = $derived(
+        portfolio_items
+            .map((portfolio_item, index) => portfolio_item.categories)
+            .reduce((p, c) => p.concat(...c.filter((e) => !p.includes(e)))),
+    );
+    console.log(categories);
 </script>
 
 <div class="unslate_co--section" id="portfolio-section">
@@ -16,46 +37,56 @@
                 class="d-flex align-items-center mb-4 gsap-reveal gsap-reveal-filter"
             >
                 <h2 class="mr-auto heading-h2">
-                    <span class="gsap-reveal">Portfolio</span>
+                    <span class="gsap-reveal">{$_("portfolio.title")}</span>
                 </h2>
 
-                <!-- <a href="#" class="text-white js-filter d-inline-block d-lg-none">Filter</a>
-                  
-                  <div class="filter-wrap">
+                <a
+                    href="#"
+                    class="text-white js-filter d-inline-block d-lg-none"
+                    >{$_("portfolio.filter")}</a
+                >
+
+                <div class="filter-wrap">
                     <div class="filter ml-auto" id="filters">
-                      <a href="#" class="active" data-filter="*">All</a>
-                      <a href="#" data-filter=".web">Web</a>
-                      <a href="#" data-filter=".branding">Branding</a>
-                      <a href="#" data-filter=".illustration">Illustration</a>
-                      <a href="#" data-filter=".packaging">Packaging</a>
+                        <a href="#" class="active" data-filter="*">All</a>
+                        <a href="#" data-filter=".web">Web</a>
+                        <a href="#" data-filter=".branding">Branding</a>
+                        <a href="#" data-filter=".illustration">Illustration</a>
+                        <a href="#" data-filter=".packaging">Packaging</a>
                     </div>
-                  </div> -->
+                </div>
             </div>
 
             <div id="posts" class="row gutter-isotope-item">
-                <div
-                    class="item web branding col-sm-6 col-md-6 col-lg-4 isotope-mb-2"
-                >
-                    <a
-                        href="/portfolio-single-1"
-                        use:link
-                        class="portfolio-item ajax-load-page isotope-item gsap-reveal-img"
-                        data-id="1"
+                {#each portfolio_items as portfolio_item}
+                    <div
+                        class="item {portfolio_item.categories.reduce((p, c)=>p.concat(' ', c)) } col-sm-6 col-md-6 col-lg-4 isotope-mb-2"
                     >
-                        <div class="overlay">
-                            <span class="wrap-icon icon-link2"></span>
-                            <div class="portfolio-item-content">
-                                <h3>Shoe Rebranding</h3>
-                                <p>web, branding</p>
+                        <a
+                            href="/portfolio-single-{portfolio_item.id}"
+                            use:link
+                            class="portfolio-item ajax-load-page isotope-item gsap-reveal-img"
+                            data-id={portfolio_item.id}
+                        >
+                            <div class="overlay">
+                                <span class="wrap-icon icon-link2"></span>
+                                <div class="portfolio-item-content">
+                                    <h3>{portfolio_item.name}</h3>
+                                    <p>
+                                        {#each portfolio_item.categories as category, index}
+                                            {category}{#if portfolio_item.categories.length !== index + 1},{/if}
+                                        {/each}
+                                    </p>
+                                </div>
                             </div>
-                        </div>
-                        <img
-                            src="/src/assets/dark/images/work_1_md.jpg"
-                            class="lazyload img-fluid"
-                            alt="Images"
-                        />
-                    </a>
-                </div>
+                            <img
+                                src={portfolio_item.showcase_image_url}
+                                class="lazyload img-fluid"
+                                alt={portfolio_item.name}
+                            />
+                        </a>
+                    </div>
+                {/each}
                 <div
                     class="item branding packaging illustration col-sm-6 col-md-6 col-lg-4 isotope-mb-2"
                 >

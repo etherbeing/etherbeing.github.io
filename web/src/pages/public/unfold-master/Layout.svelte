@@ -1,6 +1,6 @@
 <script lang="ts">
     // import { _ } from "svelte-i18n";
-    // import { isLoading } from "svelte-i18n";
+    import { isLoading } from "svelte-i18n";
     import { client } from "/src/services/http/graphql";
     import { setContextClient } from "@urql/svelte";
     import Header from "/src/lib/Header.svelte";
@@ -57,10 +57,10 @@
         }, REFRESH_RATE); // perhaps this is too much
     });
 
-    $effect(()=>{
+    $effect(() => {
         // @ts-expect-error TODO migrate me to pure svelte and gsap for animations
         window.startUp();
-    })
+    });
 
     const SITE_LOADER_WRAP = document.querySelectorAll(".site-loader-wrap");
     const OVERLAYER = document.querySelectorAll("#unslate_co--overlayer");
@@ -139,6 +139,7 @@
         <script defer async={false} src="/src/assets/light/js/main.js"></script>
     {/if}
 </svelte:head>
+
 <Loader></Loader>
 
 <nav class="unslate_co--site-mobile-menu">
@@ -165,7 +166,9 @@
 
         <Header></Header>
         <!-- END nav -->
-        {@render children()}
+        {#if !$isLoading}
+            {@render children()}
+        {/if}
     </div>
     <!-- END .unslate_co-site-inner -->
     <Footer></Footer>

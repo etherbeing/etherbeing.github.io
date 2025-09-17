@@ -8,5 +8,29 @@
     },
     "base": {
         "please_wait": "Please wait..."
+    },
+    "contact": {
+        "title": "Get In Touch",
+        "name": "Name",
+        "email": "Email",
+        "write": "Write your message...",
+        "send": "Send Message",
+        "success": "Your message was sent, thank you!",
+        "phone": "Phone",
+        "address": "Address"
+    },
+    "skills": {
+        "title": "My Skills"
+    },
+    "services": {
+        "title": "My Services"
+    },
+    "portfolio": {
+        "title": "Portfolio",
+        "filter": "Filter"
+    },
+    "about": {
+        "title": "About Me",
+        "slogan": "We can make it together"
     }
 }

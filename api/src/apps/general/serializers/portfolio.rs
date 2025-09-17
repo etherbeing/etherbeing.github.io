@@ -7,9 +7,9 @@ use super::client::ClientSerializer;
 
 #[derive(ToSchema, Serialize, Debug, Deserialize)]
 pub enum PortfolioType {
+    Detailed,    // Portfolio 2
     SimpleImage, // Is just part of the image gallery not a page by itself
     SimpleVideo, // Is just part of the image gallery not a page by itself but it renders a video
-    Detailed,    // Portfolio 2
 }
 
 #[derive(Debug, Deserialize, ToSchema, Serialize)]

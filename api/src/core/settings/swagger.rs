@@ -2,10 +2,9 @@ use utoipa::openapi::security::SecurityScheme::Http;
 use utoipa::{OpenApi, openapi::security::HttpBuilder};
 
 use crate::apps::general::models::about_me::AboutMe;
-use crate::apps::general::models::clients::Client;
-use crate::apps::general::serializers::client::ClientSerializer;
+use crate::apps::general::serializers::client::{ClientMetadataSerializer, ClientMultipartSerializer, ClientSerializer};
 use crate::apps::general::serializers::contacts::ContactPostSerializer;
-use crate::apps::general::serializers::portfolio::{PortfolioItemRawSerializer, PortfolioItemSerializer, PortfolioType};
+use crate::apps::general::serializers::portfolio::{PortfolioItemMetadataSerializer, PortfolioItemRawSerializer, PortfolioItemResponseSerializer, PortfolioType};
 use crate::apps::security::serializers::RegisterUser;
 use crate::{apps::security::serializers::LoginUser, serializers::types::IndexResponse};
 
@@ -28,7 +27,10 @@ impl utoipa::Modify for SecurityAddon {
                 .schema_from::<LoginUser>()
                 .schema_from::<AboutMe>()
                 .schema_from::<PortfolioItemRawSerializer>()
+                .schema_from::<PortfolioItemMetadataSerializer>()
+                .schema_from::<PortfolioItemResponseSerializer>()
                 .schema_from::<PortfolioType>()
+                .schema_from::<ClientMetadataSerializer>()
                 .schema_from::<ClientSerializer>()
                 .schema_from::<RegisterUser>()
                 .schema_from::<ContactPostSerializer>()

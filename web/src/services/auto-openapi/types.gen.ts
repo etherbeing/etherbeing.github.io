@@ -9,9 +9,14 @@ export type AboutMe = {
     slogan: string;
 };
 
+export type ClientMetadataSerializer = {
+    name: string;
+    role?: string | null;
+};
+
 export type ClientSerializer = {
     avatar?: string | null;
-    id: number;
+    readonly id: number;
     logo: string;
     name: string;
     role?: string | null;
@@ -35,12 +40,11 @@ export type LoginUser = {
     username: string;
 };
 
-export type PortfolioItemSerializer = {
+export type PortfolioItemMetadataSerializer = {
     client: ClientSerializer;
     description: string;
-    image: string;
     portfolio_type: PortfolioType;
-    project_date: number;
+    project_date: string;
     public_url?: string | null;
     role: string;
     subtitle: string;
@@ -48,7 +52,25 @@ export type PortfolioItemSerializer = {
     youtube_url?: string | null;
 };
 
-export type PortfolioType = 'SimpleImage' | 'SimpleVideo' | 'Detailed';
+export type PortfolioItemRawSerializer = {
+    image: Blob | File;
+    metadata: PortfolioItemMetadataSerializer;
+};
+
+export type PortfolioItemResponseSerializer = {
+    client: ClientSerializer;
+    description: string;
+    image_url: string;
+    portfolio_type: PortfolioType;
+    project_date: string;
+    public_url?: string | null;
+    role: string;
+    subtitle: string;
+    title: string;
+    youtube_url?: string | null;
+};
+
+export type PortfolioType = 'Detailed' | 'SimpleImage' | 'SimpleVideo';
 
 export type RegisterUser = {
     country: number;
@@ -58,8 +80,15 @@ export type RegisterUser = {
     username: string;
 };
 
+export type ClientSerializerWritable = {
+    avatar?: string | null;
+    logo: string;
+    name: string;
+    role?: string | null;
+};
+
 export type CreatePortfolioItemData = {
-    body: PortfolioItemSerializer;
+    body: PortfolioItemRawSerializer;
     path?: never;
     query?: never;
     url: '/api/admin/portfolio/';
@@ -215,7 +244,7 @@ export type GetPortfolioData = {
 };
 
 export type GetPortfolioResponses = {
-    200: Array<PortfolioItemSerializer>;
+    200: Array<PortfolioItemResponseSerializer>;
 };
 
 export type GetPortfolioResponse = GetPortfolioResponses[keyof GetPortfolioResponses];

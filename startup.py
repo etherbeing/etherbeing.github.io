@@ -8,7 +8,9 @@ import pathlib
 import os
 import logging
 import sys
+import requests
 from threading import Thread
+from time import sleep
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -99,6 +101,18 @@ if __name__ == "__main__":
     frontend.start()
     # Start the frontend linker server
     frontend_linker = Thread(target=watch_the_api_for_vite, daemon=False)
+    max_attempts = 10
+    sleep(3) # delay
+    while True:
+        try:
+            requests.get("http://localhost:8080/swagger-ui/#/").raise_for_status()
+            break
+        except requests.exceptions.RequestException:
+            sleep(1)
+            max_attempts -= 1
+            if not max_attempts:
+                break
+            continue
     frontend_linker.start()
     rotation_speed = 5 # seconds
     while True:

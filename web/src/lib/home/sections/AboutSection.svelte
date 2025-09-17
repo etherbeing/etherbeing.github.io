@@ -1,8 +1,23 @@
+<script lang="ts">
+    import { _ } from "svelte-i18n";
+
+    let pitch = $state(`
+    Far far away, behind the word mountains, far from the
+    countries Vokalia and Consonantia, there <a href="#">live the blind</a> texts.
+    `)
+    let brief = $state(`
+    A small river named Duden flows by their place and supplies
+    it with the necessary regelialia. It is a paradisematic
+    country, in which roasted parts of sentences fly into your
+    mouth.
+    `)
+</script>
+
 <div class="unslate_co--section" id="about-section">
     <div class="container">
         <div class="section-heading-wrap text-center mb-5">
             <h2 class="heading-h2 text-center divider">
-                <span class="gsap-reveal">About Me</span>
+                <span class="gsap-reveal">{$_("about.title")}</span>
             </h2>
             <span class="gsap-reveal">
                 <img
@@ -18,26 +33,19 @@
                 <figure class="dotted-bg gsap-reveal-img">
                     <img
                         src="/src/assets/dark/images/about_me_pic2.jpg"
-                        alt="Image"
                         class="img-fluid"
                     />
                 </figure>
             </div>
             <div class="col-lg-4 pr-lg-5">
                 <h3 class="mb-4 heading-h3">
-                    <span class="gsap-reveal">We can make it together</span>
+                    <span class="gsap-reveal">{$_("about.slogan")}</span>
                 </h3>
                 <p class="lead gsap-reveal">
-                    Far far away, behind the word mountains, far from the
-                    countries Vokalia and Consonantia, there <a href="#"
-                        >live the blind</a
-                    > texts.
+                    {@html pitch}
                 </p>
                 <p class="mb-4 gsap-reveal">
-                    A small river named Duden flows by their place and supplies
-                    it with the necessary regelialia. It is a paradisematic
-                    country, in which roasted parts of sentences fly into your
-                    mouth.
+                    {brief}
                 </p>
                 <p class="gsap-reveal">
                     <a href="#" class="btn btn-outline-pill btn-custom-light"
