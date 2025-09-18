@@ -2,6 +2,7 @@
     import { link } from "svelte-spa-router";
 </script>
 
+
 <footer class="unslate_co--footer unslate_co--section">
     <div class="container">
         <div class="row justify-content-center">
@@ -12,10 +13,13 @@
 
                 <ul class="footer-site-social">
                     <li><a href="#">Facebook</a></li>
-                    <li><a href="#">Twitter</a></li>
-                    <li><a href="#">Instagram</a></li>
-                    <li><a href="#">Dribbble</a></li>
-                    <li><a href="#">Behance</a></li>
+                    <li><a href="#">Twitter (X)</a></li>
+                    <li><a href="#">Telegram</a></li>
+                    <li><a href="#">LinkedIn</a></li>
+                    <li><a href="#">Reddit</a></li>
+                    <li><a target="_blank" href={"https://instagram.com/real_etherbeing"}>Instagram</a></li>
+                    <li><a target="_blank" href={"https://wa.me/+46764039298"}>Whatsapp</a></li>
+                    <li><a target="_blank" href={"https://discord.gg/k9qhhmpk"}>Discord</a></li>
                 </ul>
 
                 <p class="site-copyright">

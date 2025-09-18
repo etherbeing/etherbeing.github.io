@@ -84,7 +84,7 @@
                     <div class="gsap-reveal d-block">
                         <span class="d-block contact-info-label">{$_("contact.address")}</span>
                         <address class="contact-info-val">
-                            2nd Street / Gabriel and Pepe Prieto, <br/> SMP, Havana, Cuba 11000
+                            Stockholm, Sweden
                         </address>
                     </div>
                 </div>
