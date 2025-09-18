@@ -8,7 +8,9 @@
 </script>
 
 {#if $publicInfo.isLoading }
-    Loading...
+    <div class="flex justify-center min-h-screen items-center">
+        Loading...
+    </div>
 {:else if $publicInfo.isSuccess}
     <div class="cover-v1 overlay jarallax-video" id="home-section">
         <div class="container">
@@ -31,7 +33,7 @@
         </a>
     </div>
 {:else if $publicInfo.isError}
-    <div>
-        An error occurred
+    <div class="flex justify-center min-h-screen items-center">
+        An error occurred communicating with the backend(is probably not available as I am deciding yet which provider to use to deploy it)
     </div>
 {/if}

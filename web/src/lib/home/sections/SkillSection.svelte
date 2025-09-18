@@ -1,5 +1,6 @@
 <script lang="ts">
     import { _ } from "svelte-i18n";
+    import divider from "/src/assets/dark/images/divider.png"
 
     interface Skill {
         expertise_level: number;
@@ -77,7 +78,7 @@
             </h2>
             <span class="gsap-reveal"
                 ><img
-                    src="/src/assets/dark/images/divider.png"
+                    src={divider}
                     alt="divider"
                     width="76"
                 /></span

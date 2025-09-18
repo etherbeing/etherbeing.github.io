@@ -1,9 +1,11 @@
 <script lang="ts">
+  import bgUrl from "/src/assets/dark/images/work_1_full.jpg?url";
+
   // svelte-ignore export_let_unused
     export let params: {id: number};
 </script>
 
-<div class="cover-v1 jarallax overlay" style="background-image: url('/src/assets/dark/images/work_1_full.jpg');">
+<div class="cover-v1 jarallax overlay" style="background-image: url('{bgUrl}');">
   <div class="container">
     <div class="row align-items-center">
       <div class="col-md-8 mx-auto text-center">

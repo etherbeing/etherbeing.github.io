@@ -1,17 +1,19 @@
 <script lang="ts">
     import { _ } from "svelte-i18n";
-    import cv from "/public/cv_etherbeing.pdf";
+    import cv from "/cv_etherbeing.pdf?url";
+    import divider from "/src/assets/dark/images/divider.png?url";
+    import avatar from "/src/assets/dark/images/about_me_pic2.jpg?url";
 
     let pitch = $state(`
     Far far away, behind the word mountains, far from the
     countries Vokalia and Consonantia, there <a href="#">live the blind</a> texts.
-    `)
+    `);
     let brief = $state(`
     A small river named Duden flows by their place and supplies
     it with the necessary regelialia. It is a paradisematic
     country, in which roasted parts of sentences fly into your
     mouth.
-    `)
+    `);
 </script>
 
 <div class="unslate_co--section" id="about-section">
@@ -21,21 +23,14 @@
                 <span class="gsap-reveal">{$_("about.title")}</span>
             </h2>
             <span class="gsap-reveal">
-                <img
-                    src="/src/assets/dark/images/divider.png"
-                    alt="divider"
-                    width="76"
-                />
+                <img src={divider} alt="divider" width="76" />
             </span>
         </div>
 
         <div class="row mt-5 justify-content-between">
             <div class="col-lg-7 mb-5 mb-lg-0">
                 <figure class="dotted-bg gsap-reveal-img">
-                    <img
-                        src="/src/assets/dark/images/about_me_pic2.jpg"
-                        class="img-fluid"
-                    />
+                    <img src={avatar} alt="real face of mine" class="img-fluid" />
                 </figure>
             </div>
             <div class="col-lg-4 pr-lg-5">

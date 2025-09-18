@@ -1,5 +1,6 @@
 <script lang="ts">
     import { _ } from "svelte-i18n";
+    import divider from "/src/assets/dark/images/divider.png?url";
 
 </script>
 <div class="unslate_co--section" id="contact-section">
@@ -9,7 +10,7 @@
                 <span class="gsap-reveal">{$_("contact.title")}</span>
             </h2>
             <span class="gsap-reveal"
-                ><img src="/src/assets/dark/images/divider.png" alt="divider" width="76" /></span
+                ><img src={divider} alt="divider" width="76" /></span
             >
         </div>
 

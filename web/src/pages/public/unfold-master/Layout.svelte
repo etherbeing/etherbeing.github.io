@@ -9,6 +9,26 @@
     import { writable, type Writable } from "svelte/store";
     import { REFRESH_RATE, REFRESH_UNFOLD_CONTEXT_NAME } from "/src/consts";
     import Loader from "./Loader.svelte";
+    // Dark URLs
+    import icomoonDark from "/src/assets/dark/css/vendor/icomoon/style.css?url";
+    import owlcarruselDark from "/src/assets/dark/css/vendor/owl.carousel.min.css?url";
+    import animateDark from "/src/assets/dark/css/vendor/animate.min.css?url";
+    import aosDark from "/src/assets/dark/css/vendor/aos.css?url";
+    import bootstrapDark from "/src/assets/dark/css/vendor/bootstrap.min.css?url";
+    import fancyboxDark from "/src/assets/dark/css/vendor/jquery.fancybox.min.css?url";
+    import styleDark from "/src/assets/dark/css/style.css?url";
+    import scriptsDistDark from "/src/assets/dark/js/scripts-dist.js?url";
+    import mainScriptDark from "/src/assets/dark/js/main.js?url";
+    // Light URLs
+    import icomoon from "/src/assets/light/css/vendor/icomoon/style.css?url";
+    import owlcarrusel from "/src/assets/light/css/vendor/owl.carousel.min.css?url";
+    import animate from "/src/assets/light/css/vendor/animate.min.css?url";
+    import aos from "/src/assets/light/css/vendor/aos.css?url";
+    import bootstrap from "/src/assets/light/css/vendor/bootstrap.min.css?url";
+    import fancybox from "/src/assets/light/css/vendor/jquery.fancybox.min.css?url";
+    import style from "/src/assets/light/css/style.css?url";
+    import scriptsDist from "/src/assets/light/js/scripts-dist.js?url";
+    import mainScript from "/src/assets/light/js/main.js?url";
 
     setContextClient(client);
     document.title = "etherbeing";
@@ -74,69 +94,29 @@
 
 <svelte:head>
     {#if $theme === "dark"}
-        <link
-            rel="stylesheet"
-            href="/src/assets/dark/css/vendor/icomoon/style.css"
-        />
-        <link
-            rel="stylesheet"
-            href="/src/assets/dark/css/vendor/owl.carousel.min.css"
-        />
-        <link
-            rel="stylesheet"
-            href="/src/assets/dark/css/vendor/animate.min.css"
-        />
-        <link rel="stylesheet" href="/src/assets/dark/css/vendor/aos.css" />
-        <link
-            rel="stylesheet"
-            href="/src/assets/dark/css/vendor/bootstrap.min.css"
-        />
-        <link
-            rel="stylesheet"
-            href="/src/assets/dark/css/vendor/jquery.fancybox.min.css"
-        />
-        <link rel="stylesheet" href="/src/assets/dark/css/style.css" />
+        <link rel="stylesheet" href={icomoonDark} />
+        <link rel="stylesheet" href={owlcarruselDark} />
+        <link rel="stylesheet" href={animateDark} />
+        <link rel="stylesheet" href={aosDark} />
+        <link rel="stylesheet" href={bootstrapDark} />
+        <link rel="stylesheet" href={fancyboxDark} />
+        <link rel="stylesheet" href={styleDark} />
 
         <!-- Async false is pretty important below as for some reason my current chrome version is loading both those scripts asynchronous -->
-        <script
-            defer
-            async={false}
-            src="/src/assets/dark/js/scripts-dist.js"
-        ></script>
-        <script defer async={false} src="/src/assets/dark/js/main.js"></script>
+        <script defer async={false} src={scriptsDistDark}></script>
+        <script defer async={false} src={mainScriptDark}></script>
     {:else}
-        <link
-            rel="stylesheet"
-            href="/src/assets/light/css/vendor/icomoon/style.css"
-        />
-        <link
-            rel="stylesheet"
-            href="/src/assets/light/css/vendor/owl.carousel.min.css"
-        />
-        <link
-            rel="stylesheet"
-            href="/src/assets/light/css/vendor/animate.min.css"
-        />
-        <link rel="stylesheet" href="/src/assets/light/css/vendor/aos.css" />
-        <link
-            rel="stylesheet"
-            href="/src/assets/light/css/vendor/bootstrap.min.css"
-        />
-        <link
-            rel="stylesheet"
-            href="/src/assets/light/css/vendor/jquery.fancybox.min.css"
-        />
-
-        <!-- Theme Style -->
-        <link rel="stylesheet" href="/src/assets/light/css/style.css" />
+        <link rel="stylesheet" href={icomoon} />
+        <link rel="stylesheet" href={owlcarrusel} />
+        <link rel="stylesheet" href={animate} />
+        <link rel="stylesheet" href={aos} />
+        <link rel="stylesheet" href={bootstrap} />
+        <link rel="stylesheet" href={fancybox} />
+        <link rel="stylesheet" href={style} />
 
         <!-- Async false is pretty important below as for some reason my current chrome version is loading both those scripts asynchronous -->
-        <script
-            defer
-            async={false}
-            src="/src/assets/light/js/scripts-dist.js"
-        ></script>
-        <script defer async={false} src="/src/assets/light/js/main.js"></script>
+        <script defer async={false} src={scriptsDist}></script>
+        <script defer async={false} src={mainScript}></script>
     {/if}
 </svelte:head>
 

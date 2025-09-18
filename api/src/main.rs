@@ -1,7 +1,7 @@
-mod controllers;
-mod serializers;
-mod core;
 mod apps;
+mod controllers;
+mod core;
+mod serializers;
 
 use actix_cors::Cors;
 use actix_web::web::{self, Data};
@@ -9,6 +9,7 @@ use actix_web::{App, HttpResponse, HttpServer};
 use async_graphql::http::GraphQLPlaygroundConfig;
 use async_graphql::{EmptyMutation, EmptySubscription, Schema};
 use core::settings::graphql::graphql_handler;
+use cv_etherbeing::setup_cors;
 use sqlx::postgres::PgPoolOptions;
 use utoipa::OpenApi;
 use utoipa_swagger_ui::SwaggerUi;
@@ -32,14 +33,7 @@ async fn main() -> std::io::Result<()> {
         .expect("Failed to connect to Postgres");
     HttpServer::new(move || {
         App::new()
-            .wrap(
-                Cors::default()
-                    .allow_any_method()
-                    .allow_any_header()
-                    .allowed_origin(&std::env::var("FRONTEND_URL").unwrap())
-                    .supports_credentials()
-                    .max_age(3600),
-            )
+            .wrap(setup_cors())
             .app_data(Data::new(pool.clone()))
             // authentications
             .service(me)
@@ -51,9 +45,9 @@ async fn main() -> std::io::Result<()> {
             .service(get_portfolio)
             .service(create_portfolio_item)
             // general
-                // contacts
+            // contacts
             .service(contact)
-                // end contacts
+            // end contacts
             // end general
             .service(ws_index)
             .service(
@@ -72,9 +66,10 @@ async fn main() -> std::io::Result<()> {
     .await
 }
 
-
 async fn playground() -> HttpResponse {
     HttpResponse::Ok()
         .content_type("text/html; charset=utf-8")
-        .body(async_graphql::http::playground_source(GraphQLPlaygroundConfig::new("/graphql")))
+        .body(async_graphql::http::playground_source(
+            GraphQLPlaygroundConfig::new("/graphql"),
+        ))
 }
