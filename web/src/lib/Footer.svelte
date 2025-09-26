@@ -12,13 +12,13 @@
                 </div>
 
                 <ul class="footer-site-social">
-                    <li><a href="#">Facebook</a></li>
-                    <li><a href="#">Twitter (X)</a></li>
-                    <li><a href="#">Telegram</a></li>
-                    <li><a href="#">LinkedIn</a></li>
-                    <li><a href="#">Reddit</a></li>
+                    <li><a href={"https://www.facebook.com/share/g/1MM2Png6sG/"}>Facebook</a></li>
+                    <li><a href={"https://x.com/etherbeing_real"}>Twitter (X)</a></li>
+                    <li><a href={"https://t.me/etherbeing_channel"}>Telegram</a></li>
+                    <li><a href={"https://www.linkedin.com/in/etherbeing"}>LinkedIn</a></li>
+                    <li><a href={"https://www.reddit.com/user/real_etherbeing/"}>Reddit</a></li>
                     <li><a target="_blank" href={"https://instagram.com/real_etherbeing"}>Instagram</a></li>
-                    <li><a target="_blank" href={"https://wa.me/+46764039298"}>Whatsapp</a></li>
+                    <li><a target="_blank" href={"https://whatsapp.com/channel/0029Vab8KEv4dTnKjbwW2N2f"}>Whatsapp</a></li>
                     <li><a target="_blank" href={"https://discord.gg/k9qhhmpk"}>Discord</a></li>
                 </ul>
 
