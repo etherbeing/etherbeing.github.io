@@ -1,0 +1,39 @@
+# .github/workflows/ci.yml
+name: Actix CI & Docker Build
+
+on:
+  workflow_run:
+    workflows: ["Deploy the full project"] # must match the `name:` of the first workflow
+    types:
+      - completed
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  live_notifications:
+    runs-on: self-hosted
+    steps:
+      - name: Notify on Success (Discord)
+        if: success()
+        uses: Ilshidur/action-discord@master
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          message: |
+            ✅ CI passed and Docker image pushed for ${{ github.repository }}!
+
+      - name: Notify on Failure (Discord)
+        if: failure()
+        uses: Ilshidur/action-discord@master
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          message: |
+            ❌ CI failed for ${{ github.repository }}! Check logs.
+      - name: Telegram notify
+        uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.TELEGRAM_TO }}
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          message: |
+            🚀 Actix Web CI passed for ${{ github.repository }}!

@@ -15,6 +15,7 @@
         "email": "Email",
         "write": "Write your message...",
         "send": "Send Message",
+        "submitting": "Sending...",
         "success": "Your message was sent, thank you!",
         "phone": "Phone",
         "address": "Address"

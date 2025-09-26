@@ -4,3 +4,6 @@
 !*.secret
 web/.env
 api/.env
+.env.postgres
+.env.redis
+.env.s3

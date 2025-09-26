@@ -1,0 +1,19 @@
+# Please be aware that the frontend is not actually deployed we just the its deployability by integrating it in this pipeline
+name: Deploy the full project
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+  CONTAINER_NAME: actix-backend
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+    steps:
+      - name: Rebuild and update the image by using docker-compose
+        run: docker compose up --build -d
