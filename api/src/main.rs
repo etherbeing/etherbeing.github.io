@@ -31,7 +31,7 @@ async fn main() -> std::io::Result<()> {
 
     #[cfg(not(debug_assertions))]
     {
-        dotenv::from_filename(".env.production").ok()
+        dotenv::from_filename(".env.production").ok();
     }
     let schema = Schema::build(QueryRoot, EmptyMutation, EmptySubscription).finish();
 

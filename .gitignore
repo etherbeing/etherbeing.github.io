@@ -7,3 +7,4 @@ api/.env
 .env.postgres
 .env.redis
 .env.s3
+api/.env.production
