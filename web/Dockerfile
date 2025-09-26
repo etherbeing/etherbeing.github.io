@@ -1,7 +1,6 @@
 # ---- Build stage ----
 FROM node:20-alpine AS build
 
-# Enable corepack so pnpm is available
 RUN corepack enable
 
 WORKDIR /app
@@ -15,16 +14,15 @@ RUN pnpm run build
 # ---- Runtime stage ----
 FROM node:20-alpine AS runtime
 
-RUN corepack enable
-
 WORKDIR /app
 
-# Install only 'serve' to serve the static files
-RUN pnpm add serve --global
-
-# Copy build output
+# Only copy built output and package.json for minimal runtime
 COPY --from=build /app/dist ./dist
+COPY package.json pnpm-lock.yaml ./
+
+# Install only serve locally (no dev deps, no source)
+RUN corepack enable && pnpm add serve
 
 EXPOSE 3000
 
-CMD ["serve", "-s", "dist", "-l", "3000"]
+CMD ["npx", "serve", "-s", "dist", "-l", "3000"]
