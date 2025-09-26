@@ -1,7 +1,7 @@
 services:
   backend:
     build:
-      dockerfile: ./Dockefile
+      dockerfile: ./Dockerfile
       context: ./api/
     env_file: ./api/.env
     networks: # isolate all networks so an attacker cannot escalate
@@ -14,7 +14,7 @@ services:
       - minio
   frontend:
     build:
-      dockerfile: ./Dockefile
+      dockerfile: ./Dockerfile
       context: ./web/
     env_file: ./web/.env
   redis:
