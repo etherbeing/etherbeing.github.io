@@ -4,7 +4,7 @@ services:
     build:
       dockerfile: ./Dockerfile
       context: ./api/
-    env_file: ./api/.env
+    env_file: ./api/.env.production
     networks: # isolate all networks so an attacker cannot escalate
       - db_link
       - s3_link
