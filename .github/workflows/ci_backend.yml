@@ -1,5 +1,5 @@
-# .github/workflows/ci.yml
-name: Actix CI & Docker Build
+#Integrate with social network to notify of changes and advance on the websites
+name: Social networks notifications
 
 on:
   workflow_run:
