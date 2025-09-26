@@ -17,5 +17,16 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+      - name: Reveal secrets with git-secret
+        env:
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+        run: |
+          set -euo pipefail
+          # if your private key is protected by a passphrase, enable loopback pinentry so gpg will accept passphrase via CLI
+          # (gpg versions and distro configs differ; test locally)
+          export PINENTRY_USER_DATA="allow-external-pinentry"
+          # reveal (git-secret will call gpg). If git-secret prompts, passphrase will be provided via GPG_TTY/agent loopback.
+          # Some setups need you to decrypt files directly with gpg if git-secret has trouble in CI.
+          git secret reveal
       - name: Rebuild and update the image by using docker-compose
         run: docker compose up --build -d
