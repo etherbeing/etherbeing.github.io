@@ -13,6 +13,8 @@ RUN cp /app/target/release/cv_etherbeing /usr/local/bin/cv_etherbeing
 
 EXPOSE 8080
 
+RUN cargo install sqlx
+
 RUN chmod +x /app/entrypoint.sh
 
 ENTRYPOINT /app/entrypoint.sh
