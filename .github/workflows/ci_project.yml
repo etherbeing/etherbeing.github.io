@@ -21,11 +21,11 @@ on:
         type: string
       # Contextual information for better messages
       repo_name:
-        description: "The repository name (e.g., ${{ github.repository }})."
+        description: "The repository name."
         required: true
         type: string
       branch:
-        description: "The branch name (e.g., ${{ github.ref_name }})."
+        description: "The branch name."
         required: true
         type: string
     secrets:
