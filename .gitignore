@@ -8,3 +8,5 @@ api/.env
 .env.redis
 .env.s3
 api/.env.production
+.env.oauth
+deploy/setup.sql

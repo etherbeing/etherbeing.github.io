@@ -59,6 +59,7 @@ services:
       - postgres_storage:/var/lib/postgresql/data
     networks:
       - db_link
+      - oauth_link
   minio:
     image: quay.io/minio/minio:latest
     restart: unless-stopped
@@ -80,13 +81,29 @@ services:
       - traefik.http.routers.etherbeing_minio.entrypoints=web,websecure
       - traefik.http.services.etherbeing_minio.loadbalancer.passHostHeader=true
       # Route to the console port (9001)
-      - "traefik.http.services.etherbeing_minio.loadbalancer.server.port=9001"
-
+      - traefik.http.services.etherbeing_minio.loadbalancer.server.port=9001
+  keycloak:
+    image: quay.io/keycloak/keycloak:latest
+    env_file: ./.env.oauth
+    command: start-dev
+    depends_on:
+      - postgresql
+    networks:
+      - oauth_link
+    restart: unless-stopped
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=traefik
+      - traefik.http.routers.etherbeing_oauth.rule=Host(`oauth.etherbeing.cd.godjango.dev`)
+      - traefik.http.routers.etherbeing_oauth.entrypoints=web,websecure
+      - traefik.http.services.etherbeing_oauth.loadbalancer.passHostHeader=true
+      - traefik.http.services.etherbeing_oauth.loadbalancer.server.port=8080
 networks:
   default:
   db_link:
   s3_link:
   redis_link:
+  oauth_link:
   external: # Set external to false in case you don't need this for example you aren't using traefik
     external: true
     name: traefik
