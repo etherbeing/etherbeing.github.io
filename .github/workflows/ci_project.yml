@@ -81,10 +81,10 @@ jobs:
           to: ${{ secrets.TELEGRAM_TO }}
           token: ${{ secrets.TELEGRAM_TOKEN }}
           message: |
-            🚀 *Successful Deployment*
+            🚀 **Successful Deployment**
 
-            *Repo:* ${{ inputs.repo_name }} (${{ inputs.branch }})
-            *Commit:* ${{ inputs.commit_message }}
+            **Repo:** ${{ inputs.repo_name }} (${{ inputs.branch }})
+            **Commit:** ${{ inputs.commit_message }}
             [View Logs](${{ inputs.run_url }})
       - name: Telegram Notify on Failure
         # Check the status passed from the calling workflow
@@ -94,8 +94,8 @@ jobs:
           to: ${{ secrets.TELEGRAM_TO }}
           token: ${{ secrets.TELEGRAM_TOKEN }}
           message: |
-            🔴 *Deployment Failed*
+            🔴 **Deployment Failed**
 
-            *Repo:* ${{ inputs.repo_name }} (${{ inputs.branch }})
-            *Commit:* ${{ inputs.commit_message }}
+            **Repo:** ${{ inputs.repo_name }} (${{ inputs.branch }})
+            **Commit:** ${{ inputs.commit_message }}
             [View Logs](${{ inputs.run_url }})
