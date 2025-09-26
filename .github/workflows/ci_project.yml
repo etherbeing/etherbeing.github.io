@@ -3,6 +3,31 @@ name: Social networks notifications
 
 on:
   workflow_call:
+    inputs:
+      # Required input to receive the status from the calling workflow (e.g., success() or failure())
+      status:
+        description: "The final status of the calling job/workflow (success or failure)."
+        required: true
+        type: string
+      # Required input for the latest commit message
+      commit_message:
+        description: "The commit message related to the current build."
+        required: true
+        type: string
+      # Required input for the full URL to the calling workflow run
+      run_url:
+        description: "The URL to the completed workflow run for logs."
+        required: true
+        type: string
+      # Contextual information for better messages
+      repo_name:
+        description: "The repository name (e.g., ${{ github.repository }})."
+        required: true
+        type: string
+      branch:
+        description: "The branch name (e.g., ${{ github.ref_name }})."
+        required: true
+        type: string
     secrets:
       DISCORD_WEBHOOK:
         required: true
@@ -16,26 +41,61 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Notify on Success (Discord)
-        if: success()
+        if: ${{ inputs.status == 'success' }}
         uses: Ilshidur/action-discord@master
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
         with:
           args: |
-            ✅ CI passed and Docker image pushed for ${{ github.repository }}!
+            📢 **New Deployment Alert**
 
+            **Repository:** `${{ inputs.repo_name }}`
+            **Branch:** `${{ inputs.branch }}`
+            **Status:** ✅ **SUCCESS** (New features/fixes live!)
+
+            **Commit Message:**
+            > *${{ inputs.commit_message }}*
+
+            [View Workflow Logs](${{ inputs.run_url }})
       - name: Notify on Failure (Discord)
-        if: failure()
+        if: ${{ inputs.status == 'failure' }}
         uses: Ilshidur/action-discord@master
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
         with:
           args: |
-            ❌ CI failed for ${{ github.repository }}! Check logs.
-      - name: Telegram notify
+            🚨 **CRITICAL FAILURE ALERT**
+
+            **Repository:** `${{ inputs.repo_name }}`
+            **Branch:** `${{ inputs.branch }}`
+            **Status:** ❌ **FAILURE** (Deployment Halted!)
+
+            **Commit Message:**
+            > *${{ inputs.commit_message }}*
+
+            [Check Logs Immediately](${{ inputs.run_url }})
+      - name: Telegram notify on Success
+        if: ${{ inputs.status == 'success' }}
         uses: appleboy/telegram-action@master
         with:
           to: ${{ secrets.TELEGRAM_TO }}
           token: ${{ secrets.TELEGRAM_TOKEN }}
           message: |
-            🚀 Actix Web CI passed for ${{ github.repository }}!
+            🚀 *Successful Deployment*
+
+            *Repo:* ${{ inputs.repo_name }} (${{ inputs.branch }})
+            *Commit:* ${{ inputs.commit_message }}
+            [View Logs](${{ inputs.run_url }})
+      - name: Telegram Notify on Failure
+        # Check the status passed from the calling workflow
+        if: ${{ inputs.status == 'failure' }}
+        uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.TELEGRAM_TO }}
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          message: |
+            🔴 *Deployment Failed*
+
+            *Repo:* ${{ inputs.repo_name }} (${{ inputs.branch }})
+            *Commit:* ${{ inputs.commit_message }}
+            [View Logs](${{ inputs.run_url }})

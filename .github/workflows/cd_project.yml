@@ -25,7 +25,16 @@ jobs:
       - name: Rebuild and update the image by using docker-compose
         run: docker compose up --build -d
   notify:
+    needs: deploy
     uses: ./.github/workflows/ci_project.yml
+    with:
+      # Pass the final status of the job you want to report on
+      status: ${{ needs.deploy.result }}
+      # Pass required context for verbose messaging
+      repo_name: ${{ github.repository }}
+      branch: ${{ github.ref_name }}
+      commit_message: ${{ github.event.head_commit.message }}
+      run_url: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
     secrets:
       DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
       TELEGRAM_TO: ${{ secrets.TELEGRAM_TO }}
