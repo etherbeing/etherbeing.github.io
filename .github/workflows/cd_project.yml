@@ -20,6 +20,8 @@ jobs:
       - name: Reveal secrets with git-secret
         run: |
           git secret reveal
+      - name: Makes ready first the DB instance as is needed by the Dockerfile
+        run: docker compose up -d postgresql
       - name: Rebuild and update the image by using docker-compose
         run: docker compose up --build -d
   notify:
