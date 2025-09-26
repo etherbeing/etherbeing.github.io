@@ -24,7 +24,15 @@ use crate::core::settings::swagger::ApiDoc;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-    dotenv::dotenv().ok();
+    #[cfg(debug_assertions)]
+    {
+        dotenv::dotenv().ok();
+    }
+
+    #[cfg(not(debug_assertions))]
+    {
+        dotenv::from_filename(".env.production").ok()
+    }
     let schema = Schema::build(QueryRoot, EmptyMutation, EmptySubscription).finish();
 
     let pool = PgPoolOptions::new()
