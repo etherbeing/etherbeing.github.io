@@ -22,3 +22,9 @@ jobs:
           git secret reveal
       - name: Rebuild and update the image by using docker-compose
         run: docker compose up --build -d
+  notify:
+    uses: ./.github/workflows/ci_project.yml
+    secrets:
+      DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+      TELEGRAM_TO: ${{ secrets.TELEGRAM_TO }}
+      TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}

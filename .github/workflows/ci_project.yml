@@ -2,18 +2,18 @@
 name: Social networks notifications
 
 on:
-  workflow_run:
-    workflows: ["Deploy the full project"] # must match the `name:` of the first workflow
-    types:
-      - completed
-
-env:
-  REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
+  workflow_call:
+    secrets:
+      DISCORD_WEBHOOK:
+        required: true
+      TELEGRAM_TOKEN:
+        required: true
+      TELEGRAM_TO:
+        required: true
 
 jobs:
   live_notifications:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     steps:
       - name: Notify on Success (Discord)
         if: success()
