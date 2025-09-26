@@ -17,6 +17,8 @@ EXPOSE 8080
 
 RUN cargo install sqlx-cli --no-default-features --features native-tls,postgres
 
-RUN chmod +x /app/entrypoint.sh
+COPY --from=builder /app/entrypoint.sh /entrypoint.sh
 
-ENTRYPOINT /app/entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+ENTRYPOINT /entrypoint.sh
