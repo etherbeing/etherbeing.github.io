@@ -18,17 +18,19 @@ jobs:
       - name: Notify on Success (Discord)
         if: success()
         uses: Ilshidur/action-discord@master
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
         with:
-          webhook: ${{ secrets.DISCORD_WEBHOOK }}
-          message: |
+          args: |
             ✅ CI passed and Docker image pushed for ${{ github.repository }}!
 
       - name: Notify on Failure (Discord)
         if: failure()
         uses: Ilshidur/action-discord@master
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
         with:
-          webhook: ${{ secrets.DISCORD_WEBHOOK }}
-          message: |
+          args: |
             ❌ CI failed for ${{ github.repository }}! Check logs.
       - name: Telegram notify
         uses: appleboy/telegram-action@master
