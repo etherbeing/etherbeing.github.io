@@ -9,7 +9,7 @@ RUN cargo build --release
 
 RUN apt-get update && apt-get install -y ca-certificates && rm -rf /var/lib/apt/lists/*
 
-COPY /app/target/release/cv_etherbeing /usr/local/bin/cv_etherbeing
+RUN cp /app/target/release/cv_etherbeing /usr/local/bin/cv_etherbeing
 
 EXPOSE 8080
 

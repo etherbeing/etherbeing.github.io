@@ -21,6 +21,7 @@ jobs:
         run: docker compose up --build -d
   notify:
     needs: deploy
+    if: always()
     uses: ./.github/workflows/ci_project.yml
     with:
       # Pass the final status of the job you want to report on
