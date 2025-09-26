@@ -2,7 +2,7 @@ services:
   backend:
     build:
       dockerfile: ./api/Dockefile
-      context: ./api/
+      context: ./
     env_file: ./api/.env
     networks: # isolate all networks so an attacker cannot escalate
       - db_link
@@ -15,7 +15,7 @@ services:
   frontend:
     build:
       dockerfile: ./web/Dockefile
-      context: ./web/
+      context: ./
     env_file: ./web/.env
   redis:
     image: redis:latest
