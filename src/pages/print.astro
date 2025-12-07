@@ -2,12 +2,11 @@
     <head>
         <title>Generating PDF...</title>
     </head>
-    <body>
-        <div id="content"></div>
+    <body class="invisible">
+        <div id="content" style="padding: 5px 10px;"></div>
 
-        <script type="module">
+        <script>
             import html2pdf from "html2pdf.js";
-
             const targetURL = "https://etherbeing.github.io/etherbeing/";
             fetch(targetURL)
                 .then((res) => res.text())
@@ -16,7 +15,9 @@
                     html2pdf()
                         .from(document.querySelector("#content"))
                         .save("CV.pdf");
-                    setTimeout(() => window.close(), 3000);
+                    setTimeout(() => {
+                        window.location.assign("/");
+                    }, 300);
                 });
         </script>
     </body>
