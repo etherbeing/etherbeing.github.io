@@ -1,0 +1,23 @@
+<html lang="en">
+    <head>
+        <title>Generating PDF...</title>
+    </head>
+    <body>
+        <div id="content"></div>
+
+        <script type="module">
+            import html2pdf from "html2pdf.js";
+
+            const targetURL = "https://etherbeing.github.io/etherbeing/";
+            fetch(targetURL)
+                .then((res) => res.text())
+                .then((html) => {
+                    document.querySelector("#content").innerHTML = html;
+                    html2pdf()
+                        .from(document.querySelector("#content"))
+                        .save("CV.pdf");
+                    setTimeout(() => window.close(), 3000);
+                });
+        </script>
+    </body>
+</html>
