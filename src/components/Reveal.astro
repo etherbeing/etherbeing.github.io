@@ -1,0 +1,15 @@
+<style>
+.reveal { opacity: 0; transition: opacity 0.6s ease-out; }
+.reveal.visible { opacity: 1; }
+</style>
+
+<script>
+document.addEventListener("DOMContentLoaded",()=>{
+  const els = document.querySelectorAll(".reveal");
+  const obs = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add("visible"); });
+  });
+  els.forEach(e => obs.observe(e));
+});
+</script>
+
