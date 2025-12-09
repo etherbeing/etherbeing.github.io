@@ -1,5 +1,12 @@
 ---
-let posts = [1, 2, 3, 4, 5, 6];
+const URL = "https://api.github.com/users/etherbeing/gists";
+let posts: Array<{
+    html_url: string;
+    description: string;
+    created_at: string;
+}> = await fetch(URL).then(async (response) => {
+    return await response.json();
+});
 let justification: "justify-between" | "justify-center" = "justify-between";
 if (posts.length % 3 === 1) {
     justification = "justify-center";
@@ -13,9 +20,16 @@ if (posts.length % 3 === 1) {
         {
             posts.map((post) => {
                 return (
-                    <div class="shadow hover:shadow-2xl cursor-pointer w-[250px] aspect-square p-4 rounded-lg bg-gray-800 hover:bg-gray-700 transition">
-                        <div class="skeleton" />
-                    </div>
+                    <a href={post["html_url"]} target="_blank">
+                        <div style="background-image: url(https://picsum.photos/200);" class=" bg-cover flex flex-col justify-between shadow hover:shadow-2xl cursor-pointer w-[250px] aspect-square p-4 rounded-lg bg-gray-800 hover:bg-gray-700 transition">
+                            <span class="w-full flex justify-start">
+                                {new Date(post["created_at"]).toDateString()}
+                            </span>
+                            <span class="w-full flex justify-end">
+                                {post["description"]}
+                            </span>
+                        </div>
+                    </a>
                 );
             })
         }
