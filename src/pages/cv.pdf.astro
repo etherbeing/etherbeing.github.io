@@ -1,6 +1,7 @@
 <html lang="en">
     <head>
         <title>Generating PDF...</title>
+        <link rel="icon" href="favicon.png" />
     </head>
     <body>
         <span class="invisible">
@@ -32,7 +33,7 @@
                     .then(async (res) => {
                         const data = await res.text();
                         cv.setHTMLUnsafe(data);
-                        cv.style.display = "block"
+                        cv.style.display = "block";
                         html2pdf()
                             .set({
                                 margin: 0.5,
@@ -53,8 +54,9 @@
                                 alert(
                                     "An error occurred while trying to render the page",
                                 );
-                            }).finally(()=>{
-                                cv.style.display = "none"
+                            })
+                            .finally(() => {
+                                cv.style.display = "none";
                             });
                     })
                     .catch(() => {
