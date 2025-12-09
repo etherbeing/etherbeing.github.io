@@ -1,0 +1,69 @@
+<html lang="en">
+    <head>
+        <title>Generating PDF...</title>
+    </head>
+    <body>
+        <span class="invisible">
+            Fetching data from the single source of truth...
+        </span>
+        <div id="content"></div>
+        <style>
+            #content {
+                padding: 5px 10px;
+                display: none; /* This shouldn't persist on the printing stage */
+            }
+            /* Visible only when printing */
+            @media print {
+                .invisible {
+                    display: none;
+                }
+                #content {
+                    display: block;
+                }
+            }
+        </style>
+        <script>
+            import html2pdf from "html2pdf.js";
+            const cv = document.querySelector<HTMLDivElement>("#content");
+            if (!cv) {
+                console.error("No CV object exists");
+            } else {
+                fetch("https://etherbeing.github.io/etherbeing/")
+                    .then(async (res) => {
+                        const data = await res.text();
+                        cv.setHTMLUnsafe(data);
+                        cv.style.display = "block"
+                        html2pdf()
+                            .set({
+                                margin: 0.5,
+                                filename: "cv.pdf",
+                                html2canvas: { scale: 2 },
+                                jsPDF: {
+                                    unit: "in",
+                                    format: "letter",
+                                    orientation: "portrait",
+                                },
+                            })
+                            .from(cv)
+                            .save()
+                            .then(() => {
+                                history.back();
+                            })
+                            .catch(() => {
+                                alert(
+                                    "An error occurred while trying to render the page",
+                                );
+                            }).finally(()=>{
+                                cv.style.display = "none"
+                            });
+                    })
+                    .catch(() => {
+                        alert(
+                            "Error trying to download the CV... try again later",
+                        );
+                        history.back();
+                    });
+            }
+        </script>
+    </body>
+</html>

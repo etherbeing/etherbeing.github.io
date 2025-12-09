@@ -1,0 +1,23 @@
+---
+let posts = [1, 2, 3, 4, 5, 6];
+let justification: "justify-between" | "justify-center" = "justify-between";
+if (posts.length % 3 === 1) {
+    justification = "justify-center";
+}
+---
+
+<section class="py-20 space-y-4">
+    <h2 class="text-3xl font-bold text-green-400">Blog</h2>
+    <!-- Fetch the data from the github gists and for each gists show here a link card to the gists, perhaps we want to display at most 20 gists here? the most relevant ones-->
+    <div class={`flex flex-row gap-3 flex-wrap ${justification}`}>
+        {
+            posts.map((post) => {
+                return (
+                    <div class="shadow hover:shadow-2xl cursor-pointer w-[250px] aspect-square p-4 rounded-lg bg-gray-800 hover:bg-gray-700 transition">
+                        <div class="skeleton" />
+                    </div>
+                );
+            })
+        }
+    </div>
+</section>
