@@ -1,8 +1,39 @@
+---
+import { Image } from "astro:assets";
+import python from "../assets/python.svg";
+import ferris from "../assets/ferris.png";
+import kali from "../assets/kali.png";
+import metasploit from "../assets/metasploit.png";
+import tensorflow from "../assets/tensorflow.png";
+import react from "../assets/react.svg";
+---
+
 <section class="py-20 space-y-6">
   <h2 class="text-3xl font-bold text-green-400">Core Skills</h2>
   <ul class="grid grid-cols-2 sm:grid-cols-3 gap-4 text-gray-300">
-    <li>Cybersecurity</li><li>Pentesting</li><li>Rust</li><li>Python</li>
-    <li>Biological Neural Nets</li><li>React TS</li><li>CVE Forge</li>
+    <li class="flex justify-center items-center flex-col">
+      <Image class={"h-20 w-auto"} src={kali} alt="kali" />
+      Cybersecurity
+    </li>
+    <li class="flex justify-center items-center flex-col">
+      <Image class={"h-20 w-auto"} src={metasploit} alt="metasploit" />
+      Pentesting
+    </li>
+    <li class="flex justify-center items-center flex-col">
+      <Image class={"h-20 w-auto"} src={ferris} alt="ferris" />
+      Rust
+    </li>
+    <li class="flex justify-center items-center flex-col">
+      <Image class={"h-20 w-auto"} src={python} alt="python" />
+      Python
+    </li>
+    <li class="flex justify-center items-center flex-col">
+      <Image class={"h-20 w-auto"} src={tensorflow} alt="tensorflow" />
+      Biological Neural Nets
+    </li>
+    <li class="flex justify-center items-center flex-col">
+      <Image class={"h-20 w-auto"} src={react} alt="react" />
+      React TS
+    </li>
   </ul>
 </section>
-
