@@ -7,7 +7,7 @@ let repos: Array<{
   pushed_at: string;
   created_at: string;
   language: string;
-}> = await fetch("https://api.github.com/users/etherbeing/repos").then((res) =>
+}> = await fetch("https://api.github.com/users/etherbeing/repos?per_page=5").then((res) =>
   res.json(),
 );
 ---
