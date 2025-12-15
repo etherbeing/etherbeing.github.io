@@ -32,4 +32,6 @@ COPY . .
 # ---- runtime ----
 EXPOSE 8000
 
-CMD ["uv", "run","daphne", "-b", "0.0.0.0", "-p", "8000", "etherbeing.asgi:application"]
+WORKDIR /app/src/etherbeing
+
+ENTRYPOINT ["uv", "run","daphne", "-b", "0.0.0.0", "-p", "8000", "etherbeing.asgi:application"]

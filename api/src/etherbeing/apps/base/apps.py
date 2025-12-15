@@ -2,5 +2,5 @@ from django.apps import AppConfig
 
 
 class BaseConfig(AppConfig):
-    name = 'etherbeing.apps.base'
+    name = 'apps.base'
     label = "base"

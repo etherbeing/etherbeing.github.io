@@ -1,0 +1,14 @@
+Metadata-Version: 2.4
+Name: etherbeing
+Version: 0.1.0
+Summary: Add your description here
+Requires-Python: >=3.13
+Description-Content-Type: text/markdown
+Requires-Dist: daphne>=4.2.1
+Requires-Dist: django>=6.0
+Requires-Dist: django-redis>=6.0.0
+Requires-Dist: djangorestframework>=3.16.1
+Requires-Dist: dotenv>=0.9.9
+Requires-Dist: psycopg
+Requires-Dist: redis>=7.1.0
+Requires-Dist: requests>=2.32.5
