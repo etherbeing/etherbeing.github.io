@@ -22,3 +22,9 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+.gitsecret/keys/random_seed
+!*.secret
+.env.postgres
+.env.redis
+devops/postgres/.password
+devops/postgres/.user

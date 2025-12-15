@@ -1,27 +1,22 @@
 ---
 import "../styles/global.css";
+import Projects from "../components/react/Projects.tsx";
+import BlogPost from "../components/react/BlogPost.tsx";
+
 import Hero from "../components/Hero.astro";
 import Skills from "../components/Skills.astro";
-import Projects from "../components/Projects.astro";
 import Footer from "../components/Footer.astro";
-import Blog from "../components/Blog.astro";
 import Contact from "../components/Contact.astro";
 import About from "../components/About.astro";
+import Layout from "../components/Layout.astro";
 ---
 
-<html lang="en" class="bg-gray-950 text-gray-200 font-sans">
-  <head>
-    <meta charset="utf-8" />
-    <title>etherbeing</title>
-    <link rel="icon" href="favicon.png" />
-  </head>
-  <body class="max-w-4xl mx-auto">
-    <Hero />
-    <About />
-    <Skills />
-    <Projects />
-    <Blog />
-    <Contact />
-    <Footer />
-  </body>
-</html>
+<Layout>
+  <Hero />
+  <About />
+  <Skills />
+  <Projects client:only="react" />
+  <BlogPost client:only="react" />
+  <Contact />
+  <Footer />
+</Layout>

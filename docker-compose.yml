@@ -1,0 +1,33 @@
+secrets:
+  api_env:
+    file: devops/api/.env.production
+  redis_env:
+    file: .env.redis
+  postgres_password:
+    file: devops/postgres/.password
+  postgres_user:
+    file: devops/postgres/.user
+
+services:
+  api:
+    build:
+      dockerfile: api/Dockerfile
+      context: api/
+    secrets:
+      - api_env
+    environment:
+      DJANGO_ENV_FILE: /run/secrets/api_env
+  redis:
+    # 6379
+    image: redis:latest
+    secrets:
+      - redis_env
+  postgres:
+    # 5432
+    image: postgres:latest
+    secrets:
+      - postgres_user
+      - postgres_password
+    environment:
+      - POSTGRES_PASSWORD_FILE=postgres_password
+      - POSTGRES_USER_FILE=postgres_user

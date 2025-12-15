@@ -29,7 +29,21 @@ env:
   # BUILD_PATH: subfolder
 
 jobs:
+  deploy_backend:
+    name: backend
+    runs-on: self-hosted
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Reveal the git secrets
+        run: |
+          git secret reveal
+      - name: Use docker-compose to run backend
+        run: |
+          cd api && docker-compose -f docker-compose.yml up -d --build
+
   build:
+    needs: deploy_backend # more likely this frontend version requires something from the backend if the backend fails there is no need for this to run
     name: Build
     runs-on: ubuntu-latest
     steps:
@@ -82,3 +96,20 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
+  notify:
+    needs: deploy
+    if: always()
+    uses: ./.github/workflows/ci_project.yml
+    with:
+      # Pass the final status of the job you want to report on
+      status: ${{ needs.deploy.result }}
+      # Pass required context for verbose messaging
+      repo_name: ${{ github.repository }}
+      branch: ${{ github.ref_name }}
+      commit_message: ${{ github.event.head_commit.message }}
+      run_url: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+    secrets:
+      DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+      TELEGRAM_TO: ${{ secrets.TELEGRAM_TO }}
+      TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
