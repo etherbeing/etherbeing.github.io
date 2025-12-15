@@ -45,7 +45,7 @@ jobs:
   build:
     needs: deploy_backend # more likely this frontend version requires something from the backend if the backend fails there is no need for this to run
     name: Build
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       - name: Checkout
         uses: actions/checkout@v4
