@@ -39,7 +39,7 @@ export default function Projects({ apiUrl }: { apiUrl: string }) {
             <div className="flex flex-col gap-1 justify-between">
               <span>{repo.name}</span>
               {repo.description ? (
-                <small className="text-gray-400">{repo.description.slice(0, 75)}</small>
+                <small className="text-gray-400">{repo.description.slice(0, 150) + (repo.description.length > 150 ? "..." : "")}</small>
               ) : null}
             </div>
             <div className="flex justify-between flex-row text-sm">
