@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
+from ast import literal_eval
 import os
 from pathlib import Path
 import dotenv
@@ -25,17 +26,17 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-)kl0=j5j%8lw3qw0x+xt-g6vi9)%@t4-^pv2qe(l0ld%jnq=&5"
+SECRET_KEY = os.getenv(
+    "SECRET_KEY", "django-insecure-)kl0=j5j%8lw3qw0x+xt-g6vi9)%@t4-^pv2qe(l0ld%jnq=&5"
+)
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = literal_eval(os.getenv("DEBUG", "False"))
 
-ALLOWED_HOSTS = ["vmi2538625.contaboserver.net", "127.0.0.1", "localhost"]
-CSRF_TRUSTED_ORIGINS = [
-    "https://vmi2538625.contaboserver.net",
-    "http://127.0.0.1",
-    "http://localhost",
-]
+ALLOWED_HOSTS = literal_eval(os.getenv("ALLOWED_HOSTS", '["127.0.0.1", "localhost"]'))
+CSRF_TRUSTED_ORIGINS = literal_eval(
+    os.getenv("CSRF_TRUSTED_ORIGINS", '["http://127.0.0.1","http://localhost",]')
+)
 
 AUTH_USER_MODEL = "base.User"
 # Application definition
@@ -157,8 +158,8 @@ STORAGES = {
     },
 }
 
-CORS_ALLOWED_ORIGINS = [
-    "https://etherbeing.github.io",
-    "http://localhost:4321",
-    "http://127.0.0.1:4321",
-]
+CORS_ALLOWED_ORIGINS = literal_eval(
+    os.getenv(
+        "CORS_ALLOWED_ORIGINS", '["http://localhost:4321","http://127.0.0.1:4321",]'
+    )
+)
