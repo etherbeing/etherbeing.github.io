@@ -20,6 +20,11 @@ services:
     volumes:
       - static_data:/app/src/etherbeing/static
       - media_data:/app/src/etherbeing/media
+    ports:
+      - 127.0.0.1:7000:8000
+    depends_on:
+      - postgres
+      - redis
   redis:
     # 6379
     image: redis:latest
