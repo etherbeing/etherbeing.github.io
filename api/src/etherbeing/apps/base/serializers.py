@@ -9,7 +9,7 @@ class BlogEntrySerializer(ModelSerializer):
         model = BlogEntry
         fields = "__all__"
 
-class ProjectSerializer(Serializer):
+class ProjectSerializer(ModelSerializer):
     class Meta:
         model = Project
         fields = "__all__"
