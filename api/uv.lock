@@ -307,7 +307,7 @@ wheels = [
 [[package]]
 name = "etherbeing"
 version = "0.1.0"
-source = { editable = "." }
+source = { virtual = "." }
 dependencies = [
     { name = "daphne" },
     { name = "django" },
