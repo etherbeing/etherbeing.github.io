@@ -18,7 +18,6 @@ services:
     environment:
       DJANGO_ENV_FILE: /run/secrets/api_env
     volumes:
-      - static_data:/app/src/etherbeing/static
       - media_data:/app/src/etherbeing/media
     ports:
       - 127.0.0.1:7000:8000
@@ -47,5 +46,4 @@ services:
 volumes:
   postgres_data:
   media_data:
-  static_data:
   redis_data:
