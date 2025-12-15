@@ -103,7 +103,7 @@ jobs:
     uses: ./.github/workflows/ci_project.yml
     with:
       # Pass the final status of the job you want to report on
-      status: ${{ needs.deploy.result }}
+      status: ${{ needs.deploy_backend.result }}
       # Pass required context for verbose messaging
       repo_name: ${{ github.repository }}
       branch: ${{ github.ref_name }}
@@ -120,7 +120,7 @@ jobs:
     uses: ./.github/workflows/ci_project.yml
     with:
       # Pass the final status of the job you want to report on
-      status: ${{ needs.deploy.result }}
+      status: ${{ needs.build.result }}
       # Pass required context for verbose messaging
       repo_name: ${{ github.repository }}
       branch: ${{ github.ref_name }}
