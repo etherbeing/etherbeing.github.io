@@ -52,14 +52,19 @@ jobs:
       - name: Reveal the secrets
         run: |
           git secret reveal
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+      - name: Setup Node
+        uses: actions/setup-node@v6 # Action to set up the Node.js environment
+        with:
+          node-version: 'latest' # Specify the desired Node.js version
+          cache: 'pnpm' # Optional: Caches npm dependencies to speed up subsequent runs
       - name: Setup Pages
         id: pages
         uses: actions/configure-pages@v5
-
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          run_install: true
+      - name: Install packages
+        run: |
+          pnpm install
       - name: Build with Astro
         run: |
           pnpm run build --mode production
