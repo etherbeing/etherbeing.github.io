@@ -31,3 +31,4 @@ devops/postgres/.user
 .env.development
 __pycache__/
 *.pyc
+.temp

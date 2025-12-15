@@ -24,6 +24,7 @@
     "marked": "^17.0.1",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
+    "sharp": "^0.34.5",
     "svelte": "^5.46.0",
     "tailwindcss": "^4.1.17",
     "typescript": "^5.9.3"
