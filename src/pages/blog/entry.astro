@@ -1,9 +1,10 @@
 ---
 import Layout from "../../components/Layout.astro";
 import BlogPage from "../../components/react/BlogPage";
+const apiUrl = import.meta.env.PUBLIC_API_URL;
 ---
 
 <!-- Render on a most convenient way the blog entry using markdown coming from github gists -->
 <Layout>
-    <BlogPage client:only="react"/>
+    <BlogPage apiUrl={apiUrl} client:only="react" />
 </Layout>

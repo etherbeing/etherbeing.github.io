@@ -9,7 +9,7 @@ interface Repo {
   created_at: string;
   language: string;
 }
-export default function Projects() {
+export default function Projects({ apiUrl }: { apiUrl: string }) {
   const [repos, setRepos] = useState<Array<Repo>>([]);
   useEffect(() => {
     fetch(`${import.meta.env.PUBLIC_API_URL}/api/projects/`).then(
