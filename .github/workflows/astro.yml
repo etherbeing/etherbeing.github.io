@@ -40,7 +40,7 @@ jobs:
           git secret reveal
       - name: Use docker-compose to run backend
         run: |
-          cd api && docker-compose -f docker-compose.yml up -d --build
+          cd api && docker compose -f docker-compose.yml up -d --build
 
   build:
     needs: deploy_backend # more likely this frontend version requires something from the backend if the backend fails there is no need for this to run
