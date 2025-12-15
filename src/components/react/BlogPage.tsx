@@ -10,7 +10,7 @@ export default function BlogPage() {
     useEffect(() => {
         fetch(`${import.meta.env.PUBLIC_API_URL}/api/gist/${slug}/`).then(async r => {
             setContent(insane(
-                await marked.parse((await r.json())["files"]["content.md"]["content"] || "Not found"),
+                await marked.parse((await r.json())["content"] || "Not found"),
             ));
         }).catch((err) => {
             console.error(err)

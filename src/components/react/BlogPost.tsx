@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 
 export default function Blog() {
-  const URL = "https://api.github.com/users/etherbeing/gists?per_page=15";
   const [posts, setPosts] = useState<
     Array<{
       id: string;
@@ -14,7 +13,7 @@ export default function Blog() {
     "justify-start" | "justify-center"
   >("justify-start");
   useEffect(() => {
-    fetch(URL).then(async (response) => {
+    fetch(`${import.meta.env.PUBLIC_API_URL}/api/gists/`).then(async (response) => {
       if (response.ok) {
         setPosts(await response.json());
         if (posts.length % 3 === 1) {

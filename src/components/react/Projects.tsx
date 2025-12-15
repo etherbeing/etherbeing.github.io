@@ -12,7 +12,7 @@ interface Repo {
 export default function Projects() {
   const [repos, setRepos] = useState<Array<Repo>>([]);
   useEffect(() => {
-    fetch("https://api.github.com/users/etherbeing/repos?per_page=5").then(
+    fetch(`${import.meta.env.PUBLIC_API_URL}/api/projects/`).then(
       async (res) => {
         if (res.ok) setRepos(await res.json())
       },
