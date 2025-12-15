@@ -28,7 +28,7 @@ export default function Blog() {
       <div className={`flex flex-row gap-3 flex-wrap ${justification}`}>
         {posts.map((post, index) => {
           return (
-            <a key={index} href={`/blog/entry/${post["id"]}`} target="_blank">
+            <a key={index} href={`/blog/entry?slug=${post["id"]}`} target="_blank">
               <div
                 style={{
                   backgroundImage: `url(https://picsum.photos/id/${index}/200)`,

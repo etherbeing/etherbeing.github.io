@@ -1,0 +1,9 @@
+---
+import Layout from "../../components/Layout.astro";
+import BlogPage from "../../components/react/BlogPage";
+---
+
+<!-- Render on a most convenient way the blog entry using markdown coming from github gists -->
+<Layout>
+    <BlogPage client:only="react"/>
+</Layout>
