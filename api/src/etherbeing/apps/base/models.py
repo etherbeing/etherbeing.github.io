@@ -45,6 +45,7 @@ class Project(models.Model):
     updated_at = models.DateField(auto_now=True)
     pushed_at = models.DateField(auto_now=True)
     html_url = models.URLField(default=None, null=True, blank=True)
+    language = models.CharField(default=None, null=True, blank=True, max_length=50)
 
     @classmethod
     def create_from_repo(cls, repo: dict[str, Any]):
@@ -59,5 +60,6 @@ class Project(models.Model):
                 "updated_at": repo["updated_at"],
                 "pushed_at": repo["pushed_at"],
                 "html_url": repo["html_url"],
+                "language": repo["language"],
             },
         )

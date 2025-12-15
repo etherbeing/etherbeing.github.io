@@ -39,8 +39,8 @@ export default function Projects({ apiUrl }: { apiUrl: string }) {
             href={repo.html_url}
             target="_blank"
           >
-            <span>{repo.description}</span>
-            <div className="flex justify-between flex-row text-sm">
+            <span className="cursor-default">{repo.name}</span>
+            <div className="cursor-default flex justify-between flex-row text-sm">
               <span>{repo.language}</span>
               <span>{new Date(repo.created_at).toDateString()}</span>
             </div>
