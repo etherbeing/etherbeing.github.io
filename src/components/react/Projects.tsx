@@ -12,7 +12,7 @@ interface Repo {
 export default function Projects({ apiUrl }: { apiUrl: string }) {
   const [repos, setRepos] = useState<Array<Repo>>([]);
   useEffect(() => {
-    fetch(`${import.meta.env.PUBLIC_API_URL}/api/projects/`).then(
+    fetch(`${apiUrl}/api/projects/`).then(
       async (res) => {
         if (res.ok) setRepos(await res.json())
       },
