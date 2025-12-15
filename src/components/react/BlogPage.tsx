@@ -18,6 +18,8 @@ export default function BlogPage({ apiUrl }: { apiUrl: string }) {
         })
     }, [])
     return (
-        <article dangerouslySetInnerHTML={{ __html: content }} />
+        <div className="prose prose-invert max-w-none py-20 px-4">
+            <article dangerouslySetInnerHTML={{ __html: content }} />
+        </div>
     )
 }
