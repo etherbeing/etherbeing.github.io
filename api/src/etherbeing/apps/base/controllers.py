@@ -66,7 +66,7 @@ class GithubViewSet(GenericViewSet):
             res = requests.request(HTTPMethod.GET, url)
             res.raise_for_status()
             data = res.json()
-            entry = BlogEntry.create_from_gist(data)
+            entry = BlogEntry.create_from_gist(data)[0]
         result = self.get_serializer(entry).data
         cache.set(f"gist-{id}", result, timeout=60 * 5)
         return Response(data=result)
@@ -105,7 +105,7 @@ class GithubViewSet(GenericViewSet):
             res = requests.request(HTTPMethod.GET, url)
             res.raise_for_status()
             data = res.json()
-            entry = Project.create_from_repo(data)
+            entry = Project.create_from_repo(data)[0]
         result = self.get_serializer(entry).data
         cache.set(f"project-{id}", result, timeout=60 * 5)
         return Response(data=result)

@@ -20,15 +20,14 @@ class BlogEntry(models.Model):
         content = gist.get("files", {}).get("content.md", {}).get("content", None)
         if not content:
             return None
-        entry = cls.objects.get_or_create(
+        return cls.objects.update_or_create(
             gist_id=gist["id"],
             defaults={
                 "created_at": gist["created_at"],
                 "updated_at": gist["updated_at"],
                 "content": content,
             },
-        )[0]
-        return entry
+        )
 
     def __str__(self):
         return self.title
@@ -40,15 +39,21 @@ class Project(models.Model):
     stargazers_count = models.IntegerField(default=None)
     watchers_count = models.IntegerField(default=None)
     name = models.CharField(default=None, max_length=50)
+    created_at = models.DateField(auto_now=True)
+    updated_at = models.DateField(auto_now=True)
+    pushed_at = models.DateField(auto_now=True)
 
     @classmethod
     def create_from_repo(cls, repo: dict[str, Any]):
-        cls.objects.get_or_create(
+        return cls.objects.update_or_create(
             github_id=repo["id"],
             defaults={
                 "name": repo["name"],
                 "description": repo["description"],
                 "stargazers_count": repo["stargazers_count"],
                 "watchers_count": repo["watchers_count"],
+                "created_at": repo["created_at"],
+                "updated_at": repo["updated_at"],
+                "pushed_at": repo["pushed_at"],
             },
         )

@@ -29,3 +29,5 @@ pnpm-debug.log*
 devops/postgres/.password
 devops/postgres/.user
 .env.development
+__pycache__/
+*.pyc
