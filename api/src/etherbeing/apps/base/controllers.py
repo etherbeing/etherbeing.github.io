@@ -21,7 +21,7 @@ class GithubViewSet(GenericViewSet):
         if self.action in [self.list_gists.__name__, self.get_gist.__name__]:
             return BlogEntry.objects.all()
         elif self.action in [self.list_projects.__name__, self.get_project.__name__]:
-            return Project.objects.all()
+            return Project.objects.all().order_by("-stargazers_count")
 
     def get_serializer_class(self):
         if self.action in [self.list_gists.__name__, self.get_gist.__name__]:

@@ -50,7 +50,6 @@ class Project(models.Model):
 
     @classmethod
     def create_from_repo(cls, repo: dict[str, Any]):
-        print(repo)
         return cls.objects.update_or_create(
             github_id=repo["id"],
             defaults={

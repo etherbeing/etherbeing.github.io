@@ -29,9 +29,6 @@ export default function Projects({ apiUrl }: { apiUrl: string }) {
             new Date(last_repo["pushed_at"]).getTime()
           );
         })
-        .filter((repo) => {
-          return repo["description"] && repo["description"].length > 0;
-        })
         .map((repo, index) => (
           <a
             key={index}
@@ -39,8 +36,13 @@ export default function Projects({ apiUrl }: { apiUrl: string }) {
             href={repo.html_url}
             target="_blank"
           >
-            <span className="cursor-default">{repo.name}</span>
-            <div className="cursor-default flex justify-between flex-row text-sm">
+            <div className="flex flex-col gap-1 justify-between">
+              <span>{repo.name}</span>
+              {repo.description ? (
+                <small className="text-gray-400">{repo.description.slice(0, 75)}</small>
+              ) : null}
+            </div>
+            <div className="flex justify-between flex-row text-sm">
               <span>{repo.language}</span>
               <span>{new Date(repo.created_at).toDateString()}</span>
             </div>
