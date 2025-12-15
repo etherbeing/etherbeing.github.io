@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",
+    "corsheaders",
     "apps.base",
 ]
 
@@ -56,6 +57,7 @@ MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",  # Add WhiteNoise here
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -139,7 +141,9 @@ STATIC_ROOT = os.path.join(BASE_DIR, "static")
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": os.getenv("REDIS_LOCATION", "redis://127.0.0.1:6379/1"),  # Default local Redis URL
+        "LOCATION": os.getenv(
+            "REDIS_LOCATION", "redis://127.0.0.1:6379/1"
+        ),  # Default local Redis URL
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
             # Add 'PASSWORD': 'your-redis-password' if you set one
@@ -152,3 +156,9 @@ STORAGES = {
         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
     },
 }
+
+CORS_ALLOWED_ORIGINS = [
+    "https://etherbeing.github.io",
+    "http://localhost:4321",
+    "http://127.0.0.1:4321",
+]

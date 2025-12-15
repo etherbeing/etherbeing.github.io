@@ -8,7 +8,7 @@ export default function BlogPage() {
         return new URL(location.href).searchParams.get("slug")
     }, [])
     useEffect(() => {
-        fetch(`https://api.github.com/gists/${slug}`).then(async r => {
+        fetch(`${import.meta.env.PUBLIC_API_URL}/api/gist/${slug}/`).then(async r => {
             setContent(insane(
                 await marked.parse((await r.json())["files"]["content.md"]["content"] || "Not found"),
             ));

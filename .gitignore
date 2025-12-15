@@ -28,3 +28,4 @@ pnpm-debug.log*
 .env.redis
 devops/postgres/.password
 devops/postgres/.user
+.env.development
