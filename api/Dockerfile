@@ -19,9 +19,8 @@ RUN apk update && apk add --no-cache \
 # ---- install uv ----
 ADD https://astral.sh/uv/0.9.17/install.sh /uv-installer.sh
 
-RUN chmod +x /uv-installer.sh && sh /uv-installer.sh && rm /uv-installer.sh
+RUN chmod +x /uv-installer.sh && sh /uv-installer.sh && rm /uv-installer.sh && cp -r $HOME/.local/bin/* /usr/local/bin/
 
-ENV PATH=$PATH:$HOME/.local/bin/
 # ---- dependencies ----
 COPY pyproject.toml uv.lock ./
 RUN uv sync --frozen --no-dev
