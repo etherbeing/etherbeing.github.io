@@ -17,11 +17,16 @@ services:
       - api_env
     environment:
       DJANGO_ENV_FILE: /run/secrets/api_env
+    volumes:
+      - static_data:/app/src/etherbeing/static
+      - media_data:/app/src/etherbeing/media
   redis:
     # 6379
     image: redis:latest
     secrets:
       - redis_env
+    volumes:
+      - redis_data:/data
   postgres:
     # 5432
     image: postgres:latest
@@ -31,3 +36,11 @@ services:
     environment:
       - POSTGRES_PASSWORD_FILE=/run/secrets/postgres_password
       - POSTGRES_USER_FILE=/run/secrets/postgres_user
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
+  media_data:
+  static_data:
+  redis_data:
