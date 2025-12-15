@@ -28,9 +28,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-)kl0=j5j%8lw3qw0x+xt-g6vi9)%@t4-^pv2qe(l0ld%jnq=&5"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["vmi2538625.contaboserver.net", "127.0.0.1", "localhost"]
+CSRF_TRUSTED_ORIGINS = [
+    "https://vmi2538625.contaboserver.net",
+    "http://127.0.0.1",
+    "http://localhost",
+]
 
 AUTH_USER_MODEL = "base.User"
 # Application definition
