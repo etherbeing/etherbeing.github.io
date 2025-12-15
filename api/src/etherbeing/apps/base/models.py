@@ -1,6 +1,7 @@
 from typing import Any
 from django.db import models
 from django.contrib.auth.models import AbstractUser as BaseUser
+from django.utils.timezone import datetime
 # Create your models here.
 
 
@@ -11,8 +12,8 @@ class User(BaseUser):
 class BlogEntry(models.Model):
     id = models.AutoField(primary_key=True)
     gist_id = models.CharField(max_length=255, unique=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(default=None, null=True)
+    updated_at = models.DateTimeField(default=None, null=True)
     description = models.TextField(default=None, null=True, blank=True)
     content = models.TextField(default=None)
 
@@ -41,14 +42,15 @@ class Project(models.Model):
     stargazers_count = models.IntegerField(default=None)
     watchers_count = models.IntegerField(default=None)
     name = models.CharField(default=None, max_length=50)
-    created_at = models.DateField(auto_now=True)
-    updated_at = models.DateField(auto_now=True)
-    pushed_at = models.DateField(auto_now=True)
+    created_at = models.DateField(default=None, null=True)
+    updated_at = models.DateField(default=None, null=True)
+    pushed_at = models.DateField(default=None, null=True)
     html_url = models.URLField(default=None, null=True, blank=True)
     language = models.CharField(default=None, null=True, blank=True, max_length=50)
 
     @classmethod
     def create_from_repo(cls, repo: dict[str, Any]):
+        print(repo)
         return cls.objects.update_or_create(
             github_id=repo["id"],
             defaults={
@@ -56,9 +58,9 @@ class Project(models.Model):
                 "description": repo["description"],
                 "stargazers_count": repo["stargazers_count"],
                 "watchers_count": repo["watchers_count"],
-                "created_at": repo["created_at"],
-                "updated_at": repo["updated_at"],
-                "pushed_at": repo["pushed_at"],
+                "created_at": datetime.fromisoformat(repo["created_at"]),
+                "updated_at": datetime.fromisoformat(repo["updated_at"]),
+                "pushed_at": datetime.fromisoformat(repo["pushed_at"]),
                 "html_url": repo["html_url"],
                 "language": repo["language"],
             },
