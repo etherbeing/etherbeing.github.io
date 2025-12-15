@@ -12,12 +12,10 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 WORKDIR /app
 
 # ---- system deps ----
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential \
-    libpq-dev \
-    curl \
-    && rm -rf /var/lib/apt/lists/*
-
+RUN apk update && apk add --no-cache \
+    build-base \
+    postgresql-dev \
+    curl
 # ---- install uv ----
 ADD https://astral.sh/uv/0.9.17/install.sh /uv-installer.sh
 
