@@ -15,9 +15,11 @@ export default function Blog() {
   >("justify-start");
   useEffect(() => {
     fetch(URL).then(async (response) => {
-      setPosts(await response.json());
-      if (posts.length % 3 === 1) {
-        setJustification("justify-center");
+      if (response.ok) {
+        setPosts(await response.json());
+        if (posts.length % 3 === 1) {
+          setJustification("justify-center");
+        }
       }
     });
   }, []);

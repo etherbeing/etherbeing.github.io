@@ -13,14 +13,15 @@ export default function Projects() {
   const [repos, setRepos] = useState<Array<Repo>>([]);
   useEffect(() => {
     fetch("https://api.github.com/users/etherbeing/repos?per_page=5").then(
-      async (res) => setRepos(await res.json()),
+      async (res) => {
+        if (res.ok) setRepos(await res.json())
+      },
     );
-  });
+  }, []);
   return (
     <section className="py-20 space-y-4">
       <h2 className="text-3xl font-bold text-green-400">Projects</h2>
-      {repos
-        .slice(0, 5)
+      {repos.slice(0, 5)
         .sort((last_repo, repo) => {
           // sort by last updated date
           return (
@@ -31,8 +32,9 @@ export default function Projects() {
         .filter((repo) => {
           return repo["description"] && repo["description"].length > 0;
         })
-        .map((repo) => (
+        .map((repo, index) => (
           <a
+            key={index}
             className="p-4 rounded-lg bg-gray-800 hover:bg-gray-700 transition flex flex-col gap-5"
             href={repo.html_url}
             target="_blank"
