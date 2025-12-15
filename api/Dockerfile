@@ -14,6 +14,7 @@ WORKDIR /app
 # ---- system deps ----
 RUN apk update && apk add --no-cache \
     build-base \
+    libffi-dev \
     postgresql-dev \
     curl
 # ---- install uv ----
