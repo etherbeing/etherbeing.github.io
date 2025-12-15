@@ -13,6 +13,7 @@ class BlogEntry(models.Model):
     gist_id = models.CharField(max_length=255, unique=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    description = models.TextField(default=None, null=True, blank=True)
     content = models.TextField(default=None)
 
     @classmethod
@@ -25,6 +26,7 @@ class BlogEntry(models.Model):
             defaults={
                 "created_at": gist["created_at"],
                 "updated_at": gist["updated_at"],
+                "description": gist["description"],
                 "content": content,
             },
         )

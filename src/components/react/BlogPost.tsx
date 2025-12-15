@@ -4,6 +4,7 @@ export default function Blog({ apiUrl }: { apiUrl: string }) {
   const [posts, setPosts] = useState<
     Array<{
       id: string;
+      gist_id: string;
       html_url: string;
       description: string;
       created_at: string;
@@ -29,7 +30,7 @@ export default function Blog({ apiUrl }: { apiUrl: string }) {
       <div className={`flex flex-row gap-3 flex-wrap ${justification}`}>
         {posts.map((post, index) => {
           return (
-            <a key={index} href={`/blog/entry?slug=${post["id"]}`} target="_blank">
+            <a key={index} href={`/blog/entry?slug=${post["gist_id"]}`} target="_blank">
               <div
                 style={{
                   backgroundImage: `url(https://picsum.photos/id/${index}/200)`,
