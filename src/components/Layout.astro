@@ -8,7 +8,10 @@ import "../styles/global.css";
         <title>etherbeing</title>
         <link rel="icon" href="/favicon.png" />
     </head>
-    <body class="max-w-4xl mx-auto">
+    <body
+        class={"max-w-4xl mx-auto" +
+            (Astro.props.class ? " " + Astro.props.class : "")}
+    >
         <slot />
     </body>
 </html>

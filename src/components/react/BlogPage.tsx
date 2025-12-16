@@ -8,11 +8,6 @@ export default function BlogPage({ apiUrl }: { apiUrl: string }) {
         return new URL(location.href).searchParams.get("slug")
     }, [])
     useEffect(() => {
-
-        console.log(import.meta.env)
-        console.log(import.meta.env.DEV)
-        console.log(import.meta.env.MODE)
-        console.log(import.meta.env.PROD)
         fetch(`${apiUrl}/api/gist/${slug}/`).then(async r => {
             setContent(insane(
                 await marked.parse((await r.json())["content"] || "Not found"),
