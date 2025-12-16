@@ -37,38 +37,39 @@ class GithubViewSet(GenericViewSet):
         request: Request,
     ):
         """List all gists"""
-        cch = cache.get("gists")
-        if cch:
+        KEY = "gists"
+        if cch := cache.get(KEY):
             return Response(data=cch)
         else:
-            res = requests.request(
-                HTTPMethod.GET, self.BASE + f"users/{os.getenv('GITHUB_USER')}/gists"
-            )
-            res.raise_for_status()
-            data = res.json()
-            for entry in data:
-                BlogEntry.create_from_gist(entry)
+            try:
+                if (
+                    res := requests.request(
+                        HTTPMethod.GET,
+                        self.BASE + f"users/{os.getenv('GITHUB_USER')}/gists",
+                    )
+                ).ok:
+                    for entry in res.json():
+                        BlogEntry.create_from_gist(entry)
+            except requests.exceptions.ConnectionError:
+                pass
             data = self.get_serializer(
                 many=True, instance=self.get_queryset().all()
             ).data
-            cache.set("gists", data, timeout=60 * 5)
+            cache.set(KEY, data, timeout=60 * 5)
         return Response(data=data)
 
     @action([HTTPMethod.GET], detail=False, url_path="gist/(?P<id>[^/.]+)")
     def get_gist(self, request: Request, id: str):
-        cch = cache.get(f"gist-{id}")
-        if cch:
+        KEY = f"gist-{id}"
+        if cch := cache.get(KEY):
             return Response(data=cch)
         try:
             entry = BlogEntry.objects.get(gist_id=id)
         except BlogEntry.DoesNotExist:
-            url = self.BASE + f"gists/{id}"
-            res = requests.request(HTTPMethod.GET, url)
-            res.raise_for_status()
-            data = res.json()
-            entry = BlogEntry.create_from_gist(data)[0]
+            if (res := requests.request(HTTPMethod.GET, self.BASE + f"gists/{id}")).ok:
+                entry = BlogEntry.create_from_gist(res.json())[0]
         result = self.get_serializer(entry).data
-        cache.set(f"gist-{id}", result, timeout=60 * 5)
+        cache.set(KEY, result, timeout=60 * 5)
         return Response(data=result)
 
     @action([HTTPMethod.GET], detail=False, url_path="projects")
@@ -76,36 +77,41 @@ class GithubViewSet(GenericViewSet):
         self,
         request: Request,
     ):
-        cch = cache.get("projects")
-        if cch:
+        KEY = "projects"
+        if cch := cache.get(KEY):
             return Response(data=cch)
         else:
-            response = requests.request(
-                HTTPMethod.GET, self.BASE + f"users/{os.getenv('GITHUB_USER')}/repos"
-            )
-            response.raise_for_status()
-            data = response.json()
-            for repo in data:
-                Project.create_from_repo(repo)
+            try:
+                if (
+                    response := requests.request(
+                        HTTPMethod.GET,
+                        self.BASE + f"users/{os.getenv('GITHUB_USER')}/repos",
+                    )
+                ).ok:
+                    for repo in response.json():
+                        Project.create_from_repo(repo)
+            except requests.exceptions.ConnectionError:
+                pass
             data = self.get_serializer(
                 many=True, instance=self.get_queryset().all()
             ).data
-            cache.set("projects", data, 60 * 5)
+            cache.set(KEY, data, 60 * 5)
             return Response(data=data)
 
     @action([HTTPMethod.GET], detail=False, url_path="project/(?P<id>[^/.]+)")
     def get_project(self, request: Request, id: str):
-        cch = cache.get(f"project-{id}")
-        if cch:
+        KEY = f"project-{id}"
+        if cch := cache.get(KEY):
             return Response(data=cch)
         try:
             entry = Project.objects.get(github_id=id)
         except Project.DoesNotExist:
-            url = self.BASE + f"repos/{os.getenv('GITHUB_USER')}/{id}"
-            res = requests.request(HTTPMethod.GET, url)
-            res.raise_for_status()
-            data = res.json()
-            entry = Project.create_from_repo(data)[0]
+            if (
+                res := requests.request(
+                    HTTPMethod.GET, self.BASE + f"repos/{os.getenv('GITHUB_USER')}/{id}"
+                )
+            ).ok:
+                entry = Project.create_from_repo(res.json())[0]
         result = self.get_serializer(entry).data
-        cache.set(f"project-{id}", result, timeout=60 * 5)
+        cache.set(KEY, result, timeout=60 * 5)
         return Response(data=result)

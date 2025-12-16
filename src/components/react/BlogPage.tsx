@@ -1,6 +1,7 @@
 import { marked } from "marked";
 import insane from "insane";
 import { useEffect, useMemo, useState } from "react";
+import CommentSection from "./CommentSection";
 
 export default function BlogPage({ apiUrl }: { apiUrl: string }) {
     const [content, setContent] = useState<string>("");
@@ -18,8 +19,10 @@ export default function BlogPage({ apiUrl }: { apiUrl: string }) {
         })
     }, [])
     return (
-        <div className="prose prose-invert max-w-none py-20 px-4">
+        <div className="prose prose-invert max-w-none py-20 px-4 flex flex-col gap-20">
             <article dangerouslySetInnerHTML={{ __html: content }} />
+            
+            {/* <CommentSection /> */}
         </div>
     )
 }
