@@ -1,5 +1,6 @@
 ---
 import "../styles/global.css";
+import LiquidEther from "./react/LiquidEther";
 ---
 
 <html lang="en" class="bg-gray-950 text-gray-200 font-sans">
@@ -12,6 +13,25 @@ import "../styles/global.css";
         class={"max-w-4xl mx-auto" +
             (Astro.props.class ? " " + Astro.props.class : "")}
     >
+        <LiquidEther
+            className="fixed! w-screen h-screen left-0! -z-10"
+            client:only="react"
+            colors={["#5227FF", "#FF9FFC", "#B19EEF"]}
+            mouseForce={20}
+            cursorSize={100}
+            isViscous={true}
+            viscous={30}
+            iterationsViscous={32}
+            iterationsPoisson={32}
+            resolution={0.5}
+            isBounce={true}
+            autoDemo={true}
+            autoSpeed={0.5}
+            autoIntensity={2.2}
+            takeoverDuration={0.25}
+            autoResumeDelay={3000}
+            autoRampDuration={0.6}
+        />
         <slot />
     </body>
 </html>
