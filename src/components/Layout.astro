@@ -2,7 +2,6 @@
 import "../styles/global.css";
 import GradualBlur from "./react/GradualBlur";
 import LiquidEther from "./react/LiquidEther";
-import { Button } from "./ui/button";
 ---
 
 <html lang="en" class="bg-gray-950 text-gray-200 font-sans dark">
@@ -36,7 +35,8 @@ import { Button } from "./ui/button";
             autoRampDuration={0.6}
         />
         <slot />
-        <GradualBlur client:only="react"
+        <GradualBlur
+            client:only="react"
             target="page"
             position="top"
             height="3rem"
