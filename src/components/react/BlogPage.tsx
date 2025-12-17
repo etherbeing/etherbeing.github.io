@@ -2,6 +2,7 @@ import { marked } from "marked";
 import insane from "insane";
 import { useEffect, useMemo, useState } from "react";
 import CommentSection from "./CommentSection";
+import Header from "./Header";
 
 interface Gist {
     content: string
@@ -27,7 +28,8 @@ export default function BlogPage({ apiUrl }: { apiUrl: string }) {
         })
     }, [])
     return (
-        <div className="prose prose-invert max-w-none py-20 px-4 flex flex-col gap-20">
+        <div className="prose prose-invert max-w-none py-10 px-4 flex flex-col gap-20">
+            <Header title={gist ? `Blog - ${gist.content.split("\n")[0].replace("#", "").trim()}` : "Blog"} />
             <article dangerouslySetInnerHTML={{ __html: content }} />
             {gist && slug ? (
                 <CommentSection gist_id={slug} gist_url={gist.html_url} />
