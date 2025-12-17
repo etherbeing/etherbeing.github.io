@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import ElectricBorder from "./ElectricBorder";
+import SpotlightCard from "./SpotlightCard";
 
 interface Repo {
   name: string;
@@ -30,23 +32,34 @@ export default function Projects({ apiUrl }: { apiUrl: string }) {
           );
         })
         .map((repo, index) => (
-          <a
+          <ElectricBorder
             key={index}
-            className="p-4 rounded-lg bg-gray-800 hover:bg-gray-700 transition flex flex-col gap-5"
-            href={repo.html_url}
-            target="_blank"
+            color="#7df9ff"
+            speed={2}
+            chaos={0}
+            thickness={1}
+            style={{ borderRadius: 16 }}
           >
-            <div className="flex flex-col gap-1 justify-between">
-              <span>{repo.name}</span>
-              {repo.description ? (
-                <small className="text-gray-400">{repo.description.slice(0, 150) + (repo.description.length > 150 ? "..." : "")}</small>
-              ) : null}
-            </div>
-            <div className="flex justify-between flex-row text-sm">
-              <span>{repo.language}</span>
-              <span>{new Date(repo.created_at).toDateString()}</span>
-            </div>
-          </a>
+            <SpotlightCard
+              spotlightColor="rgba(0, 229, 255, 0.2)">
+              <a
+                className="p-4 flex flex-col gap-5"
+                href={repo.html_url}
+                target="_blank"
+              >
+                <div className="flex flex-col gap-1 justify-between">
+                  <span>{repo.name}</span>
+                  {repo.description ? (
+                    <small className="text-gray-400">{repo.description.slice(0, 150) + (repo.description.length > 150 ? "..." : "")}</small>
+                  ) : null}
+                </div>
+                <div className="flex justify-between flex-row text-sm">
+                  <span>{repo.language}</span>
+                  <span>{new Date(repo.created_at).toDateString()}</span>
+                </div>
+              </a>
+            </SpotlightCard>
+          </ElectricBorder>
         ))}
     </section>
   );

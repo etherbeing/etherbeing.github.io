@@ -9,6 +9,7 @@ import Footer from "../components/Footer.astro";
 import Contact from "../components/Contact.astro";
 import About from "../components/About.astro";
 import Layout from "../components/Layout.astro";
+import Services from "@/components/Services.astro";
 const apiUrl = import.meta.env.PUBLIC_API_URL;
 ---
 
@@ -16,6 +17,7 @@ const apiUrl = import.meta.env.PUBLIC_API_URL;
   <Hero />
   <About />
   <Skills />
+  <Services />
   <Projects apiUrl={apiUrl} client:only="react" />
   <BlogPost apiUrl={apiUrl} client:only="react" />
   <Contact />

@@ -1,5 +1,12 @@
+---
+import DecryptedText from "./react/DecryptedText";
+---
+
 <section class="py-20 space-y-4">
-    <h2 class="text-3xl font-bold text-green-400 animate-fade-up">About</h2>
+    <h2 class="text-3xl font-bold text-green-400 animate-fade-up">
+        <DecryptedText client:only="react" revealDirection="center" animateOn="view" text="About">
+        </DecryptedText>
+    </h2>
     <div class="text-justify select-none cursor-default">
         I am Esteban Chacon Martin, a normal person that tries to overcome the tests given to him by
         God and the life, I work each day in order to fulfill my own goals which

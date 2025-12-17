@@ -1,0 +1,88 @@
+---
+import DecryptedText from "./react/DecryptedText";
+import SpotlightCard from "./react/SpotlightCard";
+const services: Array<{
+    starting_price: number;
+    title: string;
+    description: string;
+    skills: Array<string>;
+}> = [
+    {
+        title: "Frontend Web Development",
+        starting_price: 50,
+        description: "Turn your ideas into a human made ready to use product",
+        skills: ["React JS/TS", "Svelte JS/TS", "Astro JS/TS", "Others"],
+    },
+    {
+        title: "Backend API Development",
+        starting_price: 50,
+        description: "Makes your data available where you need it",
+        skills: ["OWASP", "SQL", "Django", "Actix web", "Others"]
+    },
+    {
+        title: "DevOps",
+        starting_price: 75,
+        description: "Automate and deliver, quickly quickly",
+        skills: ["Docker", "K8S", "S3", "Keycloak", "DFS", "Others"]
+    },
+    {
+        title: "Pentesting",
+        starting_price: 100,
+        description: "Check whether or not your system is secure for release (No payment required unless there are results)",
+        skills: ["OWASP", "Zero Day Development", "Enumeration", "Audit", "Others"]
+    },
+    {
+        title: "Odoo and ERPs",
+        starting_price: 50,
+        description: "Let's deploy and get you ready some nice tools for your business, like Odoo or any others ERPs (like Zohoo, etc...)",
+        skills: ["DevOps", "Linux", "Databases", "Others"],
+    },
+    {
+        title: "Android Development",
+        starting_price: 350,
+        description: "Either you want some cross platform app or some native, you'll have it right away with me",
+        skills: ["Android", "Java", "Flutter", "React Native", "Unity", "Others"]
+    }
+];
+---
+
+<section class="py-20 space-y-6">
+    <h2 class="text-3xl font-bold text-green-400 animate-fade-up">Services</h2>
+    <div class="flex gap-3 flex-wrap justify-center ml-[-10%] w-[120%]">
+        {
+            services.map((service) => {
+                return (
+                    <SpotlightCard
+                        client:only="react"
+                        spotlightColor="rgba(0, 229, 255, 0.2)"
+                        className="h-[300px] aspect-square flex flex-col justify-between px-auto py-5 cursor-default"
+                    >
+                        <div>
+                            <h2 class="mx-auto text-xl font-bold">
+                                {service.title}
+                            </h2>
+                            <DecryptedText
+                                client:only="react"
+                                revealDirection="center"
+                                animateOn="view"
+                                speed={10}
+                                encryptedClassName="text-sm text-gray-500"
+                                className="text-sm text-gray-500"
+                                sequential
+                                text={service.description}
+                            />
+                            <ul class="flex flex-col justify-center items-center w-full mt-3 font-bold text-sm">
+                                {service.skills.map((skill) => {
+                                    return <li class="w-full flex justify-between items-center px-4"><ul class="list-disc"><li></li></ul> <span>{skill}</span></li>
+                                })}
+                            </ul>
+                        </div>
+                        <span class="flex justify-end w-full">
+                            From {service.starting_price} USD
+                        </span>
+                    </SpotlightCard>
+                );
+            })
+        }
+    </div>
+</section>

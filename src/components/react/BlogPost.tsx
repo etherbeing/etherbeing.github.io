@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import SpotlightCard from "./SpotlightCard";
 
 export default function Blog({ apiUrl }: { apiUrl: string }) {
   const [posts, setPosts] = useState<
@@ -31,11 +32,11 @@ export default function Blog({ apiUrl }: { apiUrl: string }) {
         {posts.map((post, index) => {
           return (
             <a key={index} href={`/blog/entry?slug=${post["gist_id"]}`} target="_blank">
-              <div
+              <SpotlightCard
                 style={{
                   backgroundImage: `url(https://picsum.photos/id/${index}/200)`,
                 }}
-                className=" bg-cover flex flex-col justify-between shadow hover:shadow-2xl cursor-pointer w-[250px] aspect-square p-4 rounded-lg bg-gray-800 hover:bg-gray-700 transition"
+                className={`bg-cover flex flex-col justify-between shadow hover:shadow-2xl cursor-pointer w-[250px] aspect-square p-4! rounded-lg bg-gray-800 hover:bg-gray-700 transition`}
               >
                 <span className="w-full flex justify-start">
                   {new Date(post["created_at"]).toDateString()}
@@ -43,7 +44,7 @@ export default function Blog({ apiUrl }: { apiUrl: string }) {
                 <span className="w-full flex justify-end">
                   {post["description"]}
                 </span>
-              </div>
+              </SpotlightCard>
             </a>
           );
         })}

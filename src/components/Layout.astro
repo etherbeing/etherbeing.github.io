@@ -1,6 +1,8 @@
 ---
 import "../styles/global.css";
+import GradualBlur from "./react/GradualBlur";
 import LiquidEther from "./react/LiquidEther";
+import { Button } from "./ui/button";
 ---
 
 <html lang="en" class="bg-gray-950 text-gray-200 font-sans dark">
@@ -8,6 +10,7 @@ import LiquidEther from "./react/LiquidEther";
         <meta charset="utf-8" />
         <title>etherbeing</title>
         <link rel="icon" href="/favicon.png" />
+        <meta name="generator" content={Astro.generator} />
     </head>
     <body
         class={"max-w-4xl mx-auto" +
@@ -33,5 +36,15 @@ import LiquidEther from "./react/LiquidEther";
             autoRampDuration={0.6}
         />
         <slot />
+        <GradualBlur client:only="react"
+            target="page"
+            position="top"
+            height="6rem"
+            strength={2}
+            divCount={5}
+            curve="bezier"
+            exponential={true}
+            opacity={1}
+        />
     </body>
 </html>

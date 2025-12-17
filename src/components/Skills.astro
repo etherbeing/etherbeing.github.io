@@ -6,6 +6,7 @@ import kali from "../assets/kali.png";
 import metasploit from "../assets/metasploit.png";
 import tensorflow from "../assets/tensorflow.png";
 import react from "../assets/react.svg";
+import SpotlightCard from "./react/SpotlightCard";
 
 const skills: Array<{
   image: ImageMetadata;
@@ -44,14 +45,20 @@ const skills: Array<{
     {
       skills.map((skill) => {
         return (
-          <li class="flex justify-center items-center flex-col hover:bg-gray-500 transition-all py-5 px-0 rounded gap-2">
-            <Image
-              draggable="false"
-              class={"h-20 w-auto select-none"}
-              src={skill.image}
-              alt={skill.name}
-            />
-            {skill.name}
+          <li>
+            <SpotlightCard
+              client:only="react"
+              spotlightColor="rgba(0, 229, 255, 0.2)"
+              className="flex justify-center items-center flex-col gap-2"
+            >
+              <Image
+                draggable="false"
+                class={"h-20 w-auto select-none"}
+                src={skill.image}
+                alt={skill.name}
+              />
+              {skill.name}
+            </SpotlightCard>
           </li>
         );
       })
