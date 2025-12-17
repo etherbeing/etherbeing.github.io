@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, Generator
 from django.db import models
 from django.contrib.auth.models import AbstractUser as BaseUser
 from django.utils.timezone import datetime
@@ -9,6 +9,16 @@ class User(BaseUser):
     pass
 
 
+class BlogEntryComment(models.Model):
+    github_id = models.CharField(default=None)
+    username = models.CharField(default=None)
+    content = models.CharField(default=None)
+    date = models.DateField(default=None)
+
+    def __str__(self):
+        return self.github_id
+
+
 class BlogEntry(models.Model):
     id = models.AutoField(primary_key=True)
     gist_id = models.CharField(max_length=255, unique=True)
@@ -16,6 +26,10 @@ class BlogEntry(models.Model):
     updated_at = models.DateTimeField(default=None, null=True)
     description = models.TextField(default=None, null=True, blank=True)
     content = models.TextField(default=None)
+    html_url = models.URLField(default=None, null=True)
+    comments = models.ManyToManyField(
+        BlogEntryComment,
+    )
 
     @classmethod
     def create_from_gist(cls, gist: dict[str, Any]):
@@ -28,12 +42,23 @@ class BlogEntry(models.Model):
                 "created_at": gist["created_at"],
                 "updated_at": gist["updated_at"],
                 "description": gist["description"],
+                "html_url": gist["html_url"],
                 "content": content,
             },
         )
 
+    @classmethod
+    def update_comments_from_github(cls, github_data: list[dict[str, Any]]):
+        def _to_gen() -> Generator[BlogEntryComment]:
+            for comment in github_data:  # I don't know what to do yet with the response from github at this point
+                yield BlogEntryComment()
+
+        return BlogEntryComment.objects.bulk_create(
+            _to_gen(), update_conflicts=True
+        )  # update or create for bulk
+
     def __str__(self):
-        return self.title
+        return self.gist_id
 
 
 class Project(models.Model):

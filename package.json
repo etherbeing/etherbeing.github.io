@@ -20,6 +20,7 @@
     "@types/react-dom": "^19.2.3",
     "astro": "^5.16.4",
     "astro-icon": "^1.1.5",
+    "gsap": "^3.14.2",
     "html2pdf.js": "^0.12.1",
     "insane": "^2.6.2",
     "marked": "^17.0.1",
@@ -28,9 +29,10 @@
     "sharp": "^0.34.5",
     "svelte": "^5.46.0",
     "tailwindcss": "^4.1.17",
+    "three": "^0.182.0",
     "typescript": "^5.9.3"
   },
   "devDependencies": {
-    "@types/insane": "^1.0.0"
+    "@types/three": "^0.182.0"
   }
 }

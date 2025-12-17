@@ -3,10 +3,14 @@ from rest_framework.viewsets import GenericViewSet
 from rest_framework.decorators import action
 from rest_framework.request import Request
 from rest_framework.response import Response
-from http import HTTPMethod
+from http import HTTPMethod, HTTPStatus
 import requests
 from django.core.cache import cache
-from .serializers import BlogEntrySerializer, ProjectSerializer
+from .serializers import (
+    BlogEntryCommentSerializer,
+    BlogEntrySerializer,
+    ProjectSerializer,
+)
 from .models import BlogEntry, Project
 
 
@@ -18,7 +22,11 @@ class GithubViewSet(GenericViewSet):
     BASE = "https://api.github.com/"
 
     def get_queryset(self):
-        if self.action in [self.list_gists.__name__, self.get_gist.__name__]:
+        if self.action in [
+            self.list_gists.__name__,
+            self.get_gist.__name__,
+            self.get_comments_for_gist.__name__,
+        ]:
             return BlogEntry.objects.all()
         elif self.action in [self.list_projects.__name__, self.get_project.__name__]:
             return Project.objects.all().order_by("-stargazers_count")
@@ -28,6 +36,8 @@ class GithubViewSet(GenericViewSet):
             return BlogEntrySerializer
         elif self.action in [self.list_projects.__name__, self.get_project.__name__]:
             return ProjectSerializer
+        elif self.action in [self.get_comments_for_gist.__name__]:
+            return BlogEntryCommentSerializer
         else:
             return None
 
@@ -113,5 +123,29 @@ class GithubViewSet(GenericViewSet):
             ).ok:
                 entry = Project.create_from_repo(res.json())[0]
         result = self.get_serializer(entry).data
+        cache.set(KEY, result, timeout=60 * 5)
+        return Response(data=result)
+
+    @action([HTTPMethod.GET], detail=True, url_path="comments")
+    def get_comments_for_gist(self, request: Request, pk: str):
+        KEY = f"comments-{pk}"
+        if cch := cache.get(KEY):
+            return Response(data=cch)
+
+        try:
+            if (
+                res := requests.request(
+                    HTTPMethod.GET, self.BASE + f"gists/{id}"
+                )  # TODO instead of this query directly the comments for this gist
+            ).ok:
+                comments = BlogEntry.update_comments_from_github(res.json())
+            else:
+                return Response(status=HTTPStatus.BAD_GATEWAY)
+        except requests.ConnectionError:
+            try:  # if connection error then just give him back what's on the DB
+                comments = BlogEntry.objects.get(gist_id=pk).comments
+            except BlogEntry.DoesNotExist:
+                return Response(status=HTTPStatus.BAD_GATEWAY)
+        result = self.get_serializer(comments, many=True).data
         cache.set(KEY, result, timeout=60 * 5)
         return Response(data=result)

@@ -9,11 +9,18 @@
     opacity: 0;
     transform: translateY(10px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
   }
 }
+
 .animate-fade-up {
   animation: fade-up 1s ease-out;
+}
+
+h2 {
+  cursor: default;
+  user-select: none;
 }
