@@ -1,5 +1,8 @@
 {
     "python.analysis.extraPaths": [
         "./api/src"
+    ],
+    "rust-analyzer.linkedProjects": [
+        "./high_performance/shaders/liquid-ether/Cargo.toml"
     ]
 }
