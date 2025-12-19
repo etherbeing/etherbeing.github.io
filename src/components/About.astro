@@ -13,11 +13,9 @@ import GlowingHeader from "./react/GlowingHeader";
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <SpotlightCard
             client:only="react"
-            className="flex justify-center items-center p-0 bg-size-[90%] bg-center bg-no-repeat bg-transparent border-none px-10"
+            className="flex justify-center items-center p-0 bg-size-[90%] bg-center bg-no-repeat bg-transparent border-none px-10 min-h-50"
             style={{ backgroundImage: `url(${ferris.src})` }}
-        >
-            <!-- <Image src={ferris} alt="Ferris" class={"m-0"} /> -->
-        </SpotlightCard>
+        />
         <SpotlightCard
             client:only="react"
             className="text-justify select-none cursor-default"
