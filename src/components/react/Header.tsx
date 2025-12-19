@@ -3,6 +3,19 @@ import SpotlightCard from "./SpotlightCard";
 import { Sling as Hamburger } from "hamburger-react";
 import { GoArrowUpRight } from "react-icons/go";
 
+function oklchGradient(
+  L0: number, // lightness min
+  L1: number, // lightness max
+  C: number, // chroma
+  h: number, // hue
+  i: number,
+  n: number,
+) {
+  const t = n <= 1 ? 0 : i / (n - 1);
+  const L = L0 + t * (L1 - L0);
+  return `oklch(${L}% ${C} ${h})`;
+}
+
 const navs: Array<{
   label: string;
   links: Array<{ label: string; href: string }>;
@@ -66,6 +79,14 @@ export default function Header() {
               className={`mt-5 w-full flex flex-col gap-3 translate-y-100 opacity-0`}
               style={{
                 animationDelay: `${i * 100 + 100}ms`,
+                backgroundColor: oklchGradient(
+                  0,
+                  10,
+                  0.05,
+                  300,
+                  i,
+                  navs.length,
+                ),
               }}
             >
               <h3 className="text-lg font-bold cursor-default">{nav.label}</h3>
