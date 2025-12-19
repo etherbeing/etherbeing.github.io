@@ -1,19 +1,21 @@
 ---
 import { Icon } from "astro-icon/components";
 import GlowingHeader from "./react/GlowingHeader";
+import SpotlightCard from "./react/SpotlightCard";
 ---
 
 <section class="py-20 space-y-4 cursor-default select-none text-justify">
     <GlowingHeader>Contact</GlowingHeader>
+    <SpotlightCard
+        client:only="react"
+        className="flex flex-col items-start gap-5"
+    >
+        You can contact me anytime I'll reach back to you as soon as possible,
+        you can contact me either for a job proposal, a research cooperation
+        idea, or a project you have in mind. All the information received by me
+        from you is unless expressed by you otherwise private and won't be
+        released no matter what.
 
-    You can contact me anytime I'll reach back to you as soon as possible, you
-    can contact me either for a job proposal, a research cooperation idea, or a
-    project you have in mind. All the information received by me from you is
-    unless expressed by you otherwise private and won't be released no matter
-    what.
-    <br />
-    <br />
-    <div class="flex flex-col items-start gap-5">
         <!-- Social networks -->
         <div class="flex flex-col gap-2 w-fit">
             <b class="w-full">Social Networks </b>
@@ -71,7 +73,7 @@ import GlowingHeader from "./react/GlowingHeader";
         <!-- Cybersecurity Profiles -->
         <div class="flex flex-col gap-2 w-fit">
             <b class="w-full">Cybersecurity Profiles </b>
-            <ul class="flex gap-2">
+            <ul class="flex flex-wrap gap-2">
                 <li>
                     <a
                         target="_blank"
@@ -104,7 +106,7 @@ import GlowingHeader from "./react/GlowingHeader";
 
         <div class="flex flex-col gap-2 w-fit">
             <b class="w-full">Communities </b>
-            <ul class="flex gap-2">
+            <ul class="flex flex-wrap gap-2">
                 <li>
                     <a
                         target="_blank"
@@ -123,5 +125,5 @@ import GlowingHeader from "./react/GlowingHeader";
                 </li>
             </ul>
         </div>
-    </div>
+    </SpotlightCard>
 </section>
