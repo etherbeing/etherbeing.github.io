@@ -85,7 +85,7 @@ h2 {
     @property --nav-height {
         syntax: "<length>";
         inherits: false;
-        initial-value: 80vh;
+        initial-value: 670px;
     }
 }
 
