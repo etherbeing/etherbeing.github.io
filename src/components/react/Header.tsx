@@ -21,9 +21,14 @@ const navs: Array<{
   {
     label: "Projects",
     links: [
-      { label: "Project 1", href: "/project1" },
-      { label: "Project 2", href: "/project2" },
-      { label: "Project 3", href: "/project3" },
+      { label: "CVE Forge", href: "https://github.com/etherbeing/cveforge" },
+      {
+        label: "This Website",
+        href: "https://github.com/etherbeing/etherbeing.github.io",
+      },
+      { label: "Senjor", href: "https://github.com/etherbeing/senjor" },
+      { label: "Powerhouse", href: "https://github.com/etherbeing/powerhouse" },
+      { label: "TFProtocol", href: "https://github.com/etherbeing/tfprotocol" },
     ],
   },
 ];
@@ -53,12 +58,12 @@ export default function Header() {
           style={{
             animationDelay: `${navs.length * 100}ms`,
           }}
-          className={`w-full flex flex-col md:flex-row gap-3 justify-between items-center overflow-hidden transition-all duration-300 h-0 ${isOpen ? "nav-expand" : "nav-collapse"}`}
+          className={`w-full grid grid-cols-1 md:grid-cols-2 gap-3 overflow-hidden transition-all duration-300 h-0 ${isOpen ? "nav-expand" : "nav-collapse"}`}
         >
           {navs.map((nav, i) => (
             <SpotlightCard
               key={i}
-              className={`w-full flex flex-col gap-3 translate-y-100 opacity-0`}
+              className={`mt-5 w-full flex flex-col gap-3 translate-y-100 opacity-0`}
               style={{
                 animationDelay: `${i * 100 + 100}ms`,
               }}
@@ -67,6 +72,20 @@ export default function Header() {
               <div className="flex flex-col gap-3">
                 {nav.links.map((link, i) => (
                   <a
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      const hash = new URL(e.currentTarget.href).hash;
+                      let section = document.querySelector(hash);
+                      if (section) {
+                        section.scrollIntoView({
+                          behavior: "smooth",
+                        });
+                      } else {
+                        location.assign(`/${hash}`);
+                      }
+                      setIsOpen(false);
+                    }}
                     key={i}
                     href={link.href}
                     className="text-sm inline-flex items-center"
