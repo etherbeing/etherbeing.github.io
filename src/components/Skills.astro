@@ -7,61 +7,63 @@ import metasploit from "../assets/metasploit.png";
 import tensorflow from "../assets/tensorflow.png";
 import react from "../assets/react.svg";
 import SpotlightCard from "./react/SpotlightCard";
+import GlowingHeader from "./react/GlowingHeader";
 
 const skills: Array<{
-  image: ImageMetadata;
-  name: string;
+    image: ImageMetadata;
+    name: string;
 }> = [
-  {
-    image: kali,
-    name: "Cybersecurity",
-  },
-  {
-    image: rust,
-    name: "Rust",
-  },
-  {
-    image: metasploit,
-    name: "Pentesting",
-  },
-  {
-    image: tensorflow,
-    name: "Biological Neural Nets",
-  },
-  {
-    image: python,
-    name: "Python",
-  },
-  {
-    image: react,
-    name: "React TS",
-  },
+    {
+        image: kali,
+        name: "Cybersecurity",
+    },
+    {
+        image: rust,
+        name: "Rust",
+    },
+    {
+        image: metasploit,
+        name: "Pentesting",
+    },
+    {
+        image: tensorflow,
+        name: "Biological Neural Nets",
+    },
+    {
+        image: python,
+        name: "Python",
+    },
+    {
+        image: react,
+        name: "React TS",
+    },
 ];
 ---
 
 <section class="py-20 space-y-6">
-  <h2 class="text-center text-3xl font-bold text-green-400 animate-fade-up">Core Skills</h2>
-  <ul class="grid grid-cols-1 md:grid-cols-3  gap-4 text-gray-300">
-    {
-      skills.map((skill) => {
-        return (
-          <li class="h-[300px] md:h-auto">
-            <SpotlightCard
-              client:only="react"
-              spotlightColor="rgba(0, 229, 255, 0.2)"
-              className="flex justify-center items-center flex-col gap-2 h-full"
-            >
-              <Image
-                draggable="false"
-                class={"h-20 w-auto select-none"}
-                src={skill.image}
-                alt={skill.name}
-              />
-              {skill.name}
-            </SpotlightCard>
-          </li>
-        );
-      })
-    }
-  </ul>
+    <GlowingHeader>Core Skills</GlowingHeader>
+
+    <ul class="grid grid-cols-1 md:grid-cols-3 gap-4 text-gray-300">
+        {
+            skills.map((skill) => {
+                return (
+                    <li class="h-[300px] md:h-auto">
+                        <SpotlightCard
+                            client:only="react"
+                            spotlightColor="rgba(0, 229, 255, 0.2)"
+                            className="flex justify-center items-center flex-col gap-2 h-full"
+                        >
+                            <Image
+                                draggable="false"
+                                class={"h-20 w-auto select-none"}
+                                src={skill.image}
+                                alt={skill.name}
+                            />
+                            {skill.name}
+                        </SpotlightCard>
+                    </li>
+                );
+            })
+        }
+    </ul>
 </section>

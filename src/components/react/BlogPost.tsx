@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import SpotlightCard from "./SpotlightCard";
+import GlowingHeader from "./GlowingHeader";
 
 export default function Blog({ apiUrl }: { apiUrl: string }) {
   const [posts, setPosts] = useState<
@@ -27,11 +28,16 @@ export default function Blog({ apiUrl }: { apiUrl: string }) {
 
   return (
     <section className="py-20 space-y-4">
-      <h2 className="text-center text-3xl font-bold text-green-400">Blog</h2>
+      <GlowingHeader>Blog</GlowingHeader>
+
       <div className={`grid grid-cols-1 md:grid-cols-3 ${justification}`}>
         {posts.map((post, index) => {
           return (
-            <a key={index} href={`/blog/entry?slug=${post["gist_id"]}`} target="_blank">
+            <a
+              key={index}
+              href={`/blog/entry?slug=${post["gist_id"]}`}
+              target="_blank"
+            >
               <SpotlightCard
                 style={{
                   backgroundImage: `url(https://picsum.photos/id/${index}/200)`,

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import SpotlightCard from "./SpotlightCard";
+import GlowingHeader from "./GlowingHeader";
 
 interface Repo {
   name: string;
@@ -11,11 +12,9 @@ interface Repo {
   language: string;
 }
 
-
 function ElectricProject({ repo }: { repo: Repo }) {
   return (
-    <SpotlightCard
-      spotlightColor="rgba(0, 229, 255, 0.2)">
+    <SpotlightCard spotlightColor="rgba(0, 229, 255, 0.2)">
       <a
         className="p-4 flex flex-col gap-5"
         href={repo.html_url}
@@ -24,7 +23,10 @@ function ElectricProject({ repo }: { repo: Repo }) {
         <div className="flex flex-col gap-1 justify-between">
           <span>{repo.name}</span>
           {repo.description ? (
-            <small className="text-gray-400">{repo.description.slice(0, 150) + (repo.description.length > 150 ? "..." : "")}</small>
+            <small className="text-gray-400">
+              {repo.description.slice(0, 150) +
+                (repo.description.length > 150 ? "..." : "")}
+            </small>
           ) : null}
         </div>
         <div className="flex justify-between flex-row text-sm">
@@ -33,22 +35,22 @@ function ElectricProject({ repo }: { repo: Repo }) {
         </div>
       </a>
     </SpotlightCard>
-  )
+  );
 }
 
 export default function Projects({ apiUrl }: { apiUrl: string }) {
   const [repos, setRepos] = useState<Array<Repo>>([]);
   useEffect(() => {
-    fetch(`${apiUrl}/api/projects/`).then(
-      async (res) => {
-        if (res.ok) setRepos(await res.json())
-      },
-    );
+    fetch(`${apiUrl}/api/projects/`).then(async (res) => {
+      if (res.ok) setRepos(await res.json());
+    });
   }, []);
   return (
     <section className="py-20 space-y-4">
-      <h2 className="text-center text-3xl font-bold text-green-400">Projects</h2>
-      {repos.slice(0, 5)
+      <GlowingHeader>Projects</GlowingHeader>
+
+      {repos
+        .slice(0, 5)
         .sort((last_repo, repo) => {
           // sort by last updated date
           return (

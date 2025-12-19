@@ -1,5 +1,7 @@
 ---
+import { Icon } from "astro-icon/components";
 import DecryptedText from "./react/DecryptedText";
+import GlowingHeader from "./react/GlowingHeader";
 import SpotlightCard from "./react/SpotlightCard";
 const services: Array<{
     starting_price: number;
@@ -56,7 +58,7 @@ const services: Array<{
 ---
 
 <section class="py-20 space-y-6">
-    <h2 class="text-center text-3xl font-bold text-green-400 animate-fade-up">Services</h2>
+    <GlowingHeader>Services</GlowingHeader>
     <div class="grid grid-cols-1 md:grid-cols-3 gap-5 md:ml-[-10%] md:w-[120%]">
         {
             services.map((service) => {
@@ -73,20 +75,21 @@ const services: Array<{
                             <span class="text-sm text-gray-500">
                                 {service.description}
                             </span>
-                            <ul class="flex flex-col justify-center items-center w-full mt-3 font-bold text-xs">
-                                {service.skills.map((skill) => {
-                                    return (
-                                        <li class="w-full flex justify-between items-center px-4">
-                                            <ul class="list-disc">
-                                                <li />
-                                            </ul>{" "}
-                                            <span>{skill}</span>
-                                        </li>
-                                    );
-                                })}
-                            </ul>
                         </div>
-                        <span class="flex justify-end w-full">
+                        <ul class="flex flex-col justify-center h-full items-center w-full my-5 font-bold text-sm">
+                            {service.skills.map((skill) => {
+                                return (
+                                    <li class="w-full flex justify-between items-center">
+                                        <Icon
+                                            name="ic:baseline-add-task"
+                                            class={"text-green-200"}
+                                        />{" "}
+                                        {skill}
+                                    </li>
+                                );
+                            })}
+                        </ul>
+                        <span class="flex justify-end w-full text-sm">
                             From {service.starting_price} USD
                         </span>
                     </SpotlightCard>

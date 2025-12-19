@@ -1,19 +1,39 @@
 ---
-import DecryptedText from "./react/DecryptedText";
+import ferris from "@/assets/ferris.png";
 import SpotlightCard from "./react/SpotlightCard";
+// import { Image } from "astro:assets";
+import GlowingHeader from "./react/GlowingHeader";
 ---
 
 <section class="py-20 space-y-4">
-    <h2 class="text-center text-3xl font-bold text-green-400 animate-fade-up">
-        About
-    </h2>
+    <div class="text-center animate-fade-up mb-20">
+        <GlowingHeader>About</GlowingHeader>
+    </div>
 
-    <SpotlightCard client:only="react" className="text-justify select-none cursor-default">
-        I am Esteban Chacon Martin, a person driven by purpose, growth, and compassion, striving to improve both myself and the world around me. 
-        My values are rooted in liberal humanism, emphasizing individual freedom, dignity, and responsibility, with the belief that no one's 
-        rights extend to harming another. I believe in God and study the teachings of Buddha, seeking to live in harmony with all forms of life 
-        and recognizing the interdependence of existence. I am deeply committed to learning and self-development, with interests spanning 
-        philosophy, culture, politics, and technology, and I continually challenge my reasoning and analytical abilities with the goal of 
-        contributing meaningfully to society and engaging with high-level intellectual communities.
-    </SpotlightCard>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <SpotlightCard
+            client:only="react"
+            className="flex justify-center items-center p-0 bg-size-[90%] bg-center bg-no-repeat bg-transparent border-none px-10"
+            style={{ backgroundImage: `url(${ferris.src})` }}
+        >
+            <!-- <Image src={ferris} alt="Ferris" class={"m-0"} /> -->
+        </SpotlightCard>
+        <SpotlightCard
+            client:only="react"
+            className="text-justify select-none cursor-default"
+        >
+            I am Esteban Chacon Martin, a person driven by purpose, growth, and
+            compassion, striving to improve both myself and the world around me.
+            My values are rooted in liberal humanism, emphasizing individual
+            freedom, dignity, and responsibility, with the belief that no one's
+            rights extend to harming another. I believe in God and study the
+            teachings of Buddha, seeking to live in harmony with all forms of
+            life and recognizing the interdependence of existence. I am deeply
+            committed to learning and self-development, with interests spanning
+            philosophy, culture, politics, and technology, and I continually
+            challenge my reasoning and analytical abilities with the goal of
+            contributing meaningfully to society and engaging with high-level
+            intellectual communities.
+        </SpotlightCard>
+    </div>
 </section>

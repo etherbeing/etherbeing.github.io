@@ -2,6 +2,7 @@
 import "../styles/global.css";
 import GradualBlur from "./react/GradualBlur";
 import LiquidEther from "./hp/liquid-ether/LiquidEther.tsx";
+import Header from "./react/Header";
 ---
 
 <html lang="en" class="bg-black text-gray-200 font-sans dark">
@@ -35,10 +36,10 @@ import LiquidEther from "./hp/liquid-ether/LiquidEther.tsx";
             autoSpeed={0.5}
             autoIntensity={2.2}
             takeoverDuration={0.25}
-            autoResumeDelay={1000}
+            autoResumeDelay={250}
             autoRampDuration={0.6}
         />
-
+        <Header />
         <main class="w-full md:w-4xl px-3 md:px-0 mx-auto">
             <slot />
         </main>
