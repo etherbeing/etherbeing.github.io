@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import SpotlightCard from "./SpotlightCard";
 import GlowingHeader from "./GlowingHeader";
+import { oklchGradient } from "@/lib/utils";
 
 interface Repo {
   name: string;
@@ -12,9 +13,20 @@ interface Repo {
   language: string;
 }
 
-function ElectricProject({ repo }: { repo: Repo }) {
+function ElectricProject({
+  repo,
+  background,
+}: {
+  repo: Repo;
+  background: string;
+}) {
   return (
-    <SpotlightCard spotlightColor="rgba(0, 229, 255, 0.2)">
+    <SpotlightCard
+      style={{
+        backgroundColor: background,
+      }}
+      spotlightColor="rgba(0, 229, 255, 0.2)"
+    >
       <a
         className="p-4 flex flex-col gap-5"
         href={repo.html_url}
@@ -58,8 +70,12 @@ export default function Projects({ apiUrl }: { apiUrl: string }) {
             new Date(last_repo["pushed_at"]).getTime()
           );
         })
-        .map((repo, index) => (
-          <ElectricProject repo={repo} key={index}></ElectricProject>
+        .map((repo, index, array) => (
+          <ElectricProject
+            background={oklchGradient(20, 10, 0.025, 330, index, array.length)}
+            repo={repo}
+            key={index}
+          ></ElectricProject>
         ))}
     </section>
   );

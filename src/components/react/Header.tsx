@@ -2,19 +2,7 @@ import { useState } from "react";
 import SpotlightCard from "./SpotlightCard";
 import { Sling as Hamburger } from "hamburger-react";
 import { GoArrowUpRight } from "react-icons/go";
-
-function oklchGradient(
-  L0: number, // lightness min
-  L1: number, // lightness max
-  C: number, // chroma
-  h: number, // hue
-  i: number,
-  n: number,
-) {
-  const t = n <= 1 ? 0 : i / (n - 1);
-  const L = L0 + t * (L1 - L0);
-  return `oklch(${L}% ${C} ${h})`;
-}
+import { oklchGradient } from "@/lib/utils";
 
 const navs: Array<{
   label: string;
