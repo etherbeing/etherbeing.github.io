@@ -49,20 +49,19 @@ export function useWebGL(
         
         webglRef.current = webgl;
 
-        applyOptionsFromProps(webglRef.current, resolution, mouseForce, cursorSize, isViscous, viscous, iterationsPoisson, iterationsViscous, dt, BFECC, isBounce);
+        applyOptionsFromProps(webgl, resolution, mouseForce, cursorSize, isViscous, viscous, iterationsPoisson, iterationsViscous, dt, BFECC, isBounce);
 
         webgl.start();
 
         const io = new IntersectionObserver(
             entries => {
                 const entry = entries[0];
-                const isVisible = entry.isIntersecting && entry.intersectionRatio > 0;
-                isVisibleRef.current = isVisible;
-                if (!webglRef.current) return;
-                if (isVisible && !document.hidden) {
-                    webglRef.current.start();
+                isVisibleRef.current = entry.isIntersecting && entry.intersectionRatio > 0;
+                if (!webgl) return;
+                if (isVisibleRef.current && !document.hidden) {
+                    webgl.start()
                 } else {
-                    webglRef.current.pause();
+                    webgl.pause();
                 }
             },
             { threshold: [0, 0.01, 0.1] }

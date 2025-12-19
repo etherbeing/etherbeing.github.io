@@ -4,19 +4,23 @@ import GradualBlur from "./react/GradualBlur";
 import LiquidEther from "./hp/liquid-ether/LiquidEther.tsx";
 ---
 
-<html lang="en" class="bg-gray-950 text-gray-200 font-sans dark">
+<html lang="en" class="bg-black text-gray-200 font-sans dark">
     <head>
         <meta charset="utf-8" />
         <title>etherbeing</title>
         <link rel="icon" href="/favicon.png" />
         <meta name="generator" content={Astro.generator} />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     </head>
     <body
-        class={"max-w-4xl mx-auto" +
+        class={"max-w-screen overflow-x-hidden" +
             (Astro.props.class ? " " + Astro.props.class : "")}
     >
         <LiquidEther
-            className="fixed! w-screen h-screen left-0! -z-10"
+            style={{
+                position: "fixed",
+            }}
+            className="w-screen h-screen left-0 top-0 -z-10"
             client:only="react"
             colors={["#5227FF", "#FF9FFC", "#B19EEF"]}
             mouseForce={20}
@@ -25,7 +29,7 @@ import LiquidEther from "./hp/liquid-ether/LiquidEther.tsx";
             viscous={30}
             iterationsViscous={32}
             iterationsPoisson={32}
-            resolution={1}
+            resolution={0.25}
             isBounce={true}
             autoDemo={true}
             autoSpeed={0.5}
@@ -34,27 +38,10 @@ import LiquidEther from "./hp/liquid-ether/LiquidEther.tsx";
             autoResumeDelay={1000}
             autoRampDuration={0.6}
         />
-        
-        <!-- <LiquidEther
-            className="fixed! w-screen h-screen left-0! -z-10"
-            client:only="react"
-            colors={["#5227FF", "#FF9FFC", "#B19EEF"]}
-            mouseForce={20}
-            cursorSize={100}
-            isViscous={true}
-            viscous={30}
-            iterationsViscous={32}
-            iterationsPoisson={32}
-            resolution={1}
-            isBounce={true}
-            autoDemo={true}
-            autoSpeed={0.5}
-            autoIntensity={2.2}
-            takeoverDuration={0.25}
-            autoResumeDelay={1000}
-            autoRampDuration={0.6}
-        /> -->
-        <slot />
+
+        <main class="w-full md:w-4xl px-3 md:px-0 mx-auto">
+            <slot />
+        </main>
         <GradualBlur
             client:only="react"
             target="page"

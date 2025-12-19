@@ -1,61 +1,70 @@
 ---
+// import Lightning from "./react/Lightning";
 import ShinyText from "./react/ShinyText";
 import StarBorder from "./react/StarBorder";
 import TextType from "./react/TextType";
 ---
 
 <section
-  class="w-full flex justify-center items-center flex-col py-32 text-center select-none cursor-default"
+    class="relative min-h-screen w-full flex justify-center items-center flex-col py-32 text-center select-none cursor-default"
 >
-  <h1 class="text-5xl font-bold text-green-400 animate-fade-up">
-    <TextType
-      client:only="react"
-      text={[
-        "What I can do",
-        "Cybersecurity",
-        "Rust",
-        "Python",
-        "Django",
-        "ReactJS",
-        "Reverse Engineering",
-        "Pentesting",
-        "Patching",
-        "AstroJS",
-        "Svelte",
-        "Actix Web",
-        "Web Development",
-        "Zero Day Exploits",
-        "Unity Game Engine",
-        "Full stack development",
-        "Docker",
-        "DevOps",
-        "Network Administrator",
-        "System Administrator",
-        "Phylosoraptor",
-      ]}
-      typingSpeed={75}
-      pauseDuration={1500}
-      showCursor={true}
-      cursorCharacter="|"
-    />
-  </h1>
-  <p class="mt-6 text-xl max-w-xl mx-auto">
-    <ShinyText
-      client:only="react"
-      text={`Offensive Security, Rust Systems, Biological Neural Networks, Python, CVE Forge.`}
-      disabled={false}
-      speed={3}
-    />
-  </p>
-  <a href="/cv.pdf" class="mt-10">
-    <StarBorder
-      client:only="react"
-      as={"button"}
-      className="cursor-pointer"
-      color="magenta"
-      speed="5s"
-    >
-      Download CV
-    </StarBorder>
-  </a>
+    <!-- <Lightning
+    client:only="react"
+    hue={220}
+    xOffset={0}
+    speed={1}
+    intensity={1}
+    size={1}
+  /> -->
+    <h1 class="z-10 text-5xl font-bold animate-fade-up">
+        <TextType
+            client:only="react"
+            text={[
+                "Esteban Chacon",
+                "Cybersecurity",
+                "Rust",
+                "Python",
+                "Django",
+                "ReactJS",
+                "Reverse Engineering",
+                "Pentesting",
+                "Patching",
+                "AstroJS",
+                "Svelte",
+                "Actix Web",
+                "Web Development",
+                "Zero Day Exploits",
+                "Unity Game Engine",
+                "Full stack development",
+                "Docker",
+                "DevOps",
+                "Network Administrator",
+                "System Administrator",
+                "Phylosoraptor",
+            ]}
+            typingSpeed={75}
+            pauseDuration={1500}
+            showCursor={true}
+            cursorCharacter="|"
+        />
+    </h1>
+    <p class="z-10 mt-6 text-xl max-w-xl mx-auto">
+        <ShinyText
+            client:only="react"
+            text={`Offensive Security, Rust Systems, Biological Neural Networks, Python, CVE Forge.`}
+            disabled={false}
+            speed={3}
+        />
+    </p>
+    <a href="/cv.pdf" class="z-10 mt-10">
+        <StarBorder
+            client:only="react"
+            as={"button"}
+            className="cursor-pointer"
+            color="magenta"
+            speed="5s"
+        >
+            Download CV
+        </StarBorder>
+    </a>
 </section>

@@ -1,7 +1,7 @@
 ---
 import { Image } from "astro:assets";
 import python from "../assets/python.svg";
-import ferris from "../assets/ferris.png";
+import rust from "../assets/rust.png";
 import kali from "../assets/kali.png";
 import metasploit from "../assets/metasploit.png";
 import tensorflow from "../assets/tensorflow.png";
@@ -17,7 +17,7 @@ const skills: Array<{
     name: "Cybersecurity",
   },
   {
-    image: ferris,
+    image: rust,
     name: "Rust",
   },
   {
@@ -40,16 +40,16 @@ const skills: Array<{
 ---
 
 <section class="py-20 space-y-6">
-  <h2 class="text-3xl font-bold text-green-400 animate-fade-up">Core Skills</h2>
-  <ul class="grid grid-cols-2 sm:grid-cols-3 gap-4 text-gray-300">
+  <h2 class="text-center text-3xl font-bold text-green-400 animate-fade-up">Core Skills</h2>
+  <ul class="grid grid-cols-1 md:grid-cols-3  gap-4 text-gray-300">
     {
       skills.map((skill) => {
         return (
-          <li>
+          <li class="h-[300px] md:h-auto">
             <SpotlightCard
               client:only="react"
               spotlightColor="rgba(0, 229, 255, 0.2)"
-              className="flex justify-center items-center flex-col gap-2"
+              className="flex justify-center items-center flex-col gap-2 h-full"
             >
               <Image
                 draggable="false"

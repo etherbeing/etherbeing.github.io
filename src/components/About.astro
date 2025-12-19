@@ -1,42 +1,19 @@
 ---
 import DecryptedText from "./react/DecryptedText";
+import SpotlightCard from "./react/SpotlightCard";
 ---
 
 <section class="py-20 space-y-4">
-    <h2 class="text-3xl font-bold text-green-400 animate-fade-up">
-        <DecryptedText client:only="react" revealDirection="center" animateOn="view" text="About">
-        </DecryptedText>
+    <h2 class="text-center text-3xl font-bold text-green-400 animate-fade-up">
+        About
     </h2>
-    <div class="text-justify select-none cursor-default">
-        I am Esteban Chacon Martin, a normal person that tries to overcome the tests given to him by
-        God and the life, I work each day in order to fulfill my own goals which
-        is in part to make from this a better world, not just for me and my
-        family, but for the kids that are starving on the streets, for the
-        siblings that tears apart from been separated looking for a better life
-        by authoritative regimes, for those parents that their tears can be
-        described from losing a son to the injustice that occur in the world
-        today.
-        <br />
-        My political stance is liberal humanism where I advocate for freedom, individualism,
-        sovereignty and capacity of each individual to live as their desire, no human
-        should be able to break a dream, and every dream should be protected by the
-        state and society, remembering always that our right to extend our fist ends
-        where the other's nose start.
-        <br />
-        I believe in God and study the teaching of Siddhartha Gautama (Buddha). My
-        spiritual goes toward the goal of living in harmony with each living being
-        in the world, respecting each other life is respecting our own existence,
-        we are nothing without the rests of existence, we are smart just because
-        there is something else that categorize us like that, therefore never treat
-        a living thing like is less than yourself, because without it we are nothing
-        but a lot of flesh and dust.
-        <br />
-        I like studying, learning new stuff, philosophy, cultures, debates, politics
-        and anything that help me grow better each day, having an IQ average of 143
-        I try to improve it by doing some Raven matrixes from time to time and studying
-        general logic problems (like you know programming, pentesting or reverse
-        engineering), someday if possible I'd like to enter into <a
-            href="https://mensa.org">mensa</a
-        > to share and learn from those who are there.
-    </div>
+
+    <SpotlightCard client:only="react" className="text-justify select-none cursor-default">
+        I am Esteban Chacon Martin, a person driven by purpose, growth, and compassion, striving to improve both myself and the world around me. 
+        My values are rooted in liberal humanism, emphasizing individual freedom, dignity, and responsibility, with the belief that no one's 
+        rights extend to harming another. I believe in God and study the teachings of Buddha, seeking to live in harmony with all forms of life 
+        and recognizing the interdependence of existence. I am deeply committed to learning and self-development, with interests spanning 
+        philosophy, culture, politics, and technology, and I continually challenge my reasoning and analytical abilities with the goal of 
+        contributing meaningfully to society and engaging with high-level intellectual communities.
+    </SpotlightCard>
 </section>
