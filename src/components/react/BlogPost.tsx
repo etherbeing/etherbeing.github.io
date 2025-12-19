@@ -27,7 +27,7 @@ export default function Blog({ apiUrl }: { apiUrl: string }) {
   }, []);
 
   return (
-    <section className="py-20 space-y-4">
+    <section id="blog" className="py-20 space-y-4">
       <GlowingHeader>Blog</GlowingHeader>
 
       <div className={`grid grid-cols-1 md:grid-cols-3 ${justification}`}>

@@ -39,7 +39,7 @@ import Header from "./react/Header";
             autoResumeDelay={250}
             autoRampDuration={0.6}
         />
-        <Header />
+        <Header client:only="react" />
         <main class="w-full md:w-4xl px-3 md:px-0 mx-auto">
             <slot />
         </main>

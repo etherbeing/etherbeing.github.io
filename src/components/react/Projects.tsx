@@ -46,7 +46,7 @@ export default function Projects({ apiUrl }: { apiUrl: string }) {
     });
   }, []);
   return (
-    <section className="py-20 space-y-4">
+    <section id="projects" className="py-20 space-y-4">
       <GlowingHeader>Projects</GlowingHeader>
 
       {repos
