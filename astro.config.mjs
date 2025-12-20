@@ -7,11 +7,14 @@ import react from "@astrojs/react";
 
 import svelte from "@astrojs/svelte";
 
+import sentry from "@sentry/astro";
+import spotlightjs from "@spotlightjs/astro";
+
 // https://astro.build/config
 export default defineConfig({
   vite: {
     plugins: [tailwindcss()],
   },
-  output: 'static',
-  integrations: [icon(), react(), svelte()],
+  output: "static",
+  integrations: [icon(), react(), svelte(), sentry(), spotlightjs()],
 });
