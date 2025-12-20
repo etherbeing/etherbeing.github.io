@@ -3,6 +3,7 @@ import { Icon } from "astro-icon/components";
 import DecryptedText from "./react/DecryptedText";
 import GlowingHeader from "./react/GlowingHeader";
 import SpotlightCard from "./react/SpotlightCard";
+import GlowingText from "./react/GlowingText";
 const services: Array<{
     starting_price: number;
     title: string;
@@ -68,10 +69,15 @@ const services: Array<{
                         spotlightColor="rgba(0, 229, 255, 0.2)"
                         className="mx-auto h-[300px] aspect-square flex flex-col justify-between px-auto py-5 cursor-default"
                     >
-                        <div>
-                            <h2 class="mx-auto text-xl font-bold">
-                                {service.title}
-                            </h2>
+                        <div class="flex flex-col justify-between h-full gap-3">
+                            <GlowingText
+                                client:only="react"
+                                className="my-auto"
+                            >
+                                <h2 class="mx-auto text-xl font-bold text-center">
+                                    {service.title}
+                                </h2>
+                            </GlowingText>
                             <span class="text-sm text-gray-500">
                                 {service.description}
                             </span>
