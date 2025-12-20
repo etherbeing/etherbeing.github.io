@@ -43,7 +43,7 @@ const skills: Array<{
 <section id="core-skills" class="py-20 space-y-6">
     <GlowingHeader>Core Skills</GlowingHeader>
 
-    <ul class="grid grid-cols-1 md:grid-cols-3 gap-4 text-gray-300">
+    <ul class="grid grid-cols-1 md:grid-cols-3 gap-4">
         {
             skills.map((skill) => {
                 return (
@@ -51,7 +51,7 @@ const skills: Array<{
                         <SpotlightCard
                             client:only="react"
                             spotlightColor="rgba(0, 229, 255, 0.2)"
-                            className="flex justify-center items-center flex-col gap-2 h-full"
+                            className="flex justify-center items-center flex-col gap-3 h-full cursor-default select-none text-sm uppercase text-center font-bold"
                         >
                             <Image
                                 draggable="false"
