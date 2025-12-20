@@ -1,16 +1,56 @@
 ---
 import ferris from "@/assets/ferris.png";
 import SpotlightCard from "./react/SpotlightCard";
-// import { Image } from "astro:assets";
 import GlowingHeader from "./react/GlowingHeader";
+import GlowingText from "./react/GlowingText";
+
+const infoLeft: Array<{ header: string; content: string }> = [
+    {
+        header: "Values",
+        content:
+            "Freedom, creativity, forward thinking, democracy, and innovation.",
+    },
+    {
+        header: "Mission",
+        content: "Leave this world a little bit better than how I found it.",
+    },
+];
+const infoRight: Array<{ header: string; content: string }> = [
+    {
+        header: "Personal Journey",
+        content:
+            "Built my own enterprise failed twice, moving forward with more experience than never.",
+    },
+    {
+        header: "Core Strengths",
+        content: "Resilience, adaptability, and problem-solving.",
+    },
+];
 ---
 
-<section id="about" class="py-20 space-y-4">
+<section id="about" class="py-20 space-y-4 md:w-[120%] md:-ml-[10%]">
     <div class="text-center animate-fade-up mb-20">
         <GlowingHeader>About</GlowingHeader>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <SpotlightCard
+            client:only="react"
+            className="text-justify select-none cursor-default"
+        >
+            {
+                infoLeft.map((art) => {
+                    return (
+                        <div class="flex flex-col text-justify gap-1 mt-5">
+                            <GlowingText>
+                                <h3 class="text-xl font-bold">{art.header}</h3>
+                            </GlowingText>
+                            {art.content}
+                        </div>
+                    );
+                })
+            }
+        </SpotlightCard>
         <SpotlightCard
             client:only="react"
             className="flex justify-center items-center p-0 bg-size-[90%] bg-center bg-no-repeat bg-transparent border-none px-10 min-h-50"
@@ -20,18 +60,18 @@ import GlowingHeader from "./react/GlowingHeader";
             client:only="react"
             className="text-justify select-none cursor-default"
         >
-            I am Esteban Chacon Martin, a person driven by purpose, growth, and
-            compassion, striving to improve both myself and the world around me.
-            My values are rooted in liberal humanism, emphasizing individual
-            freedom, dignity, and responsibility, with the belief that no one's
-            rights extend to harming another. I believe in God and study the
-            teachings of Buddha, seeking to live in harmony with all forms of
-            life and recognizing the interdependence of existence. I am deeply
-            committed to learning and self-development, with interests spanning
-            philosophy, culture, politics, and technology, and I continually
-            challenge my reasoning and analytical abilities with the goal of
-            contributing meaningfully to society and engaging with high-level
-            intellectual communities.
+            {
+                infoRight.map((art) => {
+                    return (
+                        <div class="flex flex-col text-justify gap-1 mt-5">
+                            <GlowingText>
+                                <h3 class="text-xl font-bold">{art.header}</h3>
+                            </GlowingText>
+                            {art.content}
+                        </div>
+                    );
+                })
+            }
         </SpotlightCard>
     </div>
 </section>
