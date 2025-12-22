@@ -3,6 +3,10 @@ import ferris from "@/assets/ferris.png";
 import SpotlightCard from "./react/SpotlightCard";
 import GlowingHeader from "./react/GlowingHeader";
 import GlowingText from "./react/GlowingText";
+import { Image } from "astro:assets";
+import photo from "@/assets/photo.jpg";
+import StarBorder from "./react/StarBorder";
+import { Icon } from "astro-icon/components";
 
 const infoLeft: Array<{ header: string; content: string }> = [
     {
@@ -32,7 +36,6 @@ const infoRight: Array<{ header: string; content: string }> = [
     <div class="text-center animate-fade-up mb-20">
         <GlowingHeader>About</GlowingHeader>
     </div>
-
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <SpotlightCard
             client:only="react"
@@ -72,6 +75,37 @@ const infoRight: Array<{ header: string; content: string }> = [
                     );
                 })
             }
+        </SpotlightCard>
+    </div>
+
+    <div class="flex flex-col items-center justify-center relative">
+        <SpotlightCard
+            client:only="react"
+            className="flex flex-col justify-between aspect-9/16 p-0! w-75"
+        >
+            <Image src={photo} alt="Photo" />
+            <div class="flex flex-col my-5 px-5 cursor-default">
+                <GlowingText client:only="react">
+                    <span class="text-xl font-bold">Short bio</span>
+                </GlowingText>
+                I am a crustacean and I love to eat shrimp. Hell yeah long life to
+                Ferris! Let us feed the Rust community with amazing content.
+            </div>
+            <div class="w-full flex justify-end items-end px-3 mb-5">
+                <a
+                    target="_blank"
+                    href="https://paypal.me/etherbeing"
+                    class="w-full cursor-pointer"
+                >
+                    <StarBorder
+                        client:only="react"
+                        className="flex flex-row gap-3 justify-center items-center w-full"
+                    >
+                        <span class="font-bold text-sm">Buy me a coffee</span>
+                        <Icon name="simple-icons:buymeacoffee" />
+                    </StarBorder>
+                </a>
+            </div>
         </SpotlightCard>
     </div>
 </section>
