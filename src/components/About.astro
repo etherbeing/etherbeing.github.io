@@ -39,7 +39,7 @@ const infoRight: Array<{ header: string; content: string }> = [
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <SpotlightCard
             client:only="react"
-            className="text-justify select-none cursor-default"
+            className="text-justify select-none cursor-default bg-transparent backdrop-blur-2xl"
         >
             {
                 infoLeft.map((art) => {
@@ -61,7 +61,7 @@ const infoRight: Array<{ header: string; content: string }> = [
         />
         <SpotlightCard
             client:only="react"
-            className="text-justify select-none cursor-default"
+            className="text-justify select-none cursor-default bg-transparent backdrop-blur-2xl"
         >
             {
                 infoRight.map((art) => {
@@ -81,30 +81,36 @@ const infoRight: Array<{ header: string; content: string }> = [
     <div class="flex flex-col items-center justify-center relative">
         <SpotlightCard
             client:only="react"
-            className="flex flex-col justify-between aspect-9/16 p-0! w-75"
+            className="flex flex-col justify-between aspect-9/16 p-0! w-75 bg-transparent backdrop-blur-2xl"
         >
-            <Image src={photo} alt="Photo" />
-            <div class="flex flex-col my-5 px-5 cursor-default">
+            <div class={"max-h-[60%] overflow-hidden hover:alter-ego"}>
+                <Image src={photo} alt="Photo" />
+            </div>
+            <div class="flex flex-col my-5 px-5">
                 <GlowingText client:only="react">
                     <span class="text-xl font-bold">Short bio</span>
                 </GlowingText>
-                I am a crustacean and I love to eat shrimp. Hell yeah long life to
-                Ferris! Let us feed the Rust community with amazing content.
-            </div>
-            <div class="w-full flex justify-end items-end px-3 mb-5">
-                <a
-                    target="_blank"
-                    href="https://paypal.me/etherbeing"
-                    class="w-full cursor-pointer"
-                >
-                    <StarBorder
-                        client:only="react"
-                        className="flex flex-row gap-3 justify-center items-center w-full"
+                <p class="text-sm text-justify cursor-default">
+                    I'm a cybersecurity enthusiast and Rust developer with a
+                    knack for solving complex problems.
+                </p>
+                <div class="w-full flex justify-end items-end px-3 mt-5 mb-3 z-10 cursor-pointer">
+                    <a
+                        target="_blank"
+                        href="https://paypal.me/etherbeing"
+                        class="w-full"
                     >
-                        <span class="font-bold text-sm">Buy me a coffee</span>
-                        <Icon name="simple-icons:buymeacoffee" />
-                    </StarBorder>
-                </a>
+                        <StarBorder
+                            client:only="react"
+                            className="flex flex-row gap-3 justify-center items-center w-full"
+                        >
+                            <span class="font-bold text-sm"
+                                >Buy me a coffee</span
+                            >
+                            <Icon name="simple-icons:buymeacoffee" />
+                        </StarBorder>
+                    </a>
+                </div>
             </div>
         </SpotlightCard>
     </div>
