@@ -51,7 +51,7 @@ echo $! > $API_PID
 # Frontend server
 WEB_PID=$TMP_PIDS/web.pid
 cd $ROOT_DIRECTORY
-pnpm run dev &
+pnpm run dev --verbose &
 echo $! > $WEB_PID
 
 echo "Services are now up and running, now waiting for them to die (NOTE that killing the frontend pid is enough to kill them all)"

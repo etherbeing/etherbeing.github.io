@@ -1,6 +1,8 @@
+ignoredBuiltDependencies:
+  - sharp
+
 onlyBuiltDependencies:
+  - '@sentry/cli'
   - core-js
   - esbuild
-  - sharp
-ignoredBuiltDependencies:
   - sharp

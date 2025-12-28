@@ -14,7 +14,25 @@ import spotlightjs from "@spotlightjs/astro";
 export default defineConfig({
   vite: {
     plugins: [tailwindcss()],
+    server: {
+      watch: {
+        ignored: [
+          "api/**",
+          "node_modules/**",
+          "target/**",
+          "high_performance/**",
+          "devops/**",
+          "dist/**"
+        ]
+      }
+    }
   },
   output: "static",
-  integrations: [icon(), react(), svelte(), sentry(), spotlightjs()],
+  integrations: [
+    icon(),
+    react(),
+    svelte(),
+    sentry(),
+    spotlightjs()
+  ],
 });

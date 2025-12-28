@@ -3,10 +3,12 @@ import ferris from "@/assets/ferris.png";
 import SpotlightCard from "./react/SpotlightCard";
 import GlowingHeader from "./react/GlowingHeader";
 import GlowingText from "./react/GlowingText";
-import { Image } from "astro:assets";
 import photo from "@/assets/photo.jpg";
+import alterEgo from "@/assets/alter-ego.png";
 import StarBorder from "./react/StarBorder";
 import { Icon } from "astro-icon/components";
+import AlterEgo from "./svelte/AlterEgo.svelte";
+import DecryptedText from "./react/DecryptedText";
 
 const infoLeft: Array<{ header: string; content: string }> = [
     {
@@ -83,19 +85,29 @@ const infoRight: Array<{ header: string; content: string }> = [
             client:only="react"
             className="flex flex-col justify-between aspect-9/16 p-0! w-75 bg-transparent backdrop-blur-2xl"
         >
-            <div class={"max-h-[60%] overflow-hidden hover:alter-ego"}>
-                <Image src={photo} alt="Photo" />
-            </div>
+            <AlterEgo
+                client:only="svelte"
+                alter={alterEgo.src}
+                base={photo.src}
+            />
             <div class="flex flex-col my-5 px-5">
                 <GlowingText client:only="react">
-                    <span class="text-xl font-bold">Short bio</span>
+                    <span class="text-xl font-bold select-none">Short bio</span>
                 </GlowingText>
-                <p class="text-sm text-justify cursor-default">
-                    I'm a cybersecurity enthusiast and Rust developer with a
-                    knack for solving complex problems.
+                <p class="text-sm text-justify cursor-default select-none">
+                    <DecryptedText
+                        client:only="react"
+                        sequential={true}
+                        text={"I'm a cybersecurity enthusiast and Rust developer with a knack for solving complex problems."}
+                        animateOn="view"
+                        speed={50}
+                        maxIterations={3}
+                    />
                 </p>
-                <div class="w-full flex justify-end items-end px-3 mt-5 mb-3 z-10 cursor-pointer">
-                    <a
+                <div
+                    class="w-full flex justify-end items-end px-3 mt-5 mb-3 z-10 cursor-pointer"
+                >
+                    <a 
                         target="_blank"
                         href="https://paypal.me/etherbeing"
                         class="w-full"
