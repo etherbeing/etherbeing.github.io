@@ -24,6 +24,7 @@ services:
     depends_on:
       - postgres
       - redis
+    restart: unless-stopped
   redis:
     # 6379
     image: redis:latest
@@ -31,6 +32,7 @@ services:
       - redis_env
     volumes:
       - redis_data:/data
+    restart: unless-stopped
   postgres:
     # 5432
     image: postgres:latest
@@ -42,7 +44,7 @@ services:
       - POSTGRES_USER_FILE=/run/secrets/postgres_user
     volumes:
       - postgres_data:/var/lib/postgresql/data
-
+    restart: unless-stopped
 volumes:
   postgres_data:
   media_data:
