@@ -46,6 +46,7 @@ jobs:
     needs: deploy_backend # more likely this frontend version requires something from the backend if the backend fails there is no need for this to run
     name: Build
     runs-on: self-hosted
+    timeout-minutes: 30
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -57,14 +58,14 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v6 # Action to set up the Node.js environment
         with:
-          node-version: 'latest' # Specify the desired Node.js version
+          node-version: '22' # Keep CI reproducible instead of floating to the latest runtime
           cache: 'pnpm' # Optional: Caches npm dependencies to speed up subsequent runs
       - name: Setup Pages
         id: pages
         uses: actions/configure-pages@v5
       - name: Install packages
         run: |
-          pnpm install
+          pnpm install --frozen-lockfile
       - name: Build with Astro
         run: |
           pnpm run build --mode production
@@ -124,7 +125,7 @@ jobs:
   notify:
     name: Final notification of whether the deployment of the github pages either failed or was successful
     needs: deploy
-    if: ${{ always() && needs.deploy.result == 'failure' || needs.deploy.result == 'success'}}
+    if: ${{ always() && (needs.deploy.result == 'failure' || needs.deploy.result == 'success') }}
     uses: ./.github/workflows/ci_project.yml
     with:
       # Pass the final status of the job you want to report on

@@ -40,62 +40,59 @@ jobs:
     live_notifications:
         runs-on: ubuntu-latest
         steps:
-            - name: Notify on Success (Discord)
-              if: ${{ inputs.status == 'success' }}
+            - name: Compose notification copy
+              id: message
+              shell: bash
+              run: |
+                  COMMIT_TITLE="$(printf '%s' "${{ inputs.commit_message }}" | head -n 1)"
+                  if [ "${{ inputs.status }}" = "success" ]; then
+                    STATUS_ICON="✅"
+                    STATUS_LABEL="Deployment finished successfully"
+                    STATUS_BODY="The latest website changes are now live."
+                    CTA_LABEL="Open workflow logs"
+                  else
+                    STATUS_ICON="❌"
+                    STATUS_LABEL="Deployment needs attention"
+                    STATUS_BODY="The pipeline stopped before completing. Please review the workflow logs."
+                    CTA_LABEL="Review workflow logs"
+                  fi
+
+                  {
+                    echo "discord_message<<EOF"
+                    echo "${STATUS_ICON} **${STATUS_LABEL}**"
+                    echo
+                    echo "${STATUS_BODY}"
+                    echo
+                    echo "**Repository:** \`${{ inputs.repo_name }}\`"
+                    echo "**Branch:** \`${{ inputs.branch }}\`"
+                    echo "**Commit:** ${COMMIT_TITLE}"
+                    echo
+                    echo "[${CTA_LABEL}](${{ inputs.run_url }})"
+                    echo "EOF"
+                    echo "telegram_message<<EOF"
+                    echo "${STATUS_ICON} *${STATUS_LABEL}*"
+                    echo
+                    echo "${STATUS_BODY}"
+                    echo
+                    echo "*Repository:* \`${{ inputs.repo_name }}\`"
+                    echo "*Branch:* \`${{ inputs.branch }}\`"
+                    echo "*Commit:* ${COMMIT_TITLE}"
+                    echo
+                    echo "[${CTA_LABEL}](${{ inputs.run_url }})"
+                    echo "EOF"
+                  } >> "$GITHUB_OUTPUT"
+
+            - name: Notify Discord
               uses: Ilshidur/action-discord@master
               env:
                   DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
               with:
-                  args: |
-                      📢 **New Deployment Alert**
+                  args: ${{ steps.message.outputs.discord_message }}
 
-                      **Repository:** `${{ inputs.repo_name }}`
-                      **Branch:** `${{ inputs.branch }}`
-                      **Status:** ✅ **SUCCESS** (New features/fixes live!)
-
-                      **Commit Message:**
-                      > *${{ inputs.commit_message }}*
-
-                      [View Workflow Logs](${{ inputs.run_url }})
-            - name: Notify on Failure (Discord)
-              if: ${{ inputs.status == 'failure' }}
-              uses: Ilshidur/action-discord@master
-              env:
-                  DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
-              with:
-                  args: |
-                      🚨 **CRITICAL FAILURE ALERT**
-
-                      **Repository:** `${{ inputs.repo_name }}`
-                      **Branch:** `${{ inputs.branch }}`
-                      **Status:** ❌ **FAILURE** (Deployment Halted!)
-
-                      **Commit Message:**
-                      > *${{ inputs.commit_message }}*
-
-                      [Check Logs Immediately](${{ inputs.run_url }})
-            - name: Telegram notify on Success
-              if: ${{ inputs.status == 'success' }}
+            - name: Notify Telegram
               uses: appleboy/telegram-action@master
               with:
                   to: ${{ secrets.TELEGRAM_TO }}
                   token: ${{ secrets.TELEGRAM_TOKEN }}
-                  message: |
-                      🚀 **Successful Deployment**
-
-                      **Repo:** ${{ inputs.repo_name }} (${{ inputs.branch }})
-                      **Commit:** ${{ inputs.commit_message }}
-                      [View Logs](${{ inputs.run_url }})
-            - name: Telegram Notify on Failure
-              # Check the status passed from the calling workflow
-              if: ${{ inputs.status == 'failure' }}
-              uses: appleboy/telegram-action@master
-              with:
-                  to: ${{ secrets.TELEGRAM_TO }}
-                  token: ${{ secrets.TELEGRAM_TOKEN }}
-                  message: |
-                      🔴 **Deployment Failed**
-
-                      **Repo:** ${{ inputs.repo_name }} (${{ inputs.branch }})
-                      **Commit:** ${{ inputs.commit_message }}
-                      [View Logs](${{ inputs.run_url }})
+                  format: markdown
+                  message: ${{ steps.message.outputs.telegram_message }}

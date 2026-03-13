@@ -1,4 +1,14 @@
-import React, { CSSProperties, useEffect, useRef, useState, useMemo, PropsWithChildren } from 'react';
+import {
+  type CSSProperties,
+  type PropsWithChildren,
+  type ReactNode,
+  type RefObject,
+  memo,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import * as math from 'mathjs';
 
 type GradualBlurProps = PropsWithChildren<{
@@ -148,7 +158,7 @@ const useResponsiveDimension = (
   return responsive ? val : (config as any)[key];
 };
 
-const useIntersectionObserver = (ref: React.RefObject<HTMLDivElement>, shouldObserve: boolean = false) => {
+const useIntersectionObserver = (ref: RefObject<HTMLDivElement>, shouldObserve: boolean = false) => {
   const [isVisible, setIsVisible] = useState(!shouldObserve);
 
   useEffect(() => {
@@ -163,8 +173,8 @@ const useIntersectionObserver = (ref: React.RefObject<HTMLDivElement>, shouldObs
   return isVisible;
 };
 
-const GradualBlur: React.FC<GradualBlurProps> = props => {
-  const containerRef = useRef<HTMLDivElement>(null) as React.RefObject<HTMLDivElement>;
+const GradualBlur = (props: GradualBlurProps) => {
+  const containerRef = useRef<HTMLDivElement>(null) as RefObject<HTMLDivElement>;
   const [isHovered, setIsHovered] = useState(false);
 
   const config = useMemo(() => {
@@ -178,7 +188,7 @@ const GradualBlur: React.FC<GradualBlurProps> = props => {
   const isVisible = useIntersectionObserver(containerRef, config.animated === 'scroll');
 
   const blurDivs = useMemo(() => {
-    const divs: React.ReactNode[] = [];
+    const divs: ReactNode[] = [];
     const increment = 100 / config.divCount;
     const currentStrength =
       isHovered && config.hoverIntensity ? config.strength * config.hoverIntensity : config.strength;
@@ -277,7 +287,7 @@ const GradualBlur: React.FC<GradualBlurProps> = props => {
   );
 };
 
-const GradualBlurMemo = React.memo(GradualBlur);
+const GradualBlurMemo = memo(GradualBlur);
 GradualBlurMemo.displayName = 'GradualBlur';
 (GradualBlurMemo as any).PRESETS = PRESETS;
 (GradualBlurMemo as any).CURVE_FUNCTIONS = CURVE_FUNCTIONS;

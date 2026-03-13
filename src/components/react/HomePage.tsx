@@ -231,13 +231,7 @@ export default function HomePage({ apiUrl }: { apiUrl: string }) {
                 <span className="text-xl font-bold select-none">Short bio</span>
               </GlowingText>
               <p className="text-sm text-justify cursor-default select-none">
-                <DecryptedText
-                  sequential={true}
-                  text={content.about_short_bio}
-                  animateOn="view"
-                  speed={50}
-                  maxIterations={3}
-                />
+                {content.about_short_bio}
               </p>
               <div className="w-full flex justify-end items-end px-3 mt-5 mb-3 z-10 cursor-pointer">
                 <a target="_blank" href={content.buy_me_a_coffee_url} className="w-full">
