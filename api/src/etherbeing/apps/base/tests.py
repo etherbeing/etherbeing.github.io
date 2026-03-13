@@ -284,6 +284,35 @@ class SiteContentApiTests(TestCase):
         self.assertEqual(response.status_code, 400)
         self.assertEqual(ContactThread.objects.count(), 0)
 
+    @override_settings(
+        RECAPTCHA_SITE_KEY="site-key",
+        RECAPTCHA_SECRET_KEY="secret-key",
+        RECAPTCHA_MIN_SCORE=0.7,
+    )
+    @patch("apps.base.controllers.ContactThreadCreateSerializer.is_valid")
+    @patch("apps.base.controllers.verify_recaptcha_token")
+    def test_contact_thread_invalid_recaptcha_short_circuits_before_validation(
+        self,
+        verify_mock,
+        is_valid_mock,
+    ):
+        user = get_user_model().objects.create_user(username="contact-user-3")
+        self.client.force_login(user)
+        verify_mock.return_value = Mock(success=False)
+
+        response = self.client.post(
+            "/api/site/contact/threads/",
+            {
+                "subject": "",
+                "content": "",
+                "recaptcha_token": "bad-token",
+            },
+            content_type="application/json",
+        )
+
+        self.assertEqual(response.status_code, 400)
+        is_valid_mock.assert_not_called()
+
     def test_contact_threads_lists_only_requester_threads(self):
         owner = get_user_model().objects.create_user(username="owner")
         other = get_user_model().objects.create_user(username="other")
@@ -854,8 +883,9 @@ class AdminAuthTests(TestCase):
         RECAPTCHA_SECRET_KEY="secret-key",
         RECAPTCHA_MIN_SCORE=0.7,
     )
+    @patch("django.contrib.auth.forms.authenticate")
     @patch("apps.base.forms.verify_recaptcha_token")
-    def test_admin_login_rejects_low_recaptcha_score(self, verify_mock):
+    def test_admin_login_rejects_low_recaptcha_score_before_authentication(self, verify_mock, authenticate_mock):
         verify_mock.return_value = Mock(success=False)
 
         response = self.client.post(
@@ -869,6 +899,7 @@ class AdminAuthTests(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "reCAPTCHA verification failed")
+        authenticate_mock.assert_not_called()
 
     @override_settings(
         RECAPTCHA_SITE_KEY="site-key",

@@ -467,15 +467,14 @@ class SiteContentViewSet(GenericViewSet):
             threads = ContactThread.objects.filter(requester=request.user).prefetch_related("messages__sender")
             return Response(ContactThreadSerializer(threads, many=True).data)
 
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        if not self.verify_contact_recaptcha(
-            request, serializer.validated_data.get("recaptcha_token", "")
-        ):
+        recaptcha_token = request.data.get("recaptcha_token", "")
+        if not self.verify_contact_recaptcha(request, recaptcha_token):
             return Response(
                 {"detail": "reCAPTCHA verification failed."},
                 status=HTTPStatus.BAD_REQUEST,
             )
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
 
         thread = ContactThread.objects.create(
             requester=request.user,
@@ -507,15 +506,14 @@ class SiteContentViewSet(GenericViewSet):
         if thread is None:
             return Response({"detail": "Conversation not found."}, status=HTTPStatus.NOT_FOUND)
 
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        if not self.verify_contact_recaptcha(
-            request, serializer.validated_data.get("recaptcha_token", "")
-        ):
+        recaptcha_token = request.data.get("recaptcha_token", "")
+        if not self.verify_contact_recaptcha(request, recaptcha_token):
             return Response(
                 {"detail": "reCAPTCHA verification failed."},
                 status=HTTPStatus.BAD_REQUEST,
             )
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
 
         ContactMessage.objects.create(
             thread=thread,
