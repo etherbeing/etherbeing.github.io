@@ -16,7 +16,7 @@ from pathlib import Path
 import sys
 import dotenv
 
-dotenv.load_dotenv(os.environ.get("DJANGO_ENV_FILE", None))
+dotenv.load_dotenv(os.environ.get("DJANGO_ENV_FILE", None), override=True)
 
 
 def parse_env_literal(value: str, default):

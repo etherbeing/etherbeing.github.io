@@ -127,7 +127,13 @@
                 <label class="text-xs uppercase tracking-[0.18em] text-slate-300">
                   {% translate "Human verification" %}
                 </label>
-                <div id="admin-recaptcha-checkbox" class="min-h-[78px]"></div>
+                <div
+                  class="g-recaptcha"
+                  data-sitekey="{{ recaptcha_site_key }}"
+                  data-callback="etherbeingAdminRecaptchaCallback"
+                  data-expired-callback="etherbeingAdminRecaptchaExpired"
+                  data-error-callback="etherbeingAdminRecaptchaExpired"
+                ></div>
                 <div id="admin-recaptcha-feedback" class="text-sm text-amber-100 hidden">
                   {% translate "Please complete the reCAPTCHA checkbox before continuing." %}
                 </div>
@@ -203,45 +209,22 @@
     <script>
       document.addEventListener("DOMContentLoaded", function () {
         const recaptchaEnabled = "{{ recaptcha_enabled|yesno:'true,false' }}" === "true";
-        const siteKey = "{{ recaptcha_site_key|escapejs }}";
         const tokenInput = document.getElementById("id_recaptcha_token");
         const feedback = document.getElementById("admin-recaptcha-feedback");
-        let widgetId = null;
 
         function setFeedbackVisible(visible) {
           if (!feedback) return;
           feedback.classList.toggle("hidden", !visible);
         }
 
-        function renderRecaptchaWidget() {
-          if (!recaptchaEnabled || !window.grecaptcha || widgetId !== null) {
-            return;
-          }
-          const container = document.getElementById("admin-recaptcha-checkbox");
-          if (!container) return;
-          widgetId = window.grecaptcha.render(container, {
-            sitekey: siteKey,
-            callback: function (token) {
-              if (tokenInput) tokenInput.value = token;
-              setFeedbackVisible(false);
-            },
-            "expired-callback": function () {
-              if (tokenInput) tokenInput.value = "";
-            },
-            "error-callback": function () {
-              if (tokenInput) tokenInput.value = "";
-            }
-          });
-        }
+        window.etherbeingAdminRecaptchaCallback = function (token) {
+          if (tokenInput) tokenInput.value = token;
+          setFeedbackVisible(false);
+        };
 
-        if (recaptchaEnabled) {
-          const intervalId = window.setInterval(function () {
-            if (window.grecaptcha && typeof window.grecaptcha.render === "function") {
-              window.clearInterval(intervalId);
-              renderRecaptchaWidget();
-            }
-          }, 150);
-        }
+        window.etherbeingAdminRecaptchaExpired = function () {
+          if (tokenInput) tokenInput.value = "";
+        };
 
         const loginForm = document.getElementById("login-form");
         if (loginForm) {

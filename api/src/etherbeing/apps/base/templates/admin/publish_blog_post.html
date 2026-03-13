@@ -47,27 +47,44 @@
 
         <div class="form-row">
           <div class="etherbeing-editor-topline">
-            {{ form.content.label_tag }}
-            <button type="button" class="button" id="etherbeing-editor-fullscreen-toggle">{% translate "Full screen editor" %}</button>
-          </div>
-          <div class="etherbeing-editor-shell" id="etherbeing-editor-shell">
-            <div class="etherbeing-editor-toolbar">
-              <button type="button" data-command="bold"><strong>B</strong></button>
-              <button type="button" data-command="italic"><em>I</em></button>
-              <button type="button" data-command="formatBlock" data-value="h2">H2</button>
-              <button type="button" data-command="formatBlock" data-value="blockquote">{% translate "Quote" %}</button>
-              <button type="button" data-command="insertUnorderedList">{% translate "Bullets" %}</button>
-              <button type="button" data-command="insertOrderedList">{% translate "Numbers" %}</button>
-              <button type="button" data-command="createLink">{% translate "Link" %}</button>
-              <button type="button" data-command="removeFormat">{% translate "Clear" %}</button>
+            <div class="etherbeing-editor-topline-copy">
+              {{ form.content.label_tag }}
+              <p>{% translate "Edit the post source and inspect the rendered preview before creating the gist." %}</p>
             </div>
-            <div
-              id="etherbeing-rich-editor"
-              class="etherbeing-rich-editor"
-              contenteditable="true"
-              spellcheck="true"
-            ></div>
-            {{ form.content.as_hidden }}
+            <div class="etherbeing-editor-topline-actions">
+              <button type="button" class="button" id="etherbeing-preview-fullscreen-toggle">{% translate "Full screen preview" %}</button>
+              <button type="button" class="button" id="etherbeing-editor-fullscreen-toggle">{% translate "Full screen editor" %}</button>
+            </div>
+          </div>
+          <div class="etherbeing-editor-layout">
+            <div class="etherbeing-editor-shell" id="etherbeing-editor-shell">
+              <div class="etherbeing-editor-toolbar">
+                <button type="button" data-command="bold"><strong>B</strong></button>
+                <button type="button" data-command="italic"><em>I</em></button>
+                <button type="button" data-command="formatBlock" data-value="h2">H2</button>
+                <button type="button" data-command="blockquote" data-value="blockquote">{% translate "Quote" %}</button>
+                <button type="button" data-command="insertUnorderedList">{% translate "Bullets" %}</button>
+                <button type="button" data-command="insertOrderedList">{% translate "Numbers" %}</button>
+                <button type="button" data-command="createLink">{% translate "Link" %}</button>
+                <button type="button" data-command="removeFormat">{% translate "Clear" %}</button>
+              </div>
+              <div
+                id="etherbeing-rich-editor"
+                class="etherbeing-rich-editor"
+                contenteditable="true"
+                spellcheck="true"
+              ></div>
+              {{ form.content.as_hidden }}
+            </div>
+            <div class="etherbeing-preview-shell" id="etherbeing-preview-shell">
+              <div class="etherbeing-preview-topline">
+                <span class="etherbeing-preview-kicker">{% translate "Live preview" %}</span>
+                <span class="etherbeing-preview-hint">{% translate "Rendered before gist creation" %}</span>
+              </div>
+              <article id="etherbeing-rich-preview" class="etherbeing-rich-preview">
+                <p>{% translate "Start writing to preview the rendered post here." %}</p>
+              </article>
+            </div>
           </div>
           <div class="help"><div>{% translate "The editor stores HTML into the gist content file. GitHub metadata is stored alongside it for category and distribution tracking." %}</div></div>
         </div>
@@ -119,15 +136,20 @@
     const editor = document.getElementById("etherbeing-rich-editor");
     const hiddenInput = document.getElementById("id_content");
     const shell = document.getElementById("etherbeing-editor-shell");
+    const previewShell = document.getElementById("etherbeing-preview-shell");
+    const preview = document.getElementById("etherbeing-rich-preview");
     const fullScreenButton = document.getElementById("etherbeing-editor-fullscreen-toggle");
-    if (!editor || !hiddenInput || !shell || !fullScreenButton) return;
+    const previewFullscreenButton = document.getElementById("etherbeing-preview-fullscreen-toggle");
+    if (!editor || !hiddenInput || !shell || !previewShell || !preview || !fullScreenButton || !previewFullscreenButton) return;
 
     editor.innerHTML = hiddenInput.value || "<p></p>";
 
     const syncEditor = () => {
       hiddenInput.value = editor.innerHTML.trim();
+      preview.innerHTML = hiddenInput.value || "<p>Start writing to preview the rendered post here.</p>";
     };
 
+    syncEditor();
     editor.addEventListener("input", syncEditor);
     document.querySelectorAll(".etherbeing-editor-toolbar button").forEach((button) => {
       button.addEventListener("click", () => {
@@ -137,6 +159,8 @@
         if (command === "createLink") {
           const url = window.prompt("Enter the link URL");
           if (url) document.execCommand(command, false, url);
+        } else if (command === "blockquote") {
+          document.execCommand("formatBlock", false, value || "blockquote");
         } else {
           document.execCommand(command, false, value || undefined);
         }
@@ -147,6 +171,10 @@
 
     fullScreenButton.addEventListener("click", () => {
       shell.classList.toggle("is-fullscreen");
+    });
+
+    previewFullscreenButton.addEventListener("click", () => {
+      previewShell.classList.toggle("is-fullscreen");
     });
   })();
 </script>

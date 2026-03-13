@@ -739,7 +739,10 @@ class AdminAuthTests(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "etherbeing-rich-editor")
+        self.assertContains(response, "etherbeing-rich-preview")
         self.assertContains(response, "Full screen editor")
+        self.assertContains(response, "Full screen preview")
+        self.assertContains(response, "Live preview")
         self.assertContains(response, "social_networks")
         self.assertContains(response, "Channel readiness")
         self.assertContains(response, "GitHub publishing token")
@@ -833,6 +836,18 @@ class AdminAuthTests(TestCase):
         self.assertTrue(frontend_service.headline)
         self.assertTrue(frontend_service.deliverables)
         self.assertContains(response, "Superuser created successfully")
+
+    @override_settings(
+        RECAPTCHA_SITE_KEY="site-key",
+        RECAPTCHA_SECRET_KEY="secret-key",
+        RECAPTCHA_MIN_SCORE=0.7,
+    )
+    def test_admin_login_shows_recaptcha_checkbox_when_enabled(self):
+        response = self.client.get("/admin/login/")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "g-recaptcha")
+        self.assertContains(response, "https://www.google.com/recaptcha/api.js")
 
     @override_settings(
         RECAPTCHA_SITE_KEY="site-key",

@@ -14,9 +14,8 @@ class RecaptchaAdminAuthenticationForm(AdminAuthenticationForm):
     recaptcha_token = CharField(required=False, widget=HiddenInput())
 
     def clean(self):
-        cleaned_data = super().clean()
         if recaptcha_is_enabled():
-            token = cleaned_data.get("recaptcha_token", "")
+            token = self.data.get("recaptcha_token", "")
             result = verify_recaptcha_token(
                 token,
                 action="admin_login",
@@ -27,7 +26,7 @@ class RecaptchaAdminAuthenticationForm(AdminAuthenticationForm):
                     "reCAPTCHA verification failed. Please try again.",
                     code="invalid_recaptcha",
                 )
-        return cleaned_data
+        return super().clean()
 
 
 class BootstrapSuperuserForm(forms.Form):
