@@ -1,0 +1,49 @@
+{% extends "admin/change_form.html" %}
+{% load i18n admin_urls %}
+
+{% block coltype %}colMS{% endblock %}
+
+{% block sidebar %}
+{% if not is_popup %}
+<div id="content-related">
+  <div class="module" id="model-detail-panel">
+    <h2>{% translate "Detail panel" %}</h2>
+    <h3>{% translate "Current context" %}</h3>
+    <ul class="etherbeing-detail-meta">
+      <li>
+        <span>{% translate "Application" %}</span>
+        <strong>{{ opts.app_config.verbose_name }}</strong>
+      </li>
+      <li>
+        <span>{% translate "Model" %}</span>
+        <strong>{{ opts.verbose_name|capfirst }}</strong>
+      </li>
+      <li>
+        <span>{% translate "Mode" %}</span>
+        <strong>
+          {% if add %}
+            {% translate "Creating" %}
+          {% else %}
+            {% translate "Editing" %}
+          {% endif %}
+        </strong>
+      </li>
+      {% if original %}
+      <li>
+        <span>{% translate "Object" %}</span>
+        <strong>{{ original|truncatewords:"10" }}</strong>
+      </li>
+      {% endif %}
+    </ul>
+    <div class="etherbeing-detail-actions">
+      {% if has_view_permission %}
+      <a href="{% url opts|admin_urlname:'changelist' %}">{% translate "Back to list" %}</a>
+      {% endif %}
+      {% if change and has_add_permission %}
+      <a href="{% url opts|admin_urlname:'add' %}">{% translate "Add another" %}</a>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endif %}
+{% endblock %}

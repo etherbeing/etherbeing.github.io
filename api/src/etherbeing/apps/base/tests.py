@@ -6,7 +6,7 @@ from django.core.cache import cache
 from django.core.management import call_command
 from django.test import TestCase, override_settings
 
-from apps.base.models import BlogEntry, Configuration, Project, SiteContent
+from apps.base.models import BlogEntry, Configuration, Project, Service, SiteContent
 from apps.base.seed_data import initialize_configuration, initialize_site_content
 
 
@@ -68,6 +68,9 @@ class SiteContentApiTests(TestCase):
         self.assertEqual(payload["site_title"], "etherbeing")
         self.assertEqual(payload["configuration"]["favicon_url"], "https://etherbeing.github.io/favicon.png")
         self.assertEqual(len(payload["about_highlights"]), 4)
+        self.assertEqual(payload["skills"][0]["image_url"], "/skills/kali.png")
+        self.assertTrue(payload["skills"][0]["headline"])
+        self.assertTrue(payload["skills"][0]["description"])
         self.assertEqual(SiteContent.objects.count(), 1)
 
     def test_site_content_endpoint_includes_featured_projects_and_blog_entries(self):
@@ -159,6 +162,16 @@ class SiteContentApiTests(TestCase):
         self.assertEqual(payload["title"], "Frontend Web Development")
         self.assertTrue(payload["deliverables"])
         self.assertTrue(payload["process_steps"])
+
+    def test_service_detail_endpoint_rebuilds_services_when_site_content_exists_without_them(self):
+        site_content = initialize_site_content()
+        site_content.services.all().delete()
+
+        response = self.client.get("/api/site/service/frontend-web-development/")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["slug"], "frontend-web-development")
+        self.assertTrue(Service.objects.filter(slug="frontend-web-development").exists())
 
     def test_service_request_requires_authenticated_user(self):
         initialize_site_content()
@@ -484,6 +497,37 @@ class AdminAuthTests(TestCase):
         self.assertContains(response, "admin-theme.css")
         self.assertContains(response, "cdn.tailwindcss.com")
         self.assertContains(response, "Control Surface")
+        self.assertContains(response, "MIT License")
+
+    def test_admin_overridden_views_render_explicit_template_wrappers(self):
+        self.client.force_login(self.user)
+        initialize_site_content()
+
+        index_response = self.client.get("/admin/")
+        changelist_response = self.client.get("/admin/base/service/")
+
+        self.assertEqual(index_response.status_code, 200)
+        self.assertContains(index_response, "etherbeing-admin-dashboard-main")
+        self.assertContains(index_response, "etherbeing-admin-dashboard-sidebar")
+        self.assertContains(index_response, "etherbeing-admin-app-list")
+
+        self.assertEqual(changelist_response.status_code, 200)
+        self.assertContains(changelist_response, "etherbeing-admin-nav-shell")
+        self.assertContains(changelist_response, "etherbeing-admin-change-list-main")
+        self.assertContains(changelist_response, "etherbeing-admin-change-list-shell")
+        self.assertContains(changelist_response, "etherbeing-admin-search-row")
+        self.assertContains(changelist_response, "etherbeing-admin-object-tools")
+
+    def test_admin_change_form_shows_detail_panel_sidebar(self):
+        self.client.force_login(self.user)
+        site_content = initialize_site_content()
+
+        response = self.client.get(f"/admin/base/sitecontent/{site_content.pk}/change/")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "model-detail-panel")
+        self.assertContains(response, "Detail panel")
+        self.assertContains(response, "Current context")
 
     @override_settings(DEBUG=True)
     def test_admin_login_shows_bootstrap_superuser_button_when_no_superuser_exists(self):
@@ -519,6 +563,11 @@ class AdminAuthTests(TestCase):
                 is_staff=True,
             ).exists()
         )
+        self.assertTrue(SiteContent.objects.filter(slug="primary").exists())
+        self.assertGreater(Service.objects.count(), 0)
+        frontend_service = Service.objects.get(slug="frontend-web-development")
+        self.assertTrue(frontend_service.headline)
+        self.assertTrue(frontend_service.deliverables)
         self.assertContains(response, "Superuser created successfully")
 
     @override_settings(

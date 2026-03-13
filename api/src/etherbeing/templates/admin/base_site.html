@@ -56,3 +56,12 @@ tailwind.config = {
   <span>{% trans "Dynamic site content, GitHub sync, and publication controls" %}</span>
 </div>
 {% endblock %}
+
+{% block footer %}
+<div id="footer">
+  <div class="etherbeing-admin-footer-shell">
+    <p>etherbeing {% now "Y" %} &copy; All rights reserved.</p>
+    <p>This project is released under the MIT License.</p>
+  </div>
+</div>
+{% endblock %}

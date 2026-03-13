@@ -367,9 +367,7 @@ class SiteContentViewSet(GenericViewSet):
 
         service = Service.objects.filter(slug=slug).first()
         if service is None:
-            site_content = SiteContent.objects.filter(slug="primary").first()
-            if site_content is None:
-                initialize_site_content()
+            initialize_site_content()
             service = Service.objects.filter(slug=slug).first()
         if service is None:
             return Response({"detail": "Service not found."}, status=HTTPStatus.NOT_FOUND)

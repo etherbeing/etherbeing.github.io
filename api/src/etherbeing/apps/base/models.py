@@ -238,6 +238,9 @@ class Skill(models.Model):
     )
     name = models.CharField(max_length=255)
     image_key = models.CharField(max_length=50)
+    image_url = models.CharField(max_length=500, default="", blank=True)
+    headline = models.CharField(max_length=255, default="", blank=True)
+    description = models.TextField(default="", blank=True)
     sort_order = models.PositiveIntegerField(default=0)
 
     class Meta:

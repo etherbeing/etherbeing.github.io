@@ -13,13 +13,7 @@ import { SiBugcrowd, SiHackerone, SiTryhackme, SiX } from "react-icons/si";
 
 import alterEgo from "@/assets/alter-ego.png";
 import ferris from "@/assets/ferris.png";
-import kali from "@/assets/kali.png";
-import metasploit from "@/assets/metasploit.png";
 import photo from "@/assets/photo.jpg";
-import python from "@/assets/python.svg";
-import reactLogo from "@/assets/react.svg";
-import rust from "@/assets/rust.png";
-import tensorflow from "@/assets/tensorflow.png";
 import AlterEgoCard from "./AlterEgoCard";
 import DecryptedText from "./DecryptedText";
 import GlowingHeader from "./GlowingHeader";
@@ -41,6 +35,9 @@ type AboutHighlight = {
 type Skill = {
   name: string;
   image_key: string;
+  image_url: string;
+  headline: string;
+  description: string;
   sort_order: number;
 };
 
@@ -79,15 +76,6 @@ type SiteContent = {
   contact_groups: ContactGroup[];
   featured_projects: Project[];
   featured_blog_entries: BlogEntry[];
-};
-
-const skillImages: Record<string, string> = {
-  kali: kali.src,
-  rust: rust.src,
-  metasploit: metasploit.src,
-  tensorflow: tensorflow.src,
-  python: python.src,
-  react: reactLogo.src,
 };
 
 const iconMap: Record<string, ReactNode> = {
@@ -181,22 +169,27 @@ export default function HomePage({ apiUrl }: { apiUrl: string }) {
         <p className="z-10 mt-6 text-xl max-w-xl mx-auto">
           <ShinyText text={content.hero_summary} disabled={false} speed={3} />
         </p>
-        <a href={content.hero_cta_url} className="z-10 mt-10">
-          <StarBorder as={"button"} className="cursor-pointer" color="magenta" speed="5s">
-            {content.hero_cta_label}
-          </StarBorder>
-        </a>
-        <a
-          href="https://paypal.me/etherbeing"
-          target="_blank"
-          rel="noreferrer"
-          className="z-10 mt-4"
-        >
-          <StarBorder as={"button"} className="cursor-pointer flex items-center gap-2" color="cyan">
-            <span>Donate</span>
-            <FaPaypal />
-          </StarBorder>
-        </a>
+        <div className="z-10 mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
+          <a href={content.hero_cta_url}>
+            <StarBorder as={"button"} className="cursor-pointer min-w-44" color="magenta" speed="5s">
+              {content.hero_cta_label}
+            </StarBorder>
+          </a>
+          <a
+            href="https://paypal.me/etherbeing"
+            target="_blank"
+            rel="noreferrer"
+          >
+            <StarBorder
+              as={"button"}
+              className="cursor-pointer flex min-w-44 items-center justify-center gap-2"
+              color="cyan"
+            >
+              <span>Donate me</span>
+              <FaPaypal />
+            </StarBorder>
+          </a>
+        </div>
       </section>
 
       <section id="about" className="py-20 space-y-4 md:w-[120%] md:-ml-[10%]">
@@ -263,18 +256,35 @@ export default function HomePage({ apiUrl }: { apiUrl: string }) {
         <GlowingHeader>Core Skills</GlowingHeader>
         <ul className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {content.skills.map((skill) => (
-            <li className="h-[300px] md:h-[275px] mx-auto" key={skill.name}>
+            <li className="mx-auto w-full max-w-2xl" key={skill.name}>
               <SpotlightCard
                 spotlightColor="rgba(0, 229, 255, 0.2)"
-                className="bg-transparent backdrop-blur-2xl flex aspect-square justify-center items-center flex-col gap-3 h-full cursor-default select-none text-sm uppercase text-center font-bold"
+                className="flex h-full flex-col justify-between border-white/10 bg-white/[0.03] p-0 backdrop-blur-2xl cursor-default select-none"
               >
-                <img
-                  draggable="false"
-                  className="h-20 w-auto select-none"
-                  src={skillImages[skill.image_key]}
-                  alt={skill.name}
-                />
-                {skill.name}
+                <div className="border-b border-white/8 bg-linear-to-br from-cyan-400/14 via-slate-950/10 to-violet-400/14 px-6 py-5">
+                  <div className="mb-4 flex items-center justify-between gap-4">
+                    <span className="rounded-full border border-cyan-300/20 bg-cyan-300/10 px-3 py-1 text-[0.68rem] uppercase tracking-[0.24em] text-cyan-100/85">
+                      Core skill
+                    </span>
+                    <img
+                      draggable="false"
+                      className="h-14 w-auto select-none object-contain drop-shadow-[0_0_18px_rgba(125,249,255,0.24)]"
+                      src={skill.image_url}
+                      alt={skill.name}
+                    />
+                  </div>
+                  <h3 className="text-left text-xl font-bold text-white">{skill.name}</h3>
+                  <p className="mt-3 text-left text-xs uppercase tracking-[0.22em] text-cyan-200/80">
+                    {skill.headline}
+                  </p>
+                </div>
+                <div className="flex h-full flex-col justify-between px-6 py-5">
+                  <p className="text-sm leading-7 text-slate-300">{skill.description}</p>
+                  <div className="mt-6 flex items-center justify-between border-t border-white/8 pt-4 text-sm">
+                    <span className="text-slate-400">Backend-driven content</span>
+                    <span className="font-semibold text-cyan-200">{skill.image_key}</span>
+                  </div>
+                </div>
               </SpotlightCard>
             </li>
           ))}
@@ -288,30 +298,47 @@ export default function HomePage({ apiUrl }: { apiUrl: string }) {
             <SpotlightCard
               key={service.title}
               spotlightColor="rgba(0, 229, 255, 0.2)"
-              className="mx-auto h-[300px] aspect-square flex flex-col justify-between px-auto py-5"
+              className="mx-auto flex min-h-[340px] w-full max-w-[23rem] flex-col border-white/10 bg-white/[0.03] p-0 backdrop-blur-2xl"
             >
-              <a href={`/services/entry?slug=${service.slug}`} className="flex flex-col justify-between h-full gap-3">
-                <div className="flex flex-col justify-between gap-3">
+              <a
+                href={`/services/entry?slug=${service.slug}`}
+                className="flex h-full flex-col justify-between overflow-hidden rounded-3xl"
+              >
+                <div className="border-b border-white/8 bg-gradient-to-br from-cyan-400/14 via-slate-950/10 to-fuchsia-400/14 px-6 py-5">
+                  <div className="mb-4 flex items-start justify-between gap-4">
+                    <span className="rounded-full border border-cyan-300/20 bg-cyan-300/10 px-3 py-1 text-[0.68rem] uppercase tracking-[0.24em] text-cyan-100/85">
+                      Service
+                    </span>
+                    <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-semibold text-white/90">
+                      From {service.starting_price} USD
+                    </span>
+                  </div>
                   <GlowingText className="my-auto">
-                    <h2 className="mx-auto text-xl font-bold text-center">{service.title}</h2>
+                    <h2 className="text-left text-xl font-bold text-white">{service.title}</h2>
                   </GlowingText>
-                  <span className="text-center text-xs uppercase tracking-[0.22em] text-cyan-200/80">
+                  <p className="mt-3 text-left text-xs uppercase tracking-[0.22em] text-cyan-200/80">
                     {service.headline}
-                  </span>
-                  <span className="text-sm text-gray-500">{service.description}</span>
+                  </p>
                 </div>
-                <ul className="flex flex-col justify-center h-full items-center w-full my-2 font-bold text-sm">
-                  {service.skills.map((serviceSkill) => (
-                    <li className="w-full flex justify-between items-center" key={serviceSkill}>
-                      <span className="text-green-200">+</span>
-                      {serviceSkill}
-                    </li>
-                  ))}
-                </ul>
-                <span className="flex justify-between w-full text-sm">
-                  <span className="text-cyan-200/80">View details</span>
-                  <span>From {service.starting_price} USD</span>
-                </span>
+                <div className="flex h-full flex-col justify-between px-6 py-5">
+                  <p className="text-sm leading-7 text-slate-300">{service.description}</p>
+                  <ul className="mt-5 flex flex-wrap gap-2 text-sm">
+                    {service.skills.slice(0, 4).map((serviceSkill) => (
+                      <li
+                        className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-semibold text-slate-100"
+                        key={serviceSkill}
+                      >
+                        {serviceSkill}
+                      </li>
+                    ))}
+                  </ul>
+                  <div className="mt-6 flex items-center justify-between border-t border-white/8 pt-4 text-sm">
+                    <span className="text-slate-400">
+                      {service.skills.length} capability{service.skills.length === 1 ? "" : "ies"}
+                    </span>
+                    <span className="font-semibold text-cyan-200">View details {"->"}</span>
+                  </div>
+                </div>
               </a>
             </SpotlightCard>
           ))}

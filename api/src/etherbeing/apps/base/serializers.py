@@ -82,7 +82,7 @@ class AboutHighlightSerializer(ModelSerializer):
 class SkillSerializer(ModelSerializer):
     class Meta:
         model = Skill
-        fields = ("name", "image_key", "sort_order")
+        fields = ("name", "image_key", "image_url", "headline", "description", "sort_order")
 
 
 class ServiceSerializer(ModelSerializer):

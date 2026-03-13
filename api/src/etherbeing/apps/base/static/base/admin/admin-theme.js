@@ -1,4 +1,81 @@
 (function () {
+  function bootSidebarSizing() {
+    var sidebar = document.getElementById("nav-sidebar");
+    var contentStart = document.getElementById("content-start");
+    if (!sidebar || !contentStart) {
+      return;
+    }
+
+    function syncSidebarHeight() {
+      var contentHeight = contentStart.getBoundingClientRect().height;
+      if (!contentHeight) {
+        sidebar.style.removeProperty("max-height");
+        return;
+      }
+      sidebar.style.maxHeight = Math.ceil(contentHeight) + "px";
+    }
+
+    syncSidebarHeight();
+    window.addEventListener("resize", syncSidebarHeight);
+
+    if (typeof ResizeObserver !== "undefined") {
+      var observer = new ResizeObserver(syncSidebarHeight);
+      observer.observe(contentStart);
+    }
+  }
+
+  function bootSidebarToggle() {
+    var sidebar = document.getElementById("nav-sidebar");
+    var main = document.getElementById("main");
+    if (!sidebar || !main || document.querySelector(".etherbeing-sidebar-toggle")) {
+      return;
+    }
+
+    var button = document.createElement("button");
+    button.type = "button";
+    button.className = "etherbeing-sidebar-toggle";
+    button.setAttribute("aria-label", "Hide sidebar");
+    button.setAttribute("aria-pressed", "false");
+    button.innerHTML = (
+      '<span class="etherbeing-eye-icon" aria-hidden="true">' +
+      '<svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">' +
+      '<path class="etherbeing-eye-shape" d="M1.5 12S5.5 5 12 5s10.5 7 10.5 7-4 7-10.5 7S1.5 12 1.5 12Z"></path>' +
+      '<circle class="etherbeing-eye-pupil" cx="12" cy="12" r="3.2"></circle>' +
+      '<path class="etherbeing-eye-slash" d="M4 20 20 4"></path>' +
+      '</svg>' +
+      "</span>"
+    );
+
+    function setHidden(isHidden) {
+      main.classList.toggle("etherbeing-sidebar-hidden", isHidden);
+      if (isHidden) {
+        main.appendChild(button);
+      } else {
+        sidebar.appendChild(button);
+      }
+      button.setAttribute("aria-label", isHidden ? "Show sidebar" : "Hide sidebar");
+      button.setAttribute("aria-pressed", isHidden ? "true" : "false");
+      try {
+        window.localStorage.setItem("etherbeing-admin-sidebar-hidden", isHidden ? "1" : "0");
+      } catch (error) {
+        void error;
+      }
+    }
+
+    var stored = null;
+    try {
+      stored = window.localStorage.getItem("etherbeing-admin-sidebar-hidden");
+    } catch (error) {
+      stored = null;
+    }
+    sidebar.appendChild(button);
+    setHidden(stored === "1");
+
+    button.addEventListener("click", function () {
+      setHidden(!main.classList.contains("etherbeing-sidebar-hidden"));
+    });
+  }
+
   function bootCursorField() {
     var body = document.body;
     if (!body || document.getElementById("etherbeing-admin-cursor")) {
@@ -73,8 +150,14 @@
   }
 
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", bootCursorField);
+    document.addEventListener("DOMContentLoaded", function () {
+      bootCursorField();
+      bootSidebarSizing();
+      bootSidebarToggle();
+    });
   } else {
     bootCursorField();
+    bootSidebarSizing();
+    bootSidebarToggle();
   }
 })();

@@ -125,12 +125,48 @@ DEFAULT_ABOUT_HIGHLIGHTS = [
 ]
 
 DEFAULT_SKILLS = [
-    {"name": "Cybersecurity", "image_key": "kali"},
-    {"name": "Rust", "image_key": "rust"},
-    {"name": "Pentesting", "image_key": "metasploit"},
-    {"name": "Biological Neural Nets", "image_key": "tensorflow"},
-    {"name": "Python", "image_key": "python"},
-    {"name": "React TS", "image_key": "react"},
+    {
+        "name": "Cybersecurity",
+        "image_key": "kali",
+        "image_url": "/skills/kali.png",
+        "headline": "Offensive validation and defensive hardening",
+        "description": "Practical security work spanning pentesting, audit, enumeration, and remediation support.",
+    },
+    {
+        "name": "Rust",
+        "image_key": "rust",
+        "image_url": "/skills/rust.png",
+        "headline": "Systems work with reliability in mind",
+        "description": "High-confidence backend and systems development with an emphasis on correctness and performance.",
+    },
+    {
+        "name": "Pentesting",
+        "image_key": "metasploit",
+        "image_url": "/skills/metasploit.png",
+        "headline": "Exploit thinking for real-world release readiness",
+        "description": "Attack-surface review and exploit-driven testing to expose meaningful security weaknesses before launch.",
+    },
+    {
+        "name": "Biological Neural Nets",
+        "image_key": "tensorflow",
+        "image_url": "/skills/tensorflow.png",
+        "headline": "Research-oriented intelligence systems",
+        "description": "Applied AI exploration informed by research, experimentation, and practical implementation constraints.",
+    },
+    {
+        "name": "Python",
+        "image_key": "python",
+        "image_url": "/skills/python.svg",
+        "headline": "Fast iteration for APIs, tooling, and automation",
+        "description": "Backend services, scripting, and automation pipelines that reduce friction and move quickly.",
+    },
+    {
+        "name": "React TS",
+        "image_key": "react",
+        "image_url": "/skills/react.svg",
+        "headline": "Polished interactive product surfaces",
+        "description": "Frontend systems with intentional UI structure, live data integration, and maintainable component design.",
+    },
 ]
 
 DEFAULT_SERVICES = [

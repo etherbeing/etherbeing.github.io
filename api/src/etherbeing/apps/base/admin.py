@@ -28,6 +28,7 @@ from .models import (
     Skill,
     User,
 )
+from .seed_data import initialize_site_content
 
 
 class EtherbeingAdminSite(admin.AdminSite):
@@ -115,6 +116,7 @@ class EtherbeingAdminSite(admin.AdminSite):
             return redirect("admin:login")
 
         form.save()
+        initialize_site_content()
         messages.success(request, "Superuser created successfully. You can log in now.")
         return redirect("admin:login")
 
@@ -172,8 +174,8 @@ class AboutHighlightAdmin(admin.ModelAdmin):
 
 @admin.register(Skill, site=admin_site)
 class SkillAdmin(admin.ModelAdmin):
-    list_display = ("name", "image_key", "sort_order")
-    search_fields = ("name", "image_key")
+    list_display = ("name", "image_key", "image_url", "sort_order")
+    search_fields = ("name", "image_key", "headline", "description")
 
 
 @admin.register(Service, site=admin_site)

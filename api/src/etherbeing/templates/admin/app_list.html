@@ -1,0 +1,58 @@
+{% load i18n %}
+
+{% if app_list %}
+  <div class="etherbeing-admin-app-list">
+    {% for app in app_list %}
+      <section class="etherbeing-admin-app app-{{ app.app_label }} module{% if app.app_url in request.path|urlencode %} current-app{% endif %}">
+        <table class="etherbeing-admin-app-table">
+          <caption class="etherbeing-admin-app-caption">
+            <a
+              href="{{ app.app_url }}"
+              class="section"
+              title="{% blocktranslate with name=app.name %}Models in the {{ name }} application{% endblocktranslate %}"
+            >
+              {{ app.name }}
+            </a>
+          </caption>
+          <tbody>
+            {% for model in app.models %}
+              <tr class="etherbeing-admin-model-row model-{{ model.object_name|lower }}{% if model.admin_url in request.path|urlencode %} current-model{% endif %}">
+                <th scope="row" class="etherbeing-admin-model-name">
+                  {% if model.admin_url %}
+                    <a href="{{ model.admin_url }}"{% if model.admin_url in request.path|urlencode %} aria-current="page"{% endif %}>
+                      {{ model.name }}
+                    </a>
+                  {% else %}
+                    {{ model.name }}
+                  {% endif %}
+                </th>
+
+                {% if model.add_url %}
+                  <td class="etherbeing-admin-model-action">
+                    <a href="{{ model.add_url }}" class="addlink">{% translate 'Add' %}</a>
+                  </td>
+                {% else %}
+                  <td class="etherbeing-admin-model-action"></td>
+                {% endif %}
+
+                {% if model.admin_url and show_changelinks %}
+                  <td class="etherbeing-admin-model-action">
+                    {% if model.view_only %}
+                      <a href="{{ model.admin_url }}" class="viewlink">{% translate 'View' %}</a>
+                    {% else %}
+                      <a href="{{ model.admin_url }}" class="changelink">{% translate 'Change' %}</a>
+                    {% endif %}
+                  </td>
+                {% elif show_changelinks %}
+                  <td class="etherbeing-admin-model-action"></td>
+                {% endif %}
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </section>
+    {% endfor %}
+  </div>
+{% else %}
+  <p>{% translate 'You don’t have permission to view or edit anything.' %}</p>
+{% endif %}

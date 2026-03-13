@@ -216,6 +216,39 @@ a:focus-visible {
 #main {
   width: min(1120px, calc(100% - 24px));
   margin: 1.4rem auto 2rem;
+  position: relative;
+}
+
+#main.main {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  width: min(1120px, calc(100% - 24px));
+  box-sizing: border-box;
+}
+
+#content-start {
+  flex: 1 1 0%;
+  min-width: 0;
+  min-height: 100vh;
+  width: 100%;
+  max-width: calc(100% - clamp(17rem, 24vw, 20rem) - 1rem);
+}
+
+#nav-sidebar {
+  flex: 0 0 clamp(17rem, 24vw, 20rem);
+  width: clamp(17rem, 24vw, 20rem);
+  max-width: clamp(17rem, 24vw, 20rem);
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.breadcrumbs,
+div.breadcrumbs {
+  width: min(1120px, calc(100% - 24px));
+  margin: 1rem auto 0;
+  box-sizing: border-box;
 }
 
 #content,
@@ -224,6 +257,15 @@ a:focus-visible {
 .login #content,
 .login #container {
   position: relative;
+}
+
+.etherbeing-admin-dashboard-main,
+.etherbeing-admin-change-list-main {
+  min-width: 0;
+}
+
+.etherbeing-admin-dashboard-sidebar {
+  flex: 0 0 min(24rem, 100%);
 }
 
 #content,
@@ -252,6 +294,33 @@ ul.messagelist li {
 .login #content-main {
   border-radius: 32px;
   padding: 1.4rem 1.4rem 1.8rem;
+}
+
+#content-start > #content,
+#content-start #content-main,
+#content-start .content {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.etherbeing-admin-change-list-shell {
+  border-radius: 1.75rem;
+  background:
+    linear-gradient(180deg, rgba(125, 249, 255, 0.05), transparent 16%),
+    color-mix(in srgb, var(--panel-bg) 92%, transparent 8%);
+}
+
+.etherbeing-admin-change-list-content {
+  min-width: 0;
+}
+
+.etherbeing-admin-change-list-filters {
+  border-left: 1px solid rgba(148, 163, 184, 0.08);
+}
+
+.etherbeing-admin-object-tools {
+  margin-bottom: 1rem;
 }
 
 .breadcrumbs,
@@ -349,15 +418,24 @@ a.deletelink {
 
 #nav-sidebar .current-model,
 #nav-sidebar .current-app .section,
-tr.current-model {
+.etherbeing-admin-model-row.current-model {
   background: rgba(82, 39, 255, 0.18);
 }
 
 #nav-sidebar {
   padding: 1rem;
+  position: relative;
+  transition:
+    opacity 220ms ease,
+    transform 220ms ease,
+    width 220ms ease,
+    min-width 220ms ease,
+    margin 220ms ease,
+    padding 220ms ease;
 }
 
-#nav-sidebar .current-app {
+#nav-sidebar .current-app,
+.etherbeing-admin-app.current-app {
   margin-bottom: 0.9rem;
   border: 1px solid var(--hairline-color);
   border-radius: 1.25rem;
@@ -368,17 +446,59 @@ tr.current-model {
 
 #nav-sidebar .app-title,
 #nav-sidebar caption,
-#nav-sidebar .section {
+#nav-sidebar .section,
+.etherbeing-admin-app-caption,
+.etherbeing-admin-app-caption .section {
   color: var(--primary-fg);
 }
 
 #nav-sidebar .current-app .section,
 #nav-sidebar .app-appendix,
-#nav-sidebar th {
+#nav-sidebar th,
+.etherbeing-admin-model-name {
   background: transparent;
 }
 
+#nav-sidebar table,
+.etherbeing-admin-app-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+#nav-sidebar tr,
+.etherbeing-admin-model-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.35rem;
+  padding: 0.25rem 0;
+}
+
+#nav-sidebar th,
+#nav-sidebar td,
+.etherbeing-admin-model-name,
+.etherbeing-admin-model-action {
+  display: block;
+  padding: 0;
+  border: 0;
+  width: 100%;
+}
+
+#nav-sidebar td,
+.etherbeing-admin-model-action {
+  padding-left: 1.75rem;
+}
+
+#nav-sidebar td .addlink,
+.etherbeing-admin-model-action .addlink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 5rem;
+}
+
 #nav-sidebar a,
+.etherbeing-admin-app a,
 .module a,
 .breadcrumbs a,
 div.breadcrumbs a,
@@ -387,6 +507,7 @@ div.breadcrumbs a,
 }
 
 html[data-theme="light"] #nav-sidebar a,
+html[data-theme="light"] .etherbeing-admin-app a,
 html[data-theme="light"] .module a,
 html[data-theme="light"] .breadcrumbs a,
 html[data-theme="light"] div.breadcrumbs a,
@@ -395,6 +516,7 @@ html[data-theme="light"] #user-tools a {
 }
 
 #nav-sidebar a:hover,
+.etherbeing-admin-app a:hover,
 .module a:hover,
 .breadcrumbs a:hover,
 div.breadcrumbs a:hover,
@@ -403,6 +525,7 @@ div.breadcrumbs a:hover,
 }
 
 html[data-theme="light"] #nav-sidebar a:hover,
+html[data-theme="light"] .etherbeing-admin-app a:hover,
 html[data-theme="light"] .module a:hover,
 html[data-theme="light"] .breadcrumbs a:hover,
 html[data-theme="light"] div.breadcrumbs a:hover,
@@ -410,7 +533,8 @@ html[data-theme="light"] #user-tools a:hover {
   color: #0f172a;
 }
 
-#nav-sidebar a {
+#nav-sidebar a,
+.etherbeing-admin-app a {
   display: flex;
   align-items: center;
   gap: 0.8rem;
@@ -421,7 +545,8 @@ html[data-theme="light"] #user-tools a:hover {
   text-decoration: none;
 }
 
-#nav-sidebar a::before {
+#nav-sidebar a::before,
+.etherbeing-admin-app a::before {
   content: "";
   width: 0.95rem;
   height: 0.95rem;
@@ -437,12 +562,16 @@ html[data-theme="light"] #user-tools a:hover {
 
 #nav-sidebar a:hover,
 #nav-sidebar .current-model a,
-#nav-sidebar .current-app .current-model a {
+#nav-sidebar .current-app .current-model a,
+.etherbeing-admin-app a:hover,
+.etherbeing-admin-model-row.current-model a {
   background: color-mix(in srgb, var(--selected-bg) 85%, transparent 15%);
 }
 
 #nav-sidebar .model-configuration a::before,
-#nav-sidebar .model-sitecontent a::before {
+#nav-sidebar .model-sitecontent a::before,
+.etherbeing-admin-app .model-configuration a::before,
+.etherbeing-admin-app .model-sitecontent a::before {
   background:
     radial-gradient(circle at 35% 35%, rgba(255, 255, 255, 0.94), transparent 34%),
     linear-gradient(135deg, rgba(255, 159, 252, 0.95), rgba(82, 39, 255, 0.82));
@@ -450,23 +579,322 @@ html[data-theme="light"] #user-tools a:hover {
 
 #nav-sidebar .model-project a::before,
 #nav-sidebar .model-service a::before,
-#nav-sidebar .model-servicerequest a::before {
+#nav-sidebar .model-servicerequest a::before,
+.etherbeing-admin-app .model-project a::before,
+.etherbeing-admin-app .model-service a::before,
+.etherbeing-admin-app .model-servicerequest a::before {
   background:
     radial-gradient(circle at 35% 35%, rgba(255, 255, 255, 0.94), transparent 34%),
     linear-gradient(135deg, rgba(125, 249, 255, 0.95), rgba(82, 39, 255, 0.82));
 }
 
 #nav-sidebar .model-blogentry a::before,
-#nav-sidebar .model-blogentrycomment a::before {
+#nav-sidebar .model-blogentrycomment a::before,
+.etherbeing-admin-app .model-blogentry a::before,
+.etherbeing-admin-app .model-blogentrycomment a::before {
   background:
     radial-gradient(circle at 35% 35%, rgba(255, 255, 255, 0.94), transparent 34%),
     linear-gradient(135deg, rgba(251, 191, 36, 0.95), rgba(255, 159, 252, 0.82));
 }
 
-#nav-sidebar .model-user a::before {
+#nav-sidebar .model-user a::before,
+.etherbeing-admin-app .model-user a::before {
   background:
     radial-gradient(circle at 35% 35%, rgba(255, 255, 255, 0.94), transparent 34%),
     linear-gradient(135deg, rgba(34, 197, 94, 0.95), rgba(125, 249, 255, 0.82));
+}
+
+#toggle-nav-sidebar {
+  display: none !important;
+}
+
+.etherbeing-sidebar-toggle {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  z-index: 999999;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 999px;
+  border: 1px solid var(--hairline-color);
+  background: color-mix(in srgb, var(--panel-strong-bg) 88%, transparent 12%);
+  box-shadow: var(--shadow-soft);
+  color: var(--primary-fg);
+  cursor: pointer;
+  transition:
+    transform 180ms ease,
+    background 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.etherbeing-sidebar-toggle:hover {
+  transform: translateY(-1px) scale(1.02);
+  background: color-mix(in srgb, var(--selected-bg) 78%, var(--panel-strong-bg) 22%);
+}
+
+.etherbeing-eye-icon {
+  display: inline-flex;
+  width: 1.2rem;
+  height: 1.2rem;
+  transition: opacity 180ms ease, transform 180ms ease;
+}
+
+.etherbeing-eye-icon svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.etherbeing-eye-shape,
+.etherbeing-eye-pupil,
+.etherbeing-eye-slash {
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.etherbeing-eye-shape {
+  stroke-width: 1.8;
+}
+
+.etherbeing-eye-pupil {
+  fill: currentColor;
+  stroke-width: 0;
+}
+
+.etherbeing-eye-slash {
+  stroke-width: 2;
+  opacity: 0;
+  transform-origin: center;
+  transition: opacity 180ms ease;
+}
+
+#main.etherbeing-sidebar-hidden #nav-sidebar {
+  width: 0 !important;
+  min-width: 0 !important;
+  max-width: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  opacity: 0;
+  overflow: hidden;
+  border-width: 0;
+  transform: translateX(-1rem);
+  pointer-events: none;
+}
+
+#main.etherbeing-sidebar-hidden #content-start {
+  width: 100%;
+  max-width: 100%;
+  flex: 1 1 100%;
+}
+
+#main.etherbeing-sidebar-hidden .etherbeing-sidebar-toggle {
+  left: -5px;
+  top: -5px;
+  right: auto;
+  width: 2.5rem;
+  height: 2.5rem;
+}
+
+#main.etherbeing-sidebar-hidden .etherbeing-eye-slash {
+  opacity: 1;
+}
+
+#nav-filter {
+  width: 100%;
+  min-height: 2.9rem;
+  padding: 0.9rem 1rem;
+  border-radius: 1rem;
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.04), transparent),
+    color-mix(in srgb, var(--panel-strong-bg) 86%, transparent 14%);
+  color: var(--primary-fg);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    0 10px 24px rgba(2, 6, 23, 0.12);
+}
+
+#nav-filter::placeholder {
+  color: var(--text-muted);
+  letter-spacing: 0.02em;
+}
+
+#nav-filter:focus {
+  outline: none;
+  border-color: rgba(125, 249, 255, 0.72);
+  box-shadow:
+    0 0 0 4px rgba(125, 249, 255, 0.12),
+    0 10px 24px rgba(2, 6, 23, 0.16);
+}
+
+#nav-filter-label {
+  color: var(--text-muted);
+  font-size: 0.76rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.calendarbox,
+.clockbox {
+  z-index: 1000001 !important;
+  border-radius: 1.25rem;
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  background: color-mix(in srgb, var(--panel-strong-bg) 90%, transparent 10%);
+  box-shadow: 0 30px 70px rgba(2, 6, 23, 0.34);
+  backdrop-filter: blur(24px);
+  overflow: hidden;
+}
+
+.calendarbox *,
+.clockbox * {
+  color: var(--primary-fg);
+}
+
+.calendar,
+.clockbox h2,
+.calendarbox h2,
+.calendarbox .calendarnav-previous,
+.calendarbox .calendarnav-next {
+  background: transparent !important;
+}
+
+.calendarbox .calendar,
+.clockbox .calendar {
+  padding: 0.75rem 0.85rem 0.9rem;
+}
+
+.calendarbox .calendarnav-previous,
+.calendarbox .calendarnav-next {
+  top: 0.9rem;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  background: color-mix(in srgb, var(--selected-bg) 72%, transparent 28%) !important;
+  box-shadow: var(--shadow-soft);
+}
+
+.calendarbox .calendarnav-previous {
+  left: 0.85rem;
+}
+
+.calendarbox .calendarnav-next {
+  right: 0.85rem;
+}
+
+.calendarbox .calendarnav-previous:hover,
+.calendarbox .calendarnav-next:hover {
+  background: color-mix(in srgb, var(--selected-bg) 88%, transparent 12%) !important;
+}
+
+.calendarbox h2,
+.clockbox h2,
+.calendarbox caption {
+  color: var(--primary-fg);
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-align: center;
+  padding: 0.35rem 3rem 0.8rem;
+}
+
+.calendarbox table {
+  width: 100%;
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+.calendarbox caption,
+.calendarbox th,
+.calendarbox td,
+.timelist li {
+  color: var(--primary-fg);
+}
+
+.calendarbox th {
+  padding: 0.45rem 0.25rem 0.7rem;
+  color: var(--text-muted);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.calendarbox td {
+  padding: 0.15rem;
+}
+
+.calendarbox td.nonday {
+  opacity: 0.28;
+}
+
+.calendarbox td a,
+.timelist a {
+  display: block;
+  margin: 0;
+  border-radius: 0.85rem;
+  padding: 0.65rem 0.35rem;
+  text-align: center;
+  font-weight: 700;
+  background: color-mix(in srgb, var(--panel-bg) 72%, transparent 28%);
+  border: 1px solid rgba(148, 163, 184, 0.08);
+}
+
+.calendarbox td.selected a,
+.calendarbox td a:hover,
+.timelist a:hover {
+  background: color-mix(in srgb, var(--selected-bg) 85%, transparent 15%);
+}
+
+.calendarbox td.today a {
+  box-shadow: inset 0 0 0 1px rgba(125, 249, 255, 0.48);
+}
+
+.clockbox {
+  padding: 0.8rem;
+}
+
+.clockbox ul.timelist {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.timelist li {
+  padding: 0.15rem 0;
+}
+
+.timelist a {
+  padding: 0.7rem 0.9rem;
+}
+
+.calendar-shortcuts,
+.datetimeshortcuts {
+  color: var(--text-muted);
+}
+
+.calendar-cancel a,
+.clockbox .calendar-cancel a,
+.clockbox .calendar-back a,
+.clockbox .calendar-shortcuts a {
+  color: var(--link-fg);
+}
+
+#content > h1,
+#content h1 {
+  margin: 0 0 1.1rem;
+  color: var(--primary-fg);
+  font-size: clamp(1.8rem, 3vw, 2.65rem);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 1.02;
+  text-wrap: balance;
 }
 
 .dashboard .module table caption a,
@@ -518,6 +946,109 @@ div.breadcrumbs a:first-of-type::before {
   font-size: 0.88rem;
 }
 
+.etherbeing-admin-toolbar,
+#toolbar {
+  margin-bottom: 1rem;
+}
+
+.etherbeing-admin-search,
+#changelist-search {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.etherbeing-admin-search-row,
+#changelist-search > div:first-child {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  padding: 1rem 1.15rem;
+  border-radius: 1.4rem;
+  border: 1px solid var(--hairline-color);
+  background: color-mix(in srgb, var(--panel-strong-bg) 82%, transparent 18%);
+  box-shadow: var(--shadow-soft);
+}
+
+.etherbeing-admin-search-icon,
+#changelist-search label[for="searchbar"] {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.9rem;
+  height: 2.9rem;
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  background: color-mix(in srgb, var(--selected-bg) 72%, transparent 28%);
+  flex: 0 0 auto;
+}
+
+.etherbeing-admin-search-icon img,
+#changelist-search label[for="searchbar"] img {
+  width: 1rem;
+  height: 1rem;
+  opacity: 0;
+}
+
+.etherbeing-admin-search-icon::before,
+#changelist-search label[for="searchbar"]::before {
+  content: "⌕";
+  color: var(--primary-fg);
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+#searchbar {
+  min-width: min(28rem, 100%);
+  flex: 1 1 18rem;
+  min-height: 2.9rem;
+  padding: 0.9rem 1rem;
+  border-radius: 1rem;
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.04), transparent),
+    color-mix(in srgb, var(--panel-strong-bg) 86%, transparent 14%);
+  color: var(--primary-fg);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    0 10px 24px rgba(2, 6, 23, 0.12);
+}
+
+#searchbar::placeholder {
+  color: var(--text-muted);
+}
+
+.etherbeing-admin-search input[type="submit"],
+#changelist-search input[type="submit"] {
+  min-height: 2.9rem;
+  padding: 0.85rem 1.3rem;
+  border-radius: 999px;
+  border: 0;
+  background: var(--button-bg);
+  color: #ffffff;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  box-shadow: 0 18px 40px rgba(82, 39, 255, 0.3);
+}
+
+.etherbeing-admin-search input[type="submit"]:hover,
+#changelist-search input[type="submit"]:hover {
+  background: var(--button-hover-bg);
+}
+
+.etherbeing-admin-search-results,
+#changelist-search .small.quiet {
+  color: var(--text-muted);
+  font-size: 0.82rem;
+}
+
+.etherbeing-admin-search .help,
+#changelist-search .help {
+  color: var(--text-muted);
+  padding-left: 0.2rem;
+}
+
 .object-tools a,
 .addlink,
 .changelink,
@@ -527,6 +1058,14 @@ div.breadcrumbs a:first-of-type::before {
   border: 1px solid var(--hairline-color) !important;
   background: color-mix(in srgb, var(--panel-strong-bg) 82%, transparent 18%) !important;
   box-shadow: var(--shadow-soft);
+  color: var(--primary-fg) !important;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  transition:
+    transform 160ms ease,
+    background 160ms ease,
+    box-shadow 160ms ease,
+    color 160ms ease;
 }
 
 .object-tools a:hover,
@@ -535,6 +1074,13 @@ div.breadcrumbs a:first-of-type::before {
 .historylink:hover,
 .viewlink:hover {
   background: color-mix(in srgb, var(--selected-bg) 85%, var(--panel-strong-bg) 15%) !important;
+  transform: translateY(-1px);
+  color: var(--primary-fg) !important;
+}
+
+.addlink::before {
+  content: "+ ";
+  font-weight: 800;
 }
 
 .results,
@@ -590,6 +1136,115 @@ div.breadcrumbs a:first-of-type::before {
   overflow: hidden;
 }
 
+.etherbeing-admin-app,
+.app-list .app,
+.app-index .app,
+.dashboard .app-list .app {
+  overflow: hidden;
+}
+
+.etherbeing-admin-app-table,
+.app-list table,
+.app-index table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.etherbeing-admin-model-row,
+.app-list tbody tr,
+.app-index tbody tr {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.9rem;
+  align-items: start;
+  padding: 1rem 1.2rem;
+  border-top: 1px solid rgba(148, 163, 184, 0.08);
+}
+
+.etherbeing-admin-app-table tbody tr:first-child,
+.app-list tbody tr:first-child,
+.app-index tbody tr:first-child {
+  border-top: 0;
+}
+
+.etherbeing-admin-model-name,
+.etherbeing-admin-model-action,
+.app-list tbody th,
+.app-list tbody td,
+.app-index tbody th,
+.app-index tbody td {
+  display: block;
+  padding: 0;
+  border: 0;
+}
+
+.etherbeing-admin-model-name a,
+.app-list tbody th a,
+.app-index tbody th a {
+  color: var(--primary-fg);
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.etherbeing-admin-model-action,
+.app-list td,
+.app-index td {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.55rem;
+}
+
+.etherbeing-admin-model-action a,
+.app-list td a,
+.app-index td a {
+  min-width: 5.25rem;
+  justify-content: center;
+  text-align: center;
+  padding: 0.6rem 0.95rem;
+  border-radius: 999px;
+  border: 1px solid var(--hairline-color);
+  background: color-mix(in srgb, var(--panel-strong-bg) 84%, transparent 16%);
+  box-shadow: var(--shadow-soft);
+}
+
+.etherbeing-admin-model-action .addlink,
+.app-list td .addlink,
+.app-index td .addlink {
+  order: 2;
+}
+
+.etherbeing-admin-model-action .changelink,
+.etherbeing-admin-model-action .viewlink,
+.app-list td .changelink,
+.app-index td .changelink,
+.app-list td .viewlink,
+.app-index td .viewlink {
+  order: 1;
+}
+
+.etherbeing-admin-model-action .addlink::before,
+.app-list td .addlink::before,
+.app-index td .addlink::before {
+  content: "+ ";
+  font-weight: 800;
+}
+
+.etherbeing-admin-model-action .changelink::before,
+.app-list td .changelink::before,
+.app-index td .changelink::before {
+  content: "↗ ";
+  font-weight: 800;
+}
+
+.etherbeing-admin-model-action .viewlink::before,
+.app-list td .viewlink::before,
+.app-index td .viewlink::before {
+  content: "• ";
+  font-weight: 800;
+}
+
 #changelist-filter h2,
 #nav-sidebar h2,
 #nav-sidebar h3 {
@@ -599,6 +1254,31 @@ div.breadcrumbs a:first-of-type::before {
 #changelist-filter li.selected a {
   color: var(--primary-fg);
   font-weight: 700;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(125, 249, 255, 0.5) rgba(148, 163, 184, 0.12);
+}
+
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+*::-webkit-scrollbar-track {
+  background: rgba(148, 163, 184, 0.08);
+  border-radius: 999px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, rgba(125, 249, 255, 0.68), rgba(82, 39, 255, 0.58));
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, rgba(125, 249, 255, 0.8), rgba(255, 159, 252, 0.72));
 }
 
 .messagelist {
@@ -688,6 +1368,165 @@ ul.messagelist li {
 .dashboard .module ul.actionlist .quiet,
 .dashboard .module ul.actionlist .none {
   color: rgba(148, 163, 184, 0.88);
+}
+
+#content-related,
+.etherbeing-admin-dashboard-sidebar {
+  width: min(24rem, 100%);
+}
+
+.etherbeing-admin-dashboard-sidebar #recent-actions-module,
+#recent-actions-module {
+  padding: 0;
+  overflow: hidden;
+  border-radius: 1.75rem;
+  background:
+    linear-gradient(180deg, rgba(125, 249, 255, 0.08), transparent 18%),
+    color-mix(in srgb, var(--panel-bg) 92%, transparent 8%);
+}
+
+.etherbeing-admin-dashboard-sidebar #recent-actions-module > h2,
+#recent-actions-module > h2 {
+  padding: 1.25rem 1.35rem 0.3rem;
+}
+
+.etherbeing-admin-dashboard-sidebar #recent-actions-module > h3,
+#recent-actions-module > h3 {
+  margin: 0;
+  padding: 0 1.35rem 1rem;
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.etherbeing-admin-dashboard-sidebar #recent-actions-module > p,
+#recent-actions-module > p {
+  margin: 0;
+  padding: 0 1.35rem 1.35rem;
+  color: var(--text-muted);
+}
+
+.etherbeing-admin-dashboard-sidebar #recent-actions-module ul.actionlist,
+#recent-actions-module ul.actionlist {
+  padding: 0 1rem 1rem;
+}
+
+.etherbeing-admin-dashboard-sidebar #recent-actions-module ul.actionlist li,
+#recent-actions-module ul.actionlist li {
+  margin: 0;
+  padding: 1rem 0.35rem;
+  border-top: 1px solid rgba(148, 163, 184, 0.08);
+}
+
+.etherbeing-admin-dashboard-sidebar #recent-actions-module ul.actionlist li:first-child,
+#recent-actions-module ul.actionlist li:first-child {
+  border-top: 0;
+}
+
+.etherbeing-admin-dashboard-sidebar #recent-actions-module ul.actionlist li.addlink,
+.etherbeing-admin-dashboard-sidebar #recent-actions-module ul.actionlist li.changelink,
+.etherbeing-admin-dashboard-sidebar #recent-actions-module ul.actionlist li.deletelink,
+#recent-actions-module ul.actionlist li.addlink,
+#recent-actions-module ul.actionlist li.changelink,
+#recent-actions-module ul.actionlist li.deletelink {
+  background: transparent !important;
+  box-shadow: none;
+  border-radius: 0;
+  border-left: 0;
+}
+
+.etherbeing-admin-dashboard-sidebar #recent-actions-module ul.actionlist li a,
+#recent-actions-module ul.actionlist li a {
+  display: inline-block;
+  margin-bottom: 0.35rem;
+  color: var(--primary-fg);
+  font-weight: 700;
+}
+
+.etherbeing-admin-dashboard-sidebar #recent-actions-module ul.actionlist .mini,
+#recent-actions-module ul.actionlist .mini {
+  margin-top: 0;
+  display: block;
+}
+
+#model-detail-panel {
+  padding: 0;
+  overflow: hidden;
+  border-radius: 1.75rem;
+  background:
+    linear-gradient(180deg, rgba(255, 159, 252, 0.08), transparent 18%),
+    color-mix(in srgb, var(--panel-bg) 92%, transparent 8%);
+}
+
+#model-detail-panel > h2 {
+  padding: 1.25rem 1.35rem 0.3rem;
+}
+
+#model-detail-panel > h3 {
+  margin: 0;
+  padding: 0 1.35rem 1rem;
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.etherbeing-detail-meta {
+  margin: 0;
+  padding: 0 1rem 1rem;
+  list-style: none;
+}
+
+.etherbeing-detail-meta li {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  padding: 1rem 0.35rem;
+  border-top: 1px solid rgba(148, 163, 184, 0.08);
+}
+
+.etherbeing-detail-meta li:first-child {
+  border-top: 0;
+}
+
+.etherbeing-detail-meta span {
+  color: var(--text-muted);
+  font-size: 0.76rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.etherbeing-detail-meta strong {
+  color: var(--primary-fg);
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.etherbeing-detail-actions {
+  display: grid;
+  gap: 0.75rem;
+  padding: 0 1.35rem 1.35rem;
+}
+
+.etherbeing-detail-actions a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.75rem;
+  padding: 0.85rem 1.1rem;
+  border-radius: 999px;
+  border: 1px solid var(--hairline-color);
+  background: color-mix(in srgb, var(--panel-strong-bg) 84%, transparent 16%);
+  box-shadow: var(--shadow-soft);
+  color: var(--primary-fg);
+  font-weight: 700;
+}
+
+.etherbeing-detail-actions a:hover {
+  background: color-mix(in srgb, var(--selected-bg) 85%, var(--panel-strong-bg) 15%);
 }
 
 body.etherbeing-admin-login-page {
@@ -832,12 +1671,61 @@ body.etherbeing-modal-open {
 }
 
 #footer {
+  width: min(1120px, calc(100% - 24px));
+  margin: 1rem auto 2rem;
   color: rgba(219, 231, 245, 0.68);
+}
+
+.etherbeing-admin-footer-shell {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8rem 1.5rem;
+  padding: 1rem 1.25rem;
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  border-radius: 1.5rem;
+  background: color-mix(in srgb, var(--panel-bg) 90%, transparent 10%);
+  box-shadow: var(--shadow-soft);
+  backdrop-filter: blur(18px);
+}
+
+.etherbeing-admin-footer-shell p {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 @media (max-width: 1024px) {
   #header,
   #main {
     width: calc(100% - 16px);
+  }
+
+  .etherbeing-sidebar-toggle {
+    left: clamp(13rem, 32vw, 16rem);
+  }
+
+  .breadcrumbs,
+  div.breadcrumbs {
+    width: calc(100% - 16px);
+  }
+
+  #footer {
+    width: calc(100% - 16px);
+  }
+
+  .app-list tbody tr,
+  .app-index tbody tr {
+    grid-template-columns: 1fr;
+  }
+
+  .app-list td,
+  .app-index td {
+    align-items: flex-start;
+    flex-direction: row;
+    flex-wrap: wrap;
   }
 }

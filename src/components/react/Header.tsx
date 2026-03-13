@@ -7,6 +7,7 @@ import { oklchGradient } from "@/lib/utils";
 import { useGithubSession } from "./useGithubSession";
 import { Button } from "../ui/button";
 import { useOnlineStatus } from "./useOnlineStatus";
+import GlowingText from "./GlowingText";
 
 const navs: Array<{
   label: string;
@@ -56,15 +57,17 @@ export default function Header() {
               className="h-10 shadow aspect-square rounded-full"
               src={`https://github.com/${import.meta.env.PUBLIC_GITHUB_USER}.png`}
             />
+            <GlowingText>
+              <h1 className="text-2xl font-bold my-0 py-0 select-none">
+                etherbeing
+              </h1>
+            </GlowingText>
           </a>
-          <h1 className="text-2xl font-bold my-0 py-0 cursor-default select-none">
-            etherbeing
-          </h1>
           <div className="flex items-center gap-3">
             <div
               className={`hidden md:inline-flex items-center gap-2 rounded-full border px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.22em] transition ${isOnline
-                  ? "border-emerald-300/30 bg-emerald-300/10 text-emerald-100"
-                  : "border-amber-300/30 bg-amber-300/10 text-amber-100"
+                ? "border-emerald-300/30 bg-emerald-300/10 text-emerald-100"
+                : "border-amber-300/30 bg-amber-300/10 text-amber-100"
                 }`}
             >
               <span

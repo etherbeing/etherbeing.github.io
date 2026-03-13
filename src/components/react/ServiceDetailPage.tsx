@@ -29,6 +29,7 @@ export default function ServiceDetailPage({
   apiUrl: string;
   slug: string;
 }) {
+  const [resolvedSlug, setResolvedSlug] = useState(slug);
   const [service, setService] = useState<Service | null>(null);
   const [message, setMessage] = useState("");
   const [requestResult, setRequestResult] = useState<ServiceRequest | null>(null);
@@ -37,7 +38,25 @@ export default function ServiceDetailPage({
   const { session, isLoading: isSessionLoading, login, refreshSession } = useGithubSession(apiUrl);
 
   useEffect(() => {
-    fetch(`${apiUrl}/api/site/service/${slug}/`, { credentials: "include" })
+    if (resolvedSlug) {
+      return;
+    }
+
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    const nextSlug = new URLSearchParams(window.location.search).get("slug") ?? "";
+    setResolvedSlug(nextSlug);
+  }, [resolvedSlug]);
+
+  useEffect(() => {
+    if (!resolvedSlug) {
+      return;
+    }
+
+    setError("");
+    fetch(`${apiUrl}/api/site/service/${resolvedSlug}/`, { credentials: "include" })
       .then(async (response) => {
         if (!response.ok) {
           throw new Error("Unable to load the selected service.");
@@ -49,20 +68,20 @@ export default function ServiceDetailPage({
         console.error(err);
         setError("We could not load this service right now.");
       });
-  }, [apiUrl, slug]);
+  }, [apiUrl, resolvedSlug]);
 
   async function acquireService() {
-    if (!service) return;
+    if (!service || !resolvedSlug) return;
     const activeSession = session.csrf_token ? session : await refreshSession();
     if (!activeSession.is_authenticated) {
-      login(`/services/entry?slug=${slug}`);
+      login(`/services/entry?slug=${resolvedSlug}`);
       return;
     }
 
     setIsSubmitting(true);
     setError("");
     try {
-      const response = await fetch(`${apiUrl}/api/site/service/${slug}/request/`, {
+      const response = await fetch(`${apiUrl}/api/site/service/${resolvedSlug}/request/`, {
         method: "POST",
         credentials: "include",
         headers: {
