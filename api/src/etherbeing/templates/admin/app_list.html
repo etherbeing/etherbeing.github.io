@@ -26,26 +26,19 @@
                     {{ model.name }}
                   {% endif %}
                 </th>
-
-                {% if model.add_url %}
-                  <td class="etherbeing-admin-model-action">
+                <td class="etherbeing-admin-model-actions" colspan="{% if show_changelinks %}2{% else %}1{% endif %}">
+                  {% if model.add_url %}
                     <a href="{{ model.add_url }}" class="addlink">{% translate 'Add' %}</a>
-                  </td>
-                {% else %}
-                  <td class="etherbeing-admin-model-action"></td>
-                {% endif %}
+                  {% endif %}
 
-                {% if model.admin_url and show_changelinks %}
-                  <td class="etherbeing-admin-model-action">
+                  {% if model.admin_url and show_changelinks %}
                     {% if model.view_only %}
                       <a href="{{ model.admin_url }}" class="viewlink">{% translate 'View' %}</a>
                     {% else %}
                       <a href="{{ model.admin_url }}" class="changelink">{% translate 'Change' %}</a>
                     {% endif %}
-                  </td>
-                {% elif show_changelinks %}
-                  <td class="etherbeing-admin-model-action"></td>
-                {% endif %}
+                  {% endif %}
+                </td>
               </tr>
             {% endfor %}
           </tbody>

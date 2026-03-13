@@ -14,7 +14,6 @@ import { SiBugcrowd, SiHackerone, SiTryhackme, SiX } from "react-icons/si";
 import alterEgo from "@/assets/alter-ego.png";
 import ferris from "@/assets/ferris.png";
 import photo from "@/assets/photo.jpg";
-import AlterEgoCard from "./AlterEgoCard";
 import DecryptedText from "./DecryptedText";
 import GlowingHeader from "./GlowingHeader";
 import GlowingText from "./GlowingText";
@@ -225,7 +224,11 @@ export default function HomePage({ apiUrl }: { apiUrl: string }) {
 
         <div className="flex flex-col items-center justify-center relative">
           <SpotlightCard className="flex flex-col justify-between aspect-9/16 p-0! w-75 bg-transparent backdrop-blur-2xl overflow-hidden">
-            <AlterEgoCard alterSrc={alterEgo.src} baseSrc={photo.src} />
+            <img
+              alt="Esteban alter ego illustration"
+              src={alterEgo.src}
+              className="h-80 w-full object-cover"
+            />
             <div className="flex flex-col my-5 px-5">
               <GlowingText>
                 <span className="text-xl font-bold select-none">Short bio</span>
