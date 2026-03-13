@@ -41,6 +41,9 @@ services:
     environment:
       - POSTGRES_PASSWORD_FILE=/run/secrets/postgres_password
       - POSTGRES_USER_FILE=/run/secrets/postgres_user
+      - POSTGRES_DB=etherbeing_db
+    ports:
+      - 127.0.0.1:5432:5432
     volumes:
       - postgres_data:/var/lib/postgresql/
     restart: unless-stopped

@@ -15,17 +15,20 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 
-from django.contrib import admin
+import sys
+
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
-from apps.base.controllers import GithubViewSet
+from apps.base.controllers import GithubViewSet, SiteContentViewSet
+from apps.base.admin import admin_site
 from django.conf import settings
 
 router = DefaultRouter()
 router.register("", GithubViewSet, "github")
+router.register("site", SiteContentViewSet, "site")
 
 urlpatterns = [
     path("api/", include((router.urls, "api"), namespace="v1")),
 ]
-if settings.DEBUG:
-    urlpatterns.insert(0, path("admin/", admin.site.urls)) # DO NOT ALLOW admin panel access from the production site
+if settings.DEBUG or "test" in sys.argv:
+    urlpatterns.insert(0, path("admin/", admin_site.urls)) # DO NOT ALLOW admin panel access from the production site

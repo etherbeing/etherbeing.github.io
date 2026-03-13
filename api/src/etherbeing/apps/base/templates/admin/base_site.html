@@ -1,0 +1,34 @@
+{% extends "admin/base.html" %}
+{% load i18n static %}
+
+{% block title %}{% if subtitle %}{{ subtitle }} | {% endif %}{{ title }} | etherbeing admin{% endblock %}
+
+{% block extrastyle %}
+{{ block.super }}
+<link rel="stylesheet" href="{% static 'base/admin/admin-theme.css' %}">
+{% endblock %}
+
+{% block extrahead %}
+{{ block.super }}
+<script defer src="{% static 'base/admin/admin-theme.js' %}"></script>
+{% endblock %}
+
+{% block bodyclass %}{{ block.super }} etherbeing-admin{% endblock %}
+
+{% block branding %}
+<div class="etherbeing-brand-shell">
+  <a href="{% url 'admin:index' %}" class="etherbeing-brand-mark" aria-label="etherbeing admin home">
+    <span class="etherbeing-brand-orb"></span>
+    <span class="etherbeing-brand-copy">
+      <strong>etherbeing</strong>
+      <small>Control Surface</small>
+    </span>
+  </a>
+</div>
+{% endblock %}
+
+{% block nav-global %}
+<div class="etherbeing-nav-hint">
+  <span>{% trans "Dynamic site content, GitHub sync, and publication controls" %}</span>
+</div>
+{% endblock %}

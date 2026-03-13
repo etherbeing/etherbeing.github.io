@@ -21,6 +21,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='blogentry',
             name='content',
-            field=models.TextField(default=None),
+            field=models.TextField(default=''),
         ),
     ]

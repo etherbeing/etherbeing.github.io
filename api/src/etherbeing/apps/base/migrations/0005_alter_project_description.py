@@ -13,6 +13,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='project',
             name='description',
-            field=models.CharField(blank=True, default=None, null=True),
+            field=models.CharField(blank=True, default=None, max_length=255, null=True),
         ),
     ]

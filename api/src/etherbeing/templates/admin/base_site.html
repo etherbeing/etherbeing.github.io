@@ -1,0 +1,58 @@
+{% extends "admin/base.html" %}
+{% load i18n static %}
+
+{% block title %}{% if subtitle %}{{ subtitle }} | {% endif %}{{ title }} | etherbeing admin{% endblock %}
+
+{% block extrastyle %}
+{{ block.super }}
+<link rel="stylesheet" href="{% static 'base/admin/admin-theme.css' %}">
+{% endblock %}
+
+{% block extrahead %}
+{{ block.super }}
+<link rel="icon" href="{{ admin_favicon_url|default:'https://etherbeing.github.io/favicon.png' }}">
+<script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        ether: {
+          night: "#020617",
+          glow: "#7df9ff",
+          violet: "#5227ff",
+          blush: "#ff9ffc"
+        }
+      },
+      boxShadow: {
+        ether: "0 30px 80px rgba(2, 6, 23, 0.42)"
+      },
+      borderRadius: {
+        ether: "2rem"
+      }
+    }
+  }
+};
+</script>
+<script defer src="{% static 'base/admin/admin-theme.js' %}"></script>
+{% endblock %}
+
+{% block bodyclass %}{{ block.super }} etherbeing-admin{% endblock %}
+
+{% block branding %}
+<div class="etherbeing-brand-shell flex items-center">
+  <a href="{% url 'admin:index' %}" class="etherbeing-brand-mark inline-flex items-center gap-4 no-underline" aria-label="etherbeing admin home">
+    <span class="etherbeing-brand-orb"></span>
+    <span class="etherbeing-brand-copy flex flex-col leading-none">
+      <strong class="text-lg font-semibold uppercase tracking-[0.18em] text-white">etherbeing</strong>
+      <small class="text-[0.72rem] uppercase tracking-[0.24em] text-slate-300">Control Surface</small>
+    </span>
+  </a>
+</div>
+{% endblock %}
+
+{% block nav-global %}
+<div class="etherbeing-nav-hint hidden items-center md:inline-flex">
+  <span>{% trans "Dynamic site content, GitHub sync, and publication controls" %}</span>
+</div>
+{% endblock %}

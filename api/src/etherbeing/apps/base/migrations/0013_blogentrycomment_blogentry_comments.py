@@ -14,12 +14,12 @@ class Migration(migrations.Migration):
             name='BlogEntryComment',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('github_id', models.CharField()),
+                ('github_id', models.CharField(default='', max_length=255)),
             ],
         ),
         migrations.AddField(
             model_name='blogentry',
             name='comments',
-            field=models.ManyToManyField(null=True, to='base.blogentrycomment'),
+            field=models.ManyToManyField(blank=True, to='base.blogentrycomment'),
         ),
     ]

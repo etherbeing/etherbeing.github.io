@@ -13,12 +13,12 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='project',
             name='description',
-            field=models.CharField(default=None),
+            field=models.CharField(blank=True, default=None, max_length=255, null=True),
         ),
         migrations.AddField(
             model_name='project',
             name='github_id',
-            field=models.CharField(default=None, unique=True),
+            field=models.CharField(default='', max_length=255, unique=True),
         ),
         migrations.AddField(
             model_name='project',

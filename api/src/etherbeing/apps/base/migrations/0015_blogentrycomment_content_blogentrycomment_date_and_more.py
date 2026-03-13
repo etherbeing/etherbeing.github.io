@@ -13,21 +13,21 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='blogentrycomment',
             name='content',
-            field=models.CharField(default=None),
+            field=models.TextField(default=''),
         ),
         migrations.AddField(
             model_name='blogentrycomment',
             name='date',
-            field=models.DateField(default=None),
+            field=models.DateField(blank=True, null=True),
         ),
         migrations.AddField(
             model_name='blogentrycomment',
             name='username',
-            field=models.CharField(default=None),
+            field=models.CharField(default='', max_length=255),
         ),
         migrations.AlterField(
             model_name='blogentrycomment',
             name='github_id',
-            field=models.CharField(default=None),
+            field=models.CharField(default='', max_length=255),
         ),
     ]

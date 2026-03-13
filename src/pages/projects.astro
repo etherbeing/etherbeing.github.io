@@ -1,0 +1,10 @@
+---
+import Layout from "@/components/Layout.astro";
+import ProjectsArchivePage from "@/components/react/ProjectsArchivePage";
+
+const apiUrl = import.meta.env.PUBLIC_API_URL;
+---
+
+<Layout>
+    <ProjectsArchivePage apiUrl={apiUrl} client:only="react" />
+</Layout>

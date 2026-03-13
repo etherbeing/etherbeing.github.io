@@ -2,10 +2,40 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "command": "./node_modules/.bin/astro dev",
-      "name": "Development server",
+      "name": "Frontend: Astro Dev",
+      "type": "node-terminal",
       "request": "launch",
-      "type": "node-terminal"
+      "command": "pnpm run dev",
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "name": "Backend: Django Runserver",
+      "type": "debugpy",
+      "request": "launch",
+      "python": "/usr/bin/python3",
+      "program": "${workspaceFolder}/api/src/etherbeing/manage.py",
+      "args": ["runserver", "127.0.0.1:8000"],
+      "cwd": "${workspaceFolder}/api",
+      "console": "integratedTerminal",
+      "django": true,
+      "justMyCode": true,
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}/api/src",
+        "DJANGO_SETTINGS_MODULE": "etherbeing.settings",
+        "DJANGO_ENV_FILE": "${workspaceFolder}/api/.env.development"
+      },
+      "preLaunchTask": "docker: dev deps up"
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Full Stack: Frontend + Backend",
+      "configurations": [
+        "Backend: Django Runserver",
+        "Frontend: Astro Dev"
+      ],
+      "preLaunchTask": "docker: dev deps up",
+      "stopAll": true
     }
   ]
 }

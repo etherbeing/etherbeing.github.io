@@ -2,7 +2,9 @@ import { useState } from "react";
 import SpotlightCard from "./SpotlightCard";
 import { Sling as Hamburger } from "hamburger-react";
 import { GoArrowUpRight } from "react-icons/go";
+import { FaGithub } from "react-icons/fa";
 import { oklchGradient } from "@/lib/utils";
+import { useGithubSession } from "./useGithubSession";
 
 const navs: Array<{
   label: string;
@@ -16,6 +18,8 @@ const navs: Array<{
         { label: "Services", href: "#services" },
         { label: "Projects", href: "#projects" },
         { label: "Blog", href: "#blog" },
+        { label: "Projects Archive", href: "/projects" },
+        { label: "Blog Archive", href: "/blog" },
         { label: "Contact", href: "#contact" },
       ],
     },
@@ -36,6 +40,8 @@ const navs: Array<{
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState<boolean|undefined>();
+  const apiUrl = import.meta.env.PUBLIC_API_URL;
+  const { session, isLoading, login, logout } = useGithubSession(apiUrl);
 
   return (
     <header className="z-20 fixed w-screen flex items-center justify-center mt-10">
@@ -51,12 +57,14 @@ export default function Header() {
           <h1 className="text-2xl font-bold my-0 py-0 cursor-default select-none">
             etherbeing
           </h1>
-          <Hamburger
-            size={20}
-            label="Show options"
-            toggled={isOpen}
-            onToggle={setIsOpen}
-          ></Hamburger>
+          <div className="flex items-center gap-3">
+            <Hamburger
+              size={20}
+              label="Show options"
+              toggled={isOpen}
+              onToggle={setIsOpen}
+            ></Hamburger>
+          </div>
         </div>
         {isOpen !== undefined ? (
 
@@ -84,19 +92,40 @@ export default function Header() {
               >
                 <h3 className="text-lg font-bold cursor-default">{nav.label}</h3>
                 <div className="flex flex-col gap-3">
+                  {session.is_authenticated ? (
+                    <button
+                      type="button"
+                      onClick={() => void logout()}
+                      className="text-sm inline-flex items-center"
+                    >
+                      <FaGithub className="mr-2" />
+                      Logout @{session.github_login || session.username}
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      disabled={isLoading}
+                      onClick={() => login()}
+                      className="text-sm inline-flex items-center disabled:opacity-60"
+                    >
+                      <FaGithub className="mr-2" />
+                      {isLoading ? "Loading login..." : "Login with GitHub"}
+                    </button>
+                  )}
                   {nav.links.map((link, i) => (
                     <a
                       onClick={(e) => {
                         e.preventDefault();
                         e.stopPropagation();
-                        const hash = new URL(e.currentTarget.href).hash;
-                        let section = document.querySelector(hash);
+                        const target = new URL(e.currentTarget.href);
+                        const hash = target.hash;
+                        let section = hash ? document.querySelector(hash) : null;
                         if (section) {
                           section.scrollIntoView({
                             behavior: "smooth",
                           });
                         } else {
-                          location.assign(`/${hash}`);
+                          location.assign(`${target.pathname}${target.search}${target.hash}`);
                         }
                         setIsOpen(false);
                       }}

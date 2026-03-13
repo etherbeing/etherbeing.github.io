@@ -13,9 +13,39 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 from ast import literal_eval
 import os
 from pathlib import Path
+import sys
 import dotenv
 
 dotenv.load_dotenv(os.environ.get("DJANGO_ENV_FILE", None))
+
+
+def parse_env_literal(value: str, default):
+    if value is None:
+        return default
+    try:
+        return literal_eval(value)
+    except (ValueError, SyntaxError):
+        lowered = value.strip().lower()
+        if lowered in {"true", "false"}:
+            return lowered == "true"
+        return default
+
+
+def parse_env_list(value: str | None, default: list[str]) -> list[str]:
+    parsed = parse_env_literal(value, default)
+    if isinstance(parsed, list):
+        return [str(item) for item in parsed if str(item).strip()]
+    if isinstance(parsed, str):
+        return [item.strip() for item in parsed.split(",") if item.strip()]
+    return default
+
+
+def module_is_available(module_name: str) -> bool:
+    try:
+        __import__(module_name)
+    except ModuleNotFoundError:
+        return False
+    return True
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -31,18 +61,26 @@ SECRET_KEY = os.getenv(
 )
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = literal_eval(os.getenv("DEBUG", "False"))
+DEBUG = parse_env_literal(os.getenv("DEBUG"), False)
 
-ALLOWED_HOSTS = literal_eval(os.getenv("ALLOWED_HOSTS", '["127.0.0.1", "localhost"]'))
-CSRF_TRUSTED_ORIGINS = literal_eval(
-    os.getenv("CSRF_TRUSTED_ORIGINS", '["http://127.0.0.1","http://localhost",]')
+ALLOWED_HOSTS = parse_env_literal(
+    os.getenv("ALLOWED_HOSTS"),
+    ["127.0.0.1", "localhost"],
+)
+CSRF_TRUSTED_ORIGINS = parse_env_literal(
+    os.getenv("CSRF_TRUSTED_ORIGINS"),
+    [
+        "http://127.0.0.1",
+        "http://localhost",
+        "http://127.0.0.1:4321",
+        "http://localhost:4321",
+    ],
 )
 
 AUTH_USER_MODEL = "base.User"
 # Application definition
 
 INSTALLED_APPS = [
-    "daphne",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -50,28 +88,34 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",
-    "corsheaders",
     "apps.base",
 ]
+if module_is_available("daphne"):
+    INSTALLED_APPS.insert(0, "daphne")
+if module_is_available("corsheaders"):
+    INSTALLED_APPS.append("corsheaders")
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
-    "whitenoise.middleware.WhiteNoiseMiddleware",  # Add WhiteNoise here
     "django.contrib.sessions.middleware.SessionMiddleware",
-    "corsheaders.middleware.CorsMiddleware",
+    "apps.base.middleware.LocalCorsMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
+if module_is_available("whitenoise"):
+    MIDDLEWARE.insert(1, "whitenoise.middleware.WhiteNoiseMiddleware")
+if module_is_available("corsheaders"):
+    MIDDLEWARE.insert(3, "corsheaders.middleware.CorsMiddleware")
 
 ROOT_URLCONF = "etherbeing.urls"
 
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [BASE_DIR / "templates"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -90,16 +134,24 @@ ASGI_APPLICATION = "etherbeing.asgi.application"
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.getenv("DBNAME"),
-        "USER": os.getenv("DBUSER"),
-        "PASSWORD": os.getenv("DBPASS"),
-        "HOST": os.getenv("DBHOST"),
-        "PORT": int(os.getenv("DBPORT", 5432)),
+if "test" not in sys.argv and os.getenv("DBNAME"):
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": os.getenv("DBNAME"),
+            "USER": os.getenv("DBUSER"),
+            "PASSWORD": os.getenv("DBPASS"),
+            "HOST": os.getenv("DBHOST"),
+            "PORT": int(os.getenv("DBPORT", 5432)),
+        }
     }
-}
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
+    }
 
 
 # Password validation
@@ -139,24 +191,63 @@ USE_TZ = True
 STATIC_URL = "static/"
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
-CACHES = {
-    "default": {
-        "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": os.getenv("REDIS_LOCATION", "redis://127.0.0.1:6379/1"),
-        "OPTIONS": {
-            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+redis_location = os.getenv("REDIS_LOCATION")
+if redis_location and module_is_available("django_redis"):
+    CACHES = {
+        "default": {
+            "BACKEND": "django_redis.cache.RedisCache",
+            "LOCATION": redis_location,
+            "OPTIONS": {
+                "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            },
+        }
+    }
+else:
+    CACHES = {
+        "default": {
+            "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+            "LOCATION": "etherbeing-local",
+        }
+    }
+
+if module_is_available("whitenoise"):
+    STORAGES = {
+        "staticfiles": {
+            "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
         },
     }
-}
 
-STORAGES = {
-    "staticfiles": {
-        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
-    },
-}
-
-CORS_ALLOWED_ORIGINS = literal_eval(
-    os.getenv(
-        "CORS_ALLOWED_ORIGINS", '["http://localhost:4321","http://127.0.0.1:4321",]'
-    )
+CORS_ALLOWED_ORIGINS = parse_env_literal(
+    os.getenv("CORS_ALLOWED_ORIGINS"),
+    ["http://localhost:4321", "http://127.0.0.1:4321"],
 )
+CORS_ALLOW_CREDENTIALS = True
+
+GITHUB_USER = os.getenv("GITHUB_USER", "")
+GITHUB_OAUTH_CLIENT_ID = os.getenv("GITHUB_OAUTH_CLIENT_ID", "")
+GITHUB_OAUTH_CLIENT_SECRET = os.getenv("GITHUB_OAUTH_CLIENT_SECRET", "")
+GITHUB_OAUTH_REDIRECT_URI = os.getenv("GITHUB_OAUTH_REDIRECT_URI", "")
+GITHUB_OAUTH_SCOPES = parse_env_list(
+    os.getenv("GITHUB_OAUTH_SCOPES"),
+    ["read:user", "user:email", "gist", "repo"],
+)
+GITHUB_FRONTEND_OAUTH_SCOPES = parse_env_list(
+    os.getenv("GITHUB_FRONTEND_OAUTH_SCOPES"),
+    ["read:user", "user:email"],
+)
+GITHUB_COMMENT_OAUTH_SCOPES = parse_env_list(
+    os.getenv("GITHUB_COMMENT_OAUTH_SCOPES"),
+    ["read:user", "user:email", "gist"],
+)
+GITHUB_ADMIN_USERS = parse_env_list(
+    os.getenv("GITHUB_ADMIN_USERS"),
+    [GITHUB_USER] if GITHUB_USER else [],
+)
+GITHUB_SUPERUSER_USERS = parse_env_list(
+    os.getenv("GITHUB_SUPERUSER_USERS"),
+    [GITHUB_USER] if GITHUB_USER else [],
+)
+
+RECAPTCHA_SITE_KEY = os.getenv("RECAPTCHA_SITE_KEY", "")
+RECAPTCHA_SECRET_KEY = os.getenv("RECAPTCHA_SECRET_KEY", "")
+RECAPTCHA_MIN_SCORE = float(os.getenv("RECAPTCHA_MIN_SCORE", "0.5"))
