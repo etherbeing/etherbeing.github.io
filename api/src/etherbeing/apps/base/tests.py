@@ -148,6 +148,53 @@ class SiteContentApiTests(TestCase):
         self.assertEqual(payload["favicon_url"], "https://etherbeing.github.io/favicon.png")
         self.assertEqual(Configuration.objects.count(), 1)
 
+    def test_service_detail_endpoint_returns_seeded_service(self):
+        initialize_site_content()
+
+        response = self.client.get("/api/site/service/frontend-web-development/")
+
+        self.assertEqual(response.status_code, 200)
+        payload = response.json()
+        self.assertEqual(payload["slug"], "frontend-web-development")
+        self.assertEqual(payload["title"], "Frontend Web Development")
+        self.assertTrue(payload["deliverables"])
+        self.assertTrue(payload["process_steps"])
+
+    def test_service_request_requires_authenticated_user(self):
+        initialize_site_content()
+
+        response = self.client.post(
+            "/api/site/service/frontend-web-development/request/",
+            {"message": "I need a secure marketing site."},
+            content_type="application/json",
+        )
+
+        self.assertEqual(response.status_code, 401)
+
+    def test_service_request_creates_pending_request_for_logged_in_user(self):
+        initialize_site_content()
+        user = get_user_model().objects.create_user(
+            username="reader-user",
+            email="reader@example.com",
+            github_login="reader-user",
+            github_access_token="front-access-token",
+            github_token_scope="read:user,user:email",
+        )
+        self.client.force_login(user)
+
+        response = self.client.post(
+            "/api/site/service/frontend-web-development/request/",
+            {"message": "I need a secure marketing site."},
+            content_type="application/json",
+        )
+
+        self.assertEqual(response.status_code, 201)
+        payload = response.json()
+        self.assertEqual(payload["status"], "pending")
+        self.assertEqual(payload["service"]["slug"], "frontend-web-development")
+        self.assertEqual(payload["requester"]["username"], "reader-user")
+        self.assertEqual(payload["message"], "I need a secure marketing site.")
+
 
 class GithubViewSetTests(TestCase):
     def setUp(self):
@@ -412,6 +459,9 @@ class AdminAuthTests(TestCase):
         self.assertContains(login_page, "admin-theme.css")
         self.assertContains(login_page, "admin-theme.js")
         self.assertContains(login_page, "cdn.tailwindcss.com")
+        self.assertContains(login_page, "etherbeing-admin-login-page")
+        self.assertContains(login_page, "Operate the platform from a fully controlled interface.")
+        self.assertNotContains(login_page, "iframe")
         self.assertNotContains(login_page, "Create Initial Superuser")
 
         response = self.client.post(
@@ -444,6 +494,7 @@ class AdminAuthTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Create Initial Superuser")
         self.assertContains(response, "bootstrap-superuser-modal")
+        self.assertContains(response, "etherbeing-modal-backdrop")
 
     @override_settings(DEBUG=True)
     def test_bootstrap_superuser_creates_first_superuser(self):

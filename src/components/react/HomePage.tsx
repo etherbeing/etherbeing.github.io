@@ -4,6 +4,7 @@ import {
   FaEnvelope,
   FaGithub,
   FaInstagram,
+  FaPaypal,
   FaReddit,
   FaTelegram,
 } from "react-icons/fa6";
@@ -28,7 +29,7 @@ import SpotlightCard from "./SpotlightCard";
 import StarBorder from "./StarBorder";
 import TextType from "./TextType";
 import { BlogCard, ProjectCard, projectGradient } from "./contentCards";
-import type { BlogEntry, Project } from "./contentTypes";
+import type { BlogEntry, Project, Service } from "./contentTypes";
 
 type AboutHighlight = {
   title: string;
@@ -40,14 +41,6 @@ type AboutHighlight = {
 type Skill = {
   name: string;
   image_key: string;
-  sort_order: number;
-};
-
-type Service = {
-  title: string;
-  starting_price: number;
-  description: string;
-  skills: string[];
   sort_order: number;
 };
 
@@ -193,6 +186,17 @@ export default function HomePage({ apiUrl }: { apiUrl: string }) {
             {content.hero_cta_label}
           </StarBorder>
         </a>
+        <a
+          href="https://paypal.me/etherbeing"
+          target="_blank"
+          rel="noreferrer"
+          className="z-10 mt-4"
+        >
+          <StarBorder as={"button"} className="cursor-pointer flex items-center gap-2" color="cyan">
+            <span>Donate</span>
+            <FaPaypal />
+          </StarBorder>
+        </a>
       </section>
 
       <section id="about" className="py-20 space-y-4 md:w-[120%] md:-ml-[10%]">
@@ -284,23 +288,31 @@ export default function HomePage({ apiUrl }: { apiUrl: string }) {
             <SpotlightCard
               key={service.title}
               spotlightColor="rgba(0, 229, 255, 0.2)"
-              className="mx-auto h-[300px] aspect-square flex flex-col justify-between px-auto py-5 cursor-default"
+              className="mx-auto h-[300px] aspect-square flex flex-col justify-between px-auto py-5"
             >
-              <div className="flex flex-col justify-between h-full gap-3">
-                <GlowingText className="my-auto">
-                  <h2 className="mx-auto text-xl font-bold text-center">{service.title}</h2>
-                </GlowingText>
-                <span className="text-sm text-gray-500">{service.description}</span>
-              </div>
-              <ul className="flex flex-col justify-center h-full items-center w-full my-5 font-bold text-sm">
-                {service.skills.map((serviceSkill) => (
-                  <li className="w-full flex justify-between items-center" key={serviceSkill}>
-                    <span className="text-green-200">+</span>
-                    {serviceSkill}
-                  </li>
-                ))}
-              </ul>
-              <span className="flex justify-end w-full text-sm">From {service.starting_price} USD</span>
+              <a href={`/services/entry?slug=${service.slug}`} className="flex flex-col justify-between h-full gap-3">
+                <div className="flex flex-col justify-between gap-3">
+                  <GlowingText className="my-auto">
+                    <h2 className="mx-auto text-xl font-bold text-center">{service.title}</h2>
+                  </GlowingText>
+                  <span className="text-center text-xs uppercase tracking-[0.22em] text-cyan-200/80">
+                    {service.headline}
+                  </span>
+                  <span className="text-sm text-gray-500">{service.description}</span>
+                </div>
+                <ul className="flex flex-col justify-center h-full items-center w-full my-2 font-bold text-sm">
+                  {service.skills.map((serviceSkill) => (
+                    <li className="w-full flex justify-between items-center" key={serviceSkill}>
+                      <span className="text-green-200">+</span>
+                      {serviceSkill}
+                    </li>
+                  ))}
+                </ul>
+                <span className="flex justify-between w-full text-sm">
+                  <span className="text-cyan-200/80">View details</span>
+                  <span>From {service.starting_price} USD</span>
+                </span>
+              </a>
             </SpotlightCard>
           ))}
         </div>

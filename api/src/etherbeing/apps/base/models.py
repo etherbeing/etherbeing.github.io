@@ -253,10 +253,17 @@ class Service(models.Model):
         on_delete=models.CASCADE,
         related_name="services",
     )
+    slug = models.SlugField(max_length=255, unique=True, default="")
     title = models.CharField(max_length=255)
+    headline = models.CharField(max_length=255, default="", blank=True)
     starting_price = models.PositiveIntegerField()
     description = models.TextField()
+    overview = models.TextField(default="", blank=True)
     skills = models.JSONField(default=list, blank=True)
+    deliverables = models.JSONField(default=list, blank=True)
+    process_steps = models.JSONField(default=list, blank=True)
+    outcomes = models.JSONField(default=list, blank=True)
+    engagement_cta = models.CharField(max_length=255, default="", blank=True)
     sort_order = models.PositiveIntegerField(default=0)
 
     class Meta:
@@ -264,6 +271,40 @@ class Service(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class ServiceRequest(models.Model):
+    class Status(models.TextChoices):
+        PENDING = "pending", "Pending"
+        REVIEWING = "reviewing", "Reviewing"
+        CONTACTED = "contacted", "Contacted"
+        DELIVERED = "delivered", "Delivered"
+        CANCELLED = "cancelled", "Cancelled"
+
+    service = models.ForeignKey(
+        Service,
+        on_delete=models.CASCADE,
+        related_name="requests",
+    )
+    requester = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="service_requests",
+    )
+    status = models.CharField(
+        max_length=32,
+        choices=Status.choices,
+        default=Status.PENDING,
+    )
+    message = models.TextField(default="", blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["-created_at", "-id"]
+
+    def __str__(self):
+        return f"{self.service.title} / {self.requester.username}"
 
 
 class ContactGroup(models.Model):

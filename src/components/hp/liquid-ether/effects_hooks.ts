@@ -1,11 +1,11 @@
 import type { LiquidEtherWebGL } from "./types";
 import { WebGLManager } from "./utils/classes";
 import { applyOptionsFromProps } from "./utils/functions";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, type RefObject } from "react";
 
 export function useWebGL(
-    mountRef: React.RefObject<HTMLDivElement | null>,
-    webglRef: React.RefObject<LiquidEtherWebGL | null>,
+    mountRef: RefObject<HTMLDivElement | null>,
+    webglRef: RefObject<LiquidEtherWebGL | null>,
     colors: Array<string>,
     isViscous: boolean,
     isBounce: boolean,

@@ -1,0 +1,10 @@
+---
+import Layout from "@/components/Layout.astro";
+import ServiceDetailPage from "@/components/react/ServiceDetailPage";
+
+const slug = Astro.url.searchParams.get("slug") ?? "";
+---
+
+<Layout class="w-full">
+  <ServiceDetailPage client:only="react" apiUrl={import.meta.env.PUBLIC_API_URL} slug={slug} />
+</Layout>

@@ -23,16 +23,26 @@ self.addEventListener("fetch", (event) => {
   }
 
   event.respondWith(
-    caches.match(event.request).then((cachedResponse) => {
-      if (cachedResponse) {
-        return cachedResponse;
-      }
-
-      return fetch(event.request).then((networkResponse) => {
+    fetch(event.request)
+      .then((networkResponse) => {
         const responseClone = networkResponse.clone();
-        caches.open(CACHE_NAME).then((cache) => cache.put(event.request, responseClone));
+        if (
+          networkResponse.ok &&
+          event.request.url.startsWith(self.location.origin)
+        ) {
+          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, responseClone));
+        }
         return networkResponse;
-      });
-    }),
+      })
+      .catch(async () => {
+        const cachedResponse = await caches.match(event.request);
+        if (cachedResponse) {
+          return cachedResponse;
+        }
+        if (event.request.mode === "navigate") {
+          return caches.match("/");
+        }
+        throw new Error("Network unavailable and no cached response found.");
+      }),
   );
 });

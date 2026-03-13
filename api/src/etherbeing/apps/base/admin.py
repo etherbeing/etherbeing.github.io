@@ -23,6 +23,7 @@ from .models import (
     ContactLink,
     Project,
     Service,
+    ServiceRequest,
     SiteContent,
     Skill,
     User,
@@ -177,8 +178,20 @@ class SkillAdmin(admin.ModelAdmin):
 
 @admin.register(Service, site=admin_site)
 class ServiceAdmin(admin.ModelAdmin):
-    list_display = ("title", "starting_price", "sort_order")
-    search_fields = ("title", "description")
+    list_display = ("title", "slug", "starting_price", "sort_order")
+    search_fields = ("title", "slug", "description", "overview")
+
+
+@admin.register(ServiceRequest, site=admin_site)
+class ServiceRequestAdmin(admin.ModelAdmin):
+    list_display = ("service", "requester", "status", "created_at")
+    list_filter = ("status", "service")
+    search_fields = (
+        "service__title",
+        "requester__username",
+        "requester__email",
+        "message",
+    )
 
 
 @admin.register(ContactGroup, site=admin_site)

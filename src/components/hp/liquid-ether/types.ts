@@ -1,4 +1,6 @@
 
+import type { CSSProperties } from "react";
+
 export interface LiquidEtherProps {
     mouseForce?: number;
     cursorSize?: number;
@@ -11,7 +13,7 @@ export interface LiquidEtherProps {
     resolution?: number;
     isBounce?: boolean;
     colors?: string[];
-    style?: React.CSSProperties;
+    style?: CSSProperties;
     className?: string;
     autoDemo?: boolean;
     autoSpeed?: number;

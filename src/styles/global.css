@@ -79,7 +79,7 @@ h2 {
 @property --nav-height {
     syntax: "<length>";
     inherits: false;
-    initial-value: 320px;
+    initial-value: 345px;
 }
 @media screen and (max-width: 768px) {
     @property --nav-height {
@@ -106,7 +106,7 @@ h2 {
     }
 }
 
-.nav-expand > div {
+.nav-expand > div > div {
     animation: card-expand 0.3s ease-in-out;
     animation-fill-mode: forwards;
 }
@@ -140,7 +140,7 @@ h2 {
     }
 }
 
-.nav-collapse > div {
+.nav-collapse > div > div {
     translate: 0 0;
     opacity: 1;
     filter: blur(0px);

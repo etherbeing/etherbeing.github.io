@@ -19,9 +19,12 @@ from .serializers import (
     GithubSessionSerializer,
     BlogEntrySerializer,
     ProjectSerializer,
+    ServiceRequestCreateSerializer,
+    ServiceRequestSerializer,
+    ServiceSerializer,
     SiteContentSerializer,
 )
-from .models import BlogEntry, Configuration, Project, SiteContent
+from .models import BlogEntry, Configuration, Project, Service, ServiceRequest, SiteContent
 from .github_api import fetch_github_json
 from .seed_data import initialize_configuration, initialize_site_content
 
@@ -300,6 +303,15 @@ class GithubViewSet(GenericViewSet):
 class SiteContentViewSet(GenericViewSet):
     serializer_class = SiteContentSerializer
 
+    def get_serializer_class(self):
+        if self.action == self.service.__name__:
+            return ServiceSerializer
+        if self.action == self.request_service.__name__:
+            if self.request.method == HTTPMethod.POST:
+                return ServiceRequestCreateSerializer
+            return ServiceRequestSerializer
+        return super().get_serializer_class()
+
     @staticmethod
     def normalize_site_content_payload(payload: dict):
         payload["strategy_business_idea"] = {
@@ -346,3 +358,50 @@ class SiteContentViewSet(GenericViewSet):
         data = ConfigurationSerializer(configuration).data
         cache.set(key, data, timeout=60 * 5)
         return Response(data=data)
+
+    @action([HTTPMethod.GET], detail=False, url_path=r"service/(?P<slug>[-\w]+)")
+    def service(self, request: Request, slug: str):
+        key = f"service-{slug}"
+        if cached := cache.get(key):
+            return Response(data=cached)
+
+        service = Service.objects.filter(slug=slug).first()
+        if service is None:
+            site_content = SiteContent.objects.filter(slug="primary").first()
+            if site_content is None:
+                initialize_site_content()
+            service = Service.objects.filter(slug=slug).first()
+        if service is None:
+            return Response({"detail": "Service not found."}, status=HTTPStatus.NOT_FOUND)
+
+        data = ServiceSerializer(service).data
+        cache.set(key, data, timeout=60 * 5)
+        return Response(data=data)
+
+    @action(
+        [HTTPMethod.POST],
+        detail=False,
+        url_path=r"service/(?P<slug>[-\w]+)/request",
+    )
+    def request_service(self, request: Request, slug: str):
+        service = Service.objects.filter(slug=slug).first()
+        if service is None:
+            return Response({"detail": "Service not found."}, status=HTTPStatus.NOT_FOUND)
+        if not request.user.is_authenticated:
+            return Response(
+                {"detail": "Authentication is required to request a service."},
+                status=HTTPStatus.UNAUTHORIZED,
+            )
+
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        service_request = ServiceRequest.objects.create(
+            service=service,
+            requester=request.user,
+            message=serializer.validated_data.get("message", ""),
+        )
+        cache.delete(f"service-{slug}")
+        return Response(
+            ServiceRequestSerializer(service_request).data,
+            status=HTTPStatus.CREATED,
+        )

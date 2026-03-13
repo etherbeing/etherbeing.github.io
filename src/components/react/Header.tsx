@@ -5,6 +5,8 @@ import { GoArrowUpRight } from "react-icons/go";
 import { FaGithub } from "react-icons/fa";
 import { oklchGradient } from "@/lib/utils";
 import { useGithubSession } from "./useGithubSession";
+import { Button } from "../ui/button";
+import { useOnlineStatus } from "./useOnlineStatus";
 
 const navs: Array<{
   label: string;
@@ -39,9 +41,10 @@ const navs: Array<{
   ];
 
 export default function Header() {
-  const [isOpen, setIsOpen] = useState<boolean|undefined>();
+  const [isOpen, setIsOpen] = useState<boolean | undefined>();
   const apiUrl = import.meta.env.PUBLIC_API_URL;
   const { session, isLoading, login, logout } = useGithubSession(apiUrl);
+  const { isOnline, showOfflineSnackbar } = useOnlineStatus();
 
   return (
     <header className="z-20 fixed w-screen flex items-center justify-center mt-10">
@@ -58,6 +61,18 @@ export default function Header() {
             etherbeing
           </h1>
           <div className="flex items-center gap-3">
+            <div
+              className={`hidden md:inline-flex items-center gap-2 rounded-full border px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.22em] transition ${isOnline
+                  ? "border-emerald-300/30 bg-emerald-300/10 text-emerald-100"
+                  : "border-amber-300/30 bg-amber-300/10 text-amber-100"
+                }`}
+            >
+              <span
+                className={`h-2 w-2 rounded-full ${isOnline ? "bg-emerald-300" : "bg-amber-300"
+                  }`}
+              />
+              {isOnline ? "Online" : "Offline"}
+            </div>
             <Hamburger
               size={20}
               label="Show options"
@@ -67,82 +82,100 @@ export default function Header() {
           </div>
         </div>
         {isOpen !== undefined ? (
-
-          <nav
-            style={{
-              animationDelay: `${navs.length * 100}ms`,
-            }}
-            className={`w-full grid grid-cols-1 md:grid-cols-2 gap-3 overflow-hidden transition-all duration-300 h-0 ${isOpen ? "nav-expand" : "nav-collapse"}`}
-          >
-            {navs.map((nav, i) => (
-              <SpotlightCard
-                key={i}
-                className={`mt-5 w-full flex flex-col gap-3 translate-y-100 opacity-0`}
-                style={{
-                  animationDelay: `${i * 100 + 100}ms`,
-                  backgroundColor: oklchGradient(
-                    0,
-                    10,
-                    0.05,
-                    300,
-                    i,
-                    navs.length,
-                  ),
-                }}
-              >
-                <h3 className="text-lg font-bold cursor-default">{nav.label}</h3>
-                <div className="flex flex-col gap-3">
-                  {session.is_authenticated ? (
-                    <button
-                      type="button"
-                      onClick={() => void logout()}
-                      className="text-sm inline-flex items-center"
-                    >
-                      <FaGithub className="mr-2" />
-                      Logout @{session.github_login || session.username}
-                    </button>
-                  ) : (
-                    <button
-                      type="button"
-                      disabled={isLoading}
-                      onClick={() => login()}
-                      className="text-sm inline-flex items-center disabled:opacity-60"
-                    >
-                      <FaGithub className="mr-2" />
-                      {isLoading ? "Loading login..." : "Login with GitHub"}
-                    </button>
-                  )}
-                  {nav.links.map((link, i) => (
-                    <a
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        const target = new URL(e.currentTarget.href);
-                        const hash = target.hash;
-                        let section = hash ? document.querySelector(hash) : null;
-                        if (section) {
-                          section.scrollIntoView({
-                            behavior: "smooth",
-                          });
-                        } else {
-                          location.assign(`${target.pathname}${target.search}${target.hash}`);
-                        }
-                        setIsOpen(false);
-                      }}
-                      key={i}
-                      href={link.href}
-                      className="text-sm inline-flex items-center"
-                    >
-                      <GoArrowUpRight className="mr-2" />
-                      {link.label}
-                    </a>
-                  ))}
-                </div>
-              </SpotlightCard>
-            ))}
-          </nav>
+          <>
+            <nav
+              style={{
+                animationDelay: `${navs.length * 100}ms`,
+              }}
+              className={`text-center mt-3 w-full overflow-hidden transition-all duration-300 h-0 ${isOpen ? "nav-expand" : "nav-collapse"}`}
+            >
+              {session.is_authenticated ? (
+                <Button
+                  type="button"
+                  onClick={() => void logout()}
+                  className="text-sm inline-flex items-center"
+                >
+                  <FaGithub className="mr-2" />
+                  Logout @{session.github_login || session.username}
+                </Button>
+              ) : (
+                <Button
+                  type="button"
+                  disabled={isLoading}
+                  onClick={() => login()}
+                  className="text-sm inline-flex items-center disabled:opacity-60"
+                >
+                  <FaGithub className="mr-2" />
+                  {isLoading ? "Loading login..." : "Login with GitHub"}
+                </Button>
+              )}
+              <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-3">
+                {navs.map((nav, i) => (
+                  <SpotlightCard
+                    key={i}
+                    className={`mt-5 w-full flex flex-col gap-3 translate-y-100 opacity-0`}
+                    style={{
+                      animationDelay: `${i * 100 + 100}ms`,
+                      backgroundColor: oklchGradient(
+                        0,
+                        10,
+                        0.05,
+                        300,
+                        i,
+                        navs.length,
+                      ),
+                    }}
+                  >
+                    <h3 className="text-lg font-bold cursor-default">{nav.label}</h3>
+                    <div className="flex flex-col gap-3">
+                      {nav.links.map((link, i) => (
+                        <a
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            const target = new URL(e.currentTarget.href);
+                            const hash = target.hash;
+                            let section = hash ? document.querySelector(hash) : null;
+                            if (section) {
+                              section.scrollIntoView({
+                                behavior: "smooth",
+                              });
+                            } else {
+                              location.assign(`${target.pathname}${target.search}${target.hash}`);
+                            }
+                            setIsOpen(false);
+                          }}
+                          key={i}
+                          href={link.href}
+                          className="text-sm inline-flex items-center"
+                        >
+                          <GoArrowUpRight className="mr-2" />
+                          {link.label}
+                        </a>
+                      ))}
+                    </div>
+                  </SpotlightCard>
+                ))}
+              </div>
+            </nav>
+          </>
         ) : null}
       </SpotlightCard>
+      {showOfflineSnackbar ? (
+        <div className="fixed right-4 top-4 z-40 w-[min(22rem,calc(100vw-2rem))] rounded-3xl border border-amber-300/25 bg-slate-950/88 p-4 text-sm text-amber-50 shadow-2xl shadow-black/40 backdrop-blur-2xl md:right-8 md:top-8">
+          <div className="flex items-start gap-3">
+            <span className="mt-1 h-2.5 w-2.5 rounded-full bg-amber-300" />
+            <div className="space-y-1">
+              <p className="m-0 text-xs font-semibold uppercase tracking-[0.28em] text-amber-200/80">
+                No Internet
+              </p>
+              <p className="m-0 leading-6 text-slate-200">
+                You are offline right now. Cached pages are still available, and fresh data will sync back once your connection returns.
+              </p>
+            </div>
+          </div>
+        </div>
+      ) : null}
     </header>
   );
 }

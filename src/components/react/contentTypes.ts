@@ -22,3 +22,18 @@ export type BlogEntry = {
   updated_at?: string | null;
   content?: string;
 };
+
+export type Service = {
+  slug: string;
+  title: string;
+  headline: string;
+  starting_price: number;
+  description: string;
+  overview: string;
+  skills: string[];
+  deliverables: string[];
+  process_steps: string[];
+  outcomes: string[];
+  engagement_cta: string;
+  sort_order: number;
+};

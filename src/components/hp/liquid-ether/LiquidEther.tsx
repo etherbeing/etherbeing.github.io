@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import { useEffect, useRef, type ReactElement } from "react";
 import {
   defaultColors,
   type LiquidEtherProps,
@@ -26,7 +26,7 @@ export default function LiquidEther({
   takeoverDuration = 0.25,
   autoResumeDelay = 1000,
   autoRampDuration = 0.6,
-}: LiquidEtherProps): React.ReactElement {
+}: LiquidEtherProps): ReactElement {
   const mountRef = useRef<HTMLDivElement | null>(null);
   const webglRef = useRef<LiquidEtherWebGL | null>(null);
 

@@ -4,6 +4,7 @@ from rest_framework.serializers import (
     ModelSerializer,
     Serializer,
     SerializerMethodField,
+    ChoiceField,
 )
 
 from .models import (
@@ -15,8 +16,10 @@ from .models import (
     ContactLink,
     Project,
     Service,
+    ServiceRequest,
     SiteContent,
     Skill,
+    User,
 )
 
 class PostSerializer(Serializer):
@@ -85,7 +88,48 @@ class SkillSerializer(ModelSerializer):
 class ServiceSerializer(ModelSerializer):
     class Meta:
         model = Service
-        fields = ("title", "starting_price", "description", "skills", "sort_order")
+        fields = (
+            "slug",
+            "title",
+            "headline",
+            "starting_price",
+            "description",
+            "overview",
+            "skills",
+            "deliverables",
+            "process_steps",
+            "outcomes",
+            "engagement_cta",
+            "sort_order",
+        )
+
+
+class ServiceRequestCreateSerializer(Serializer):
+    message = CharField(required=False, allow_blank=True)
+
+
+class ServiceRequesterSerializer(ModelSerializer):
+    class Meta:
+        model = User
+        fields = ("username", "email", "github_login")
+
+
+class ServiceRequestSerializer(ModelSerializer):
+    service = ServiceSerializer()
+    requester = ServiceRequesterSerializer()
+    status = ChoiceField(choices=ServiceRequest.Status.choices)
+
+    class Meta:
+        model = ServiceRequest
+        fields = (
+            "id",
+            "service",
+            "requester",
+            "status",
+            "message",
+            "created_at",
+            "updated_at",
+        )
 
 
 class ContactLinkSerializer(ModelSerializer):
