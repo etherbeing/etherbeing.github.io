@@ -1,5 +1,8 @@
 import { type ReactNode, useEffect, useState } from "react";
+import Lightbox from "yet-another-react-lightbox";
+import "yet-another-react-lightbox/styles.css";
 import {
+  FaChartLine,
   FaDiscord,
   FaEnvelope,
   FaGithub,
@@ -13,14 +16,14 @@ import { SiBugcrowd, SiHackerone, SiTryhackme, SiX } from "react-icons/si";
 
 import alterEgo from "@/assets/alter-ego.png";
 import ferris from "@/assets/ferris.png";
-import photo from "@/assets/photo.jpg";
-import DecryptedText from "./DecryptedText";
+import ContactSection from "./ContactSection";
 import GlowingHeader from "./GlowingHeader";
 import GlowingText from "./GlowingText";
 import ShinyText from "./ShinyText";
 import SpotlightCard from "./SpotlightCard";
 import StarBorder from "./StarBorder";
 import TextType from "./TextType";
+import TradingViewAdvancedChart from "./TradingViewAdvancedChart";
 import { BlogCard, ProjectCard, projectGradient } from "./contentCards";
 import type { BlogEntry, Project, Service } from "./contentTypes";
 
@@ -47,6 +50,13 @@ type ContactLink = {
   sort_order: number;
 };
 
+type GalleryPhoto = {
+  title: string;
+  image_url: string;
+  caption: string;
+  sort_order: number;
+};
+
 type ContactGroup = {
   title: string;
   sort_order: number;
@@ -64,6 +74,8 @@ type SiteContent = {
   contact_intro: string;
   footer_copy: string;
   footer_tagline: string;
+  featured_chart_symbol: string;
+  featured_chart_title: string;
   strategy_business_idea?: {
     blog_integrations?: string[];
     content_to_publish?: string[];
@@ -73,6 +85,7 @@ type SiteContent = {
   skills: Skill[];
   services: Service[];
   contact_groups: ContactGroup[];
+  gallery_photos: GalleryPhoto[];
   featured_projects: Project[];
   featured_blog_entries: BlogEntry[];
 };
@@ -89,6 +102,7 @@ const iconMap: Record<string, ReactNode> = {
   tryhackme: <SiTryhackme />,
   discord: <FaDiscord />,
   bug: <FaBug />,
+  tradingview: <FaChartLine />,
 };
 
 function EmptyState({ message }: { message: string }) {
@@ -102,6 +116,7 @@ function EmptyState({ message }: { message: string }) {
 export default function HomePage({ apiUrl }: { apiUrl: string }) {
   const [content, setContent] = useState<SiteContent | null>(null);
   const [error, setError] = useState<string>("");
+  const [activeGalleryIndex, setActiveGalleryIndex] = useState<number>(-1);
 
   useEffect(() => {
     fetch(`${apiUrl}/api/site/content/`)
@@ -149,6 +164,18 @@ export default function HomePage({ apiUrl }: { apiUrl: string }) {
   const rightHighlights = content.about_highlights.filter(
     (highlight) => highlight.column === "right",
   );
+  const footerLinks = content.contact_groups.flatMap((group) =>
+    group.links.map((link) => ({
+      ...link,
+      groupTitle: group.title,
+    })),
+  );
+  const gallerySlides = content.gallery_photos.map((photoItem) => ({
+    src: photoItem.image_url,
+    alt: photoItem.title,
+    title: photoItem.title,
+    description: photoItem.caption,
+  }));
 
   return (
     <>
@@ -384,29 +411,116 @@ export default function HomePage({ apiUrl }: { apiUrl: string }) {
         </div>
       </section>
 
-      <section id="contact" className="py-20 space-y-4 cursor-default select-none text-justify">
-        <GlowingHeader>Contact</GlowingHeader>
-        <SpotlightCard className="flex flex-col items-start gap-5">
-          {content.contact_intro}
-          {content.contact_groups.map((group) => (
-            <div className="flex flex-col gap-2 w-fit" key={group.title}>
-              <b className="w-full">{group.title}</b>
-              <ul className="flex gap-2 flex-wrap">
-                {group.links.map((link) => (
-                  <li key={`${group.title}-${link.label}`}>
-                    <a target="_blank" className="flex gap-1 items-center" href={link.url}>
-                      {iconMap[link.icon] || null}
-                      {link.label}
-                    </a>
-                  </li>
+      <ContactSection
+        apiUrl={apiUrl}
+        contactIntro={content.contact_intro}
+        contactGroups={content.contact_groups.map((group) => ({
+          ...group,
+          links: group.links.map((link) => ({
+            ...link,
+            icon: iconMap[link.icon] || null,
+          })),
+        }))}
+      />
+
+      <section id="signals" className="py-20 space-y-6">
+        <GlowingHeader>Signals & Frames</GlowingHeader>
+        <SpotlightCard className="overflow-hidden border-white/10 bg-white/[0.03] p-0 backdrop-blur-2xl">
+          <div className="border-b border-white/8 bg-gradient-to-br from-cyan-400/14 via-slate-950/10 to-fuchsia-400/14 px-6 py-5">
+            <p className="text-xs uppercase tracking-[0.24em] text-cyan-200/80">
+              Photo gallery
+            </p>
+            <h3 className="mt-2 text-2xl font-bold text-white">
+              Personal frames from etherbeing
+            </h3>
+            <p className="mt-3 max-w-3xl text-sm leading-7 text-slate-300">
+              A masonry-style gallery sourced from the backend, so new photos can be added without hardcoding the frontend. Click any frame to open a closer showroom view.
+            </p>
+          </div>
+          <div className="p-5">
+            {content.gallery_photos.length ? (
+              <div className="etherbeing-gallery-masonry">
+                {content.gallery_photos.map((photoItem, index) => (
+                  <article
+                    key={`${photoItem.title}-${index}`}
+                    className="etherbeing-gallery-card group overflow-hidden rounded-[1.6rem] border border-white/10 bg-slate-950/55 shadow-[0_18px_42px_rgba(2,6,23,0.28)]"
+                  >
+                    <button
+                      type="button"
+                      onClick={() => setActiveGalleryIndex(index)}
+                      className="block w-full cursor-pointer text-left"
+                    >
+                      <div className="overflow-hidden">
+                        <img
+                          src={photoItem.image_url}
+                          alt={photoItem.title}
+                          className="w-full object-cover transition duration-500 group-hover:scale-[1.03]"
+                        />
+                      </div>
+                      <div className="space-y-2 px-4 py-4">
+                        <div className="flex items-center justify-between gap-3">
+                          <h4 className="text-lg font-semibold text-white">{photoItem.title}</h4>
+                          <span className="rounded-full border border-cyan-300/20 bg-cyan-300/10 px-3 py-1 text-[0.65rem] uppercase tracking-[0.22em] text-cyan-100/85">
+                            Showroom
+                          </span>
+                        </div>
+                        <p className="text-sm leading-6 text-slate-300">{photoItem.caption}</p>
+                      </div>
+                    </button>
+                  </article>
                 ))}
-              </ul>
-            </div>
-          ))}
+              </div>
+            ) : (
+              <div className="rounded-[1.6rem] border border-dashed border-white/10 bg-black/20 p-6 text-sm text-slate-400">
+                Gallery images will appear here once they are added in the backend.
+              </div>
+            )}
+          </div>
+        </SpotlightCard>
+
+        <SpotlightCard className="overflow-hidden border-white/10 bg-white/[0.03] p-0 backdrop-blur-2xl">
+          <div className="border-b border-white/8 bg-gradient-to-br from-emerald-400/14 via-slate-950/10 to-cyan-400/14 px-6 py-5">
+            <p className="text-xs uppercase tracking-[0.24em] text-cyan-200/80">
+              Market watch
+            </p>
+            <h3 className="mt-2 text-2xl font-bold text-white">
+              {content.featured_chart_title}
+            </h3>
+            <p className="mt-3 max-w-2xl text-sm leading-7 text-slate-300">
+              Live candlestick context rendered through TradingView&apos;s advanced chart widget with the symbol configured from the backend.
+            </p>
+          </div>
+          <div className="p-5">
+            <TradingViewAdvancedChart
+              symbol={content.featured_chart_symbol}
+              title={content.featured_chart_title}
+            />
+          </div>
         </SpotlightCard>
       </section>
 
-      <footer className="py-14 text-center text-gray-500">
+      <Lightbox
+        open={activeGalleryIndex >= 0}
+        close={() => setActiveGalleryIndex(-1)}
+        index={activeGalleryIndex >= 0 ? activeGalleryIndex : 0}
+        slides={gallerySlides}
+      />
+
+      <footer className="space-y-8 py-14 text-center text-gray-500">
+        <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-center gap-3">
+          {footerLinks.map((link) => (
+            <a
+              key={`${link.groupTitle}-${link.label}`}
+              href={link.url}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm text-slate-300 transition hover:border-cyan-300/35 hover:text-white"
+            >
+              {iconMap[link.icon] || null}
+              <span>{link.label}</span>
+            </a>
+          ))}
+        </div>
         <p>
           {content.footer_copy}
           <br />

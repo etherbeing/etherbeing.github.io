@@ -6,7 +6,8 @@ from django.core.cache import cache
 from django.core.management import call_command
 from django.test import TestCase, override_settings
 
-from apps.base.models import BlogEntry, Configuration, Project, Service, SiteContent
+from apps.base.models import BlogEntry, Configuration, Project, PublishedPost, Service, SiteContent
+from apps.base.models import ContactMessage, ContactThread
 from apps.base.seed_data import initialize_configuration, initialize_site_content
 
 
@@ -22,9 +23,11 @@ class SiteContentSeedTests(TestCase):
         self.assertEqual(Configuration.objects.count(), 1)
         self.assertEqual(site_content.about_highlights.count(), 4)
         self.assertEqual(site_content.skills.count(), 6)
-        self.assertEqual(site_content.services.count(), 6)
+        self.assertEqual(site_content.services.count(), 13)
         self.assertEqual(site_content.contact_groups.count(), 3)
-        self.assertEqual(site_content.contact_groups.first().links.count(), 6)
+        self.assertEqual(site_content.contact_groups.first().links.count(), 7)
+        self.assertEqual(site_content.gallery_photos.count(), 1)
+        self.assertEqual(site_content.featured_chart_symbol, "BITSTAMP:ETHUSD")
         self.assertIn("blog_integrations", site_content.strategy_business_idea)
 
     def test_initialize_site_content_is_idempotent(self):
@@ -36,6 +39,8 @@ class SiteContentSeedTests(TestCase):
         self.assertEqual(first.pk, second.pk)
         self.assertEqual(second.about_highlights.count(), 4)
         self.assertEqual(SiteContent.objects.count(), 1)
+        self.assertEqual(second.services.count(), 13)
+        self.assertEqual(second.gallery_photos.count(), 1)
 
     def test_management_command_initializes_site_content(self):
         stdout = StringIO()
@@ -71,6 +76,9 @@ class SiteContentApiTests(TestCase):
         self.assertEqual(payload["skills"][0]["image_url"], "/skills/kali.png")
         self.assertTrue(payload["skills"][0]["headline"])
         self.assertTrue(payload["skills"][0]["description"])
+        self.assertEqual(payload["featured_chart_symbol"], "BITSTAMP:ETHUSD")
+        self.assertEqual(payload["featured_chart_title"], "Ethereum / USD")
+        self.assertEqual(len(payload["gallery_photos"]), 1)
         self.assertEqual(SiteContent.objects.count(), 1)
 
     def test_site_content_endpoint_includes_featured_projects_and_blog_entries(self):
@@ -98,6 +106,10 @@ class SiteContentApiTests(TestCase):
         self.assertEqual(payload["featured_projects"][0]["name"], "etherbeing-site")
         self.assertEqual(payload["featured_blog_entries"][0]["gist_id"], "gist-1")
         self.assertEqual(payload["contact_groups"][0]["title"], "Social Networks")
+        self.assertIn(
+            "TradingView",
+            [link["label"] for link in payload["contact_groups"][0]["links"]],
+        )
 
     def test_site_content_endpoint_uses_cache(self):
         initialize_site_content()
@@ -124,10 +136,13 @@ class SiteContentApiTests(TestCase):
                 "contact_intro": "",
                 "footer_copy": "",
                 "footer_tagline": "",
+                "featured_chart_symbol": "",
+                "featured_chart_title": "",
                 "about_highlights": [],
                 "skills": [],
                 "services": [],
                 "contact_groups": [],
+                "gallery_photos": [],
                 "featured_projects": [],
                 "featured_blog_entries": [],
             },
@@ -141,6 +156,8 @@ class SiteContentApiTests(TestCase):
             response.json()["strategy_business_idea"]["blog_integrations"],
             [],
         )
+        self.assertEqual(response.json()["featured_chart_symbol"], "BITSTAMP:ETHUSD")
+        self.assertEqual(response.json()["gallery_photos"], [])
 
     def test_configuration_endpoint_bootstraps_configuration(self):
         response = self.client.get("/api/site/configuration/")
@@ -208,6 +225,107 @@ class SiteContentApiTests(TestCase):
         self.assertEqual(payload["requester"]["username"], "reader-user")
         self.assertEqual(payload["message"], "I need a secure marketing site.")
 
+    def test_contact_threads_requires_authenticated_user(self):
+        response = self.client.get("/api/site/contact/threads/")
+        self.assertEqual(response.status_code, 401)
+
+    @override_settings(
+        RECAPTCHA_SITE_KEY="",
+        RECAPTCHA_SECRET_KEY="",
+    )
+    def test_authenticated_user_can_create_contact_thread(self):
+        user = get_user_model().objects.create_user(
+            username="contact-user",
+            email="contact@example.com",
+            github_login="contact-user",
+            github_access_token="front-access-token",
+            github_token_scope="read:user,user:email",
+        )
+        self.client.force_login(user)
+
+        response = self.client.post(
+            "/api/site/contact/threads/",
+            {"subject": "Research collaboration", "content": "Interested in a joint project."},
+            content_type="application/json",
+        )
+
+        self.assertEqual(response.status_code, 201)
+        payload = response.json()
+        self.assertEqual(payload["subject"], "Research collaboration")
+        self.assertEqual(len(payload["messages"]), 1)
+        self.assertEqual(payload["messages"][0]["content"], "Interested in a joint project.")
+        self.assertEqual(ContactThread.objects.count(), 1)
+        self.assertEqual(ContactMessage.objects.count(), 1)
+
+    @override_settings(
+        RECAPTCHA_SITE_KEY="site-key",
+        RECAPTCHA_SECRET_KEY="secret-key",
+        RECAPTCHA_MIN_SCORE=0.7,
+    )
+    @patch("apps.base.controllers.verify_recaptcha_token")
+    def test_contact_thread_requires_valid_recaptcha_when_enabled(self, verify_mock):
+        user = get_user_model().objects.create_user(
+            username="contact-user-2",
+            email="contact2@example.com",
+        )
+        self.client.force_login(user)
+        verify_mock.return_value = Mock(success=False)
+
+        response = self.client.post(
+            "/api/site/contact/threads/",
+            {
+                "subject": "Help",
+                "content": "Need assistance.",
+                "recaptcha_token": "bad-token",
+            },
+            content_type="application/json",
+        )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(ContactThread.objects.count(), 0)
+
+    def test_contact_threads_lists_only_requester_threads(self):
+        owner = get_user_model().objects.create_user(username="owner")
+        other = get_user_model().objects.create_user(username="other")
+        owner_thread = ContactThread.objects.create(requester=owner, subject="Owner thread")
+        other_thread = ContactThread.objects.create(requester=other, subject="Other thread")
+        ContactMessage.objects.create(thread=owner_thread, sender=owner, content="Owner message")
+        ContactMessage.objects.create(thread=other_thread, sender=other, content="Other message")
+        self.client.force_login(owner)
+
+        response = self.client.get("/api/site/contact/threads/")
+
+        self.assertEqual(response.status_code, 200)
+        payload = response.json()
+        self.assertEqual(len(payload), 1)
+        self.assertEqual(payload[0]["subject"], "Owner thread")
+
+    @override_settings(
+        RECAPTCHA_SITE_KEY="",
+        RECAPTCHA_SECRET_KEY="",
+    )
+    def test_authenticated_user_can_reply_to_own_thread(self):
+        owner = get_user_model().objects.create_user(username="thread-owner")
+        thread = ContactThread.objects.create(requester=owner, subject="Existing thread")
+        ContactMessage.objects.create(thread=thread, sender=owner, content="Initial")
+        self.client.force_login(owner)
+
+        response = self.client.post(
+            f"/api/site/contact/threads/{thread.pk}/messages/",
+            {"content": "Follow-up details"},
+            content_type="application/json",
+        )
+
+        self.assertEqual(response.status_code, 201)
+        payload = response.json()
+        self.assertEqual(len(payload["messages"]), 2)
+        self.assertEqual(payload["messages"][-1]["content"], "Follow-up details")
+
+    def test_github_session_exposes_recaptcha_configuration(self):
+        response = self.client.get("/api/auth/github/session/")
+        self.assertIn("recaptcha_enabled", response.json())
+        self.assertIn("recaptcha_site_key", response.json())
+
 
 class GithubViewSetTests(TestCase):
     def setUp(self):
@@ -258,6 +376,48 @@ class GithubViewSetTests(TestCase):
 
         self.assertEqual(entry.image_url, "https://gist.githubusercontent.com/image.png")
 
+    def test_create_from_gist_uses_first_available_image_file(self):
+        entry, _ = BlogEntry.create_from_gist(
+            {
+                "id": "gist-with-jpg",
+                "created_at": "2025-12-15T01:39:00+00:00",
+                "updated_at": "2025-12-15T01:39:00+00:00",
+                "description": "Image gist",
+                "html_url": "https://gist.github.com/etherbeing/gist-with-jpg",
+                "files": {
+                    "cover.jpg": {
+                        "filename": "cover.jpg",
+                        "type": "image/jpeg",
+                        "raw_url": "https://gist.githubusercontent.com/cover.jpg",
+                    },
+                    "content.md": {"filename": "content.md", "language": "Markdown", "content": "# Title"},
+                },
+            }
+        )
+
+        self.assertEqual(entry.image_url, "https://gist.githubusercontent.com/cover.jpg")
+
+    def test_create_from_gist_extracts_metadata_when_present(self):
+        entry, _ = BlogEntry.create_from_gist(
+            {
+                "id": "gist-with-metadata",
+                "created_at": "2025-12-15T01:39:00+00:00",
+                "updated_at": "2025-12-15T01:39:00+00:00",
+                "description": "Metadata gist",
+                "html_url": "https://gist.github.com/etherbeing/gist-with-metadata",
+                "files": {
+                    "content.md": {"filename": "content.md", "language": "Markdown", "content": "# Title"},
+                    "metadata.json": {
+                        "filename": "metadata.json",
+                        "content": '{"category":"researches","social_networks":["telegram","discord"]}',
+                    },
+                },
+            }
+        )
+
+        self.assertEqual(entry.category, "researches")
+        self.assertEqual(entry.social_networks, ["telegram", "discord"])
+
     @patch("apps.base.controllers.requests.request")
     def test_list_projects_fetches_from_github(self, request_mock):
         request_mock.side_effect = [
@@ -298,6 +458,41 @@ class GithubViewSetTests(TestCase):
             "repos/etherbeing/etherbeing_official/languages",
             request_mock.call_args_list[1].args[1],
         )
+
+    def test_list_gists_excludes_hidden_entries(self):
+        BlogEntry.objects.create(
+            gist_id="visible-gist",
+            description="Visible",
+            content="# Visible",
+            html_url="https://gist.github.com/etherbeing/visible-gist",
+            hide_from_web=False,
+        )
+        BlogEntry.objects.create(
+            gist_id="hidden-gist",
+            description="Hidden",
+            content="# Hidden",
+            html_url="https://gist.github.com/etherbeing/hidden-gist",
+            hide_from_web=True,
+        )
+
+        response = self.client.get("/api/gists/")
+
+        self.assertEqual(response.status_code, 200)
+        payload = response.json()
+        self.assertEqual([entry["gist_id"] for entry in payload], ["visible-gist"])
+
+    def test_get_gist_returns_not_found_for_hidden_entry(self):
+        BlogEntry.objects.create(
+            gist_id="hidden-gist",
+            description="Hidden",
+            content="# Hidden",
+            html_url="https://gist.github.com/etherbeing/hidden-gist",
+            hide_from_web=True,
+        )
+
+        response = self.client.get("/api/gist/hidden-gist/")
+
+        self.assertEqual(response.status_code, 404)
 
     @patch(
         "apps.base.controllers.requests.request",
@@ -467,6 +662,10 @@ class AdminAuthTests(TestCase):
             password="test-pass-123",
         )
 
+    @override_settings(
+        RECAPTCHA_SITE_KEY="",
+        RECAPTCHA_SECRET_KEY="",
+    )
     def test_admin_login_accepts_password_without_recaptcha_when_disabled(self):
         login_page = self.client.get("/admin/login/")
         self.assertContains(login_page, "admin-theme.css")
@@ -510,6 +709,9 @@ class AdminAuthTests(TestCase):
         self.assertContains(index_response, "etherbeing-admin-dashboard-main")
         self.assertContains(index_response, "etherbeing-admin-dashboard-sidebar")
         self.assertContains(index_response, "etherbeing-admin-app-list")
+        self.assertContains(index_response, "Publishing control")
+        self.assertContains(index_response, "Open publisher")
+        self.assertContains(index_response, "GitHub publishing token")
 
         self.assertEqual(changelist_response.status_code, 200)
         self.assertContains(changelist_response, "etherbeing-admin-nav-shell")
@@ -517,6 +719,7 @@ class AdminAuthTests(TestCase):
         self.assertContains(changelist_response, "etherbeing-admin-change-list-shell")
         self.assertContains(changelist_response, "etherbeing-admin-search-row")
         self.assertContains(changelist_response, "etherbeing-admin-object-tools")
+        self.assertContains(changelist_response, "Publish post")
 
     def test_admin_change_form_shows_detail_panel_sidebar(self):
         self.client.force_login(self.user)
@@ -528,6 +731,67 @@ class AdminAuthTests(TestCase):
         self.assertContains(response, "model-detail-panel")
         self.assertContains(response, "Detail panel")
         self.assertContains(response, "Current context")
+
+    def test_admin_publish_post_page_renders_editor(self):
+        self.client.force_login(self.user)
+
+        response = self.client.get("/admin/publishing/blog-posts/new/")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "etherbeing-rich-editor")
+        self.assertContains(response, "Full screen editor")
+        self.assertContains(response, "social_networks")
+        self.assertContains(response, "Channel readiness")
+        self.assertContains(response, "GitHub publishing token")
+
+    @patch("apps.base.publishing.requests.post")
+    def test_admin_publish_post_creates_gist_and_publication_record(self, post_mock):
+        self.user.github_access_token = "test-publish-token"
+        self.user.save(update_fields=["github_access_token"])
+        self.client.force_login(self.user)
+
+        def response_with(payload):
+            mock = Mock()
+            mock.json.return_value = payload
+            mock.raise_for_status.return_value = None
+            return mock
+
+        post_mock.side_effect = [
+            response_with(
+                {
+                    "id": "gist-published",
+                    "created_at": "2026-03-13T12:00:00+00:00",
+                    "updated_at": "2026-03-13T12:00:00+00:00",
+                    "description": "New admin post",
+                    "html_url": "https://gist.github.com/etherbeing/gist-published",
+                    "files": {
+                        "content.md": {"content": "<p>Hello world</p>"},
+                        "metadata.json": {"content": '{"category":"cybersecurity","social_networks":["telegram","discord"]}'},
+                    },
+                }
+            ),
+            response_with({"ok": True}),
+            response_with({"ok": True}),
+        ]
+
+        response = self.client.post(
+            "/admin/publishing/blog-posts/new/",
+            {
+                "title": "New admin post",
+                "excerpt": "Summary",
+                "category": "cybersecurity",
+                "social_networks": ["telegram", "discord"],
+                "content": "<p>Hello world</p>",
+            },
+            follow=True,
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(BlogEntry.objects.filter(gist_id="gist-published").exists())
+        self.assertTrue(PublishedPost.objects.filter(gist_id="gist-published").exists())
+        published = PublishedPost.objects.get(gist_id="gist-published")
+        self.assertEqual(published.social_networks, ["telegram", "discord"])
+        self.assertContains(response, "Blog post published successfully")
 
     @override_settings(DEBUG=True)
     def test_admin_login_shows_bootstrap_superuser_button_when_no_superuser_exists(self):

@@ -23,6 +23,7 @@ const navs: Array<{
         { label: "Blog", href: "#blog" },
         { label: "Projects Archive", href: "/projects" },
         { label: "Blog Archive", href: "/blog" },
+        { label: "Inbox", href: "/inbox" },
         { label: "Contact", href: "#contact" },
       ],
     },

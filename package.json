@@ -42,7 +42,8 @@
     "tailwind-merge": "^3.4.0",
     "tailwindcss": "^4.1.17",
     "three": "^0.167.1",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "yet-another-react-lightbox": "^3.29.1"
   },
   "devDependencies": {
     "@types/insane": "^1.0.0",

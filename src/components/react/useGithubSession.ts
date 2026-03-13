@@ -7,6 +7,8 @@ export type GithubSession = {
   github_login?: string;
   avatar_url?: string;
   can_comment_on_gists?: boolean;
+  recaptcha_enabled?: boolean;
+  recaptcha_site_key?: string;
   csrf_token: string;
 };
 

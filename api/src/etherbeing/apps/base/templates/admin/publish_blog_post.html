@@ -1,0 +1,153 @@
+{% extends "admin/base_site.html" %}
+{% load i18n %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+  <a href="{% url 'admin:index' %}">{% translate 'Home' %}</a>
+  &rsaquo; <span>{% translate 'Publishing' %}</span>
+  &rsaquo; <span>{% translate 'Publish blog post' %}</span>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="etherbeing-admin-change-form-layout">
+  <div id="content-main" class="etherbeing-admin-change-form-main">
+    <div class="module etherbeing-publisher-shell">
+      <div class="etherbeing-publisher-header">
+        <p class="etherbeing-publisher-kicker">Content publishing</p>
+        <h1>{% translate "Create and publish a new blog post" %}</h1>
+        <p>{% translate "Write a post with rich text, publish it as a GitHub gist, and notify the selected social channels." %}</p>
+      </div>
+
+      <form method="post" class="etherbeing-publisher-form">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        <div class="form-row">
+          {{ form.title.label_tag }}
+          {{ form.title }}
+        </div>
+        <div class="form-row">
+          {{ form.excerpt.label_tag }}
+          {{ form.excerpt }}
+          <div class="help"><div>{% translate "Optional short summary for operators and later notifications." %}</div></div>
+        </div>
+        <div class="etherbeing-publisher-grid">
+          <div class="form-row">
+            {{ form.category.label_tag }}
+            {{ form.category }}
+          </div>
+          <div class="form-row">
+            <label>{% translate "Social networks" %}</label>
+            <div class="etherbeing-publisher-socials">
+              {{ form.social_networks }}
+            </div>
+            <div class="help"><div>{% translate "Telegram and Discord dispatch are active. WhatsApp uses the Evolution API when configured." %}</div></div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="etherbeing-editor-topline">
+            {{ form.content.label_tag }}
+            <button type="button" class="button" id="etherbeing-editor-fullscreen-toggle">{% translate "Full screen editor" %}</button>
+          </div>
+          <div class="etherbeing-editor-shell" id="etherbeing-editor-shell">
+            <div class="etherbeing-editor-toolbar">
+              <button type="button" data-command="bold"><strong>B</strong></button>
+              <button type="button" data-command="italic"><em>I</em></button>
+              <button type="button" data-command="formatBlock" data-value="h2">H2</button>
+              <button type="button" data-command="formatBlock" data-value="blockquote">{% translate "Quote" %}</button>
+              <button type="button" data-command="insertUnorderedList">{% translate "Bullets" %}</button>
+              <button type="button" data-command="insertOrderedList">{% translate "Numbers" %}</button>
+              <button type="button" data-command="createLink">{% translate "Link" %}</button>
+              <button type="button" data-command="removeFormat">{% translate "Clear" %}</button>
+            </div>
+            <div
+              id="etherbeing-rich-editor"
+              class="etherbeing-rich-editor"
+              contenteditable="true"
+              spellcheck="true"
+            ></div>
+            {{ form.content.as_hidden }}
+          </div>
+          <div class="help"><div>{% translate "The editor stores HTML into the gist content file. GitHub metadata is stored alongside it for category and distribution tracking." %}</div></div>
+        </div>
+
+        <div class="submit-row">
+          <input type="submit" value="{% translate 'Publish post' %}" class="default">
+          <a href="{% url 'admin:index' %}" class="button">{% translate "Cancel" %}</a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <aside id="content-related" class="etherbeing-admin-change-form-sidebar">
+    <div class="module" id="model-detail-panel">
+      <h2>{% translate "Publishing notes" %}</h2>
+      <h3>{% translate "Workflow" %}</h3>
+      <ul class="etherbeing-detail-meta">
+        <li>
+          <span>{% translate "Destination" %}</span>
+          <strong>{% translate "GitHub Gist" %}</strong>
+        </li>
+        <li>
+          <span>{% translate "Notifications" %}</span>
+          <strong>{% translate "Telegram, Discord, WhatsApp (Evolution API)" %}</strong>
+        </li>
+        <li>
+          <span>{% translate "Operator" %}</span>
+          <strong>{{ request.user.username }}</strong>
+        </li>
+      </ul>
+      <h3>{% translate "Channel readiness" %}</h3>
+      <ul class="etherbeing-admin-channel-status-list etherbeing-admin-channel-status-list--compact">
+        {% for channel in publishing_channels %}
+          <li class="etherbeing-admin-channel-status etherbeing-admin-channel-status--{{ channel.state }}">
+            <span class="etherbeing-admin-channel-badge"></span>
+            <div>
+              <strong>{{ channel.label }}</strong>
+              <small>{{ channel.detail }}</small>
+            </div>
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </aside>
+</div>
+
+<script>
+  (() => {
+    const editor = document.getElementById("etherbeing-rich-editor");
+    const hiddenInput = document.getElementById("id_content");
+    const shell = document.getElementById("etherbeing-editor-shell");
+    const fullScreenButton = document.getElementById("etherbeing-editor-fullscreen-toggle");
+    if (!editor || !hiddenInput || !shell || !fullScreenButton) return;
+
+    editor.innerHTML = hiddenInput.value || "<p></p>";
+
+    const syncEditor = () => {
+      hiddenInput.value = editor.innerHTML.trim();
+    };
+
+    editor.addEventListener("input", syncEditor);
+    document.querySelectorAll(".etherbeing-editor-toolbar button").forEach((button) => {
+      button.addEventListener("click", () => {
+        const command = button.getAttribute("data-command");
+        const value = button.getAttribute("data-value");
+        if (!command) return;
+        if (command === "createLink") {
+          const url = window.prompt("Enter the link URL");
+          if (url) document.execCommand(command, false, url);
+        } else {
+          document.execCommand(command, false, value || undefined);
+        }
+        editor.focus();
+        syncEditor();
+      });
+    });
+
+    fullScreenButton.addEventListener("click", () => {
+      shell.classList.toggle("is-fullscreen");
+    });
+  })();
+</script>
+{% endblock %}

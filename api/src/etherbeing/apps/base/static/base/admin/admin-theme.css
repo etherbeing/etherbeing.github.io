@@ -253,16 +253,125 @@ a:focus-visible {
   overflow-x: hidden;
 }
 
+.etherbeing-admin-nav-quick-actions {
+  margin-bottom: 0.9rem;
+}
+
+.etherbeing-admin-nav-quick-actions .button {
+  width: 100%;
+  justify-content: center;
+}
+
 :is(.breadcrumbs, div.breadcrumbs) {
   width: min(1120px, calc(100% - 24px));
   margin: 1rem auto 0;
   box-sizing: border-box;
 }
 
+.etherbeing-admin-dashboard-publisher {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(18rem, 0.8fr);
+  gap: 1.2rem;
+  padding: 1.25rem;
+  margin-bottom: 1.2rem;
+  border: 1px solid var(--border-color);
+  border-radius: 1.5rem;
+  background:
+    linear-gradient(160deg, rgba(82, 39, 255, 0.12), rgba(255, 159, 252, 0.08)),
+    var(--panel-bg);
+  box-shadow: var(--shadow-soft);
+  backdrop-filter: blur(20px);
+}
+
+.etherbeing-admin-dashboard-kicker {
+  margin: 0 0 0.45rem;
+  color: var(--text-muted);
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.etherbeing-admin-dashboard-publisher h2 {
+  margin: 0;
+  font-size: clamp(1.35rem, 2vw, 1.8rem);
+}
+
+.etherbeing-admin-dashboard-publisher p {
+  margin: 0.65rem 0 0;
+  color: var(--text-muted);
+}
+
+.etherbeing-admin-dashboard-actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.etherbeing-admin-channel-status-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.8rem;
+}
+
+.etherbeing-admin-channel-status {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.85rem 0.95rem;
+  border-radius: 1rem;
+  border: 1px solid var(--hairline-color);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.etherbeing-admin-channel-status strong,
+.etherbeing-admin-channel-status small {
+  display: block;
+}
+
+.etherbeing-admin-channel-status small {
+  margin-top: 0.2rem;
+  color: var(--text-muted);
+  line-height: 1.45;
+}
+
+.etherbeing-admin-channel-badge {
+  width: 0.8rem;
+  height: 0.8rem;
+  flex: 0 0 0.8rem;
+  margin-top: 0.22rem;
+  border-radius: 999px;
+  box-shadow: 0 0 18px currentColor;
+}
+
+.etherbeing-admin-channel-status--ready .etherbeing-admin-channel-badge {
+  color: #34d399;
+  background: #34d399;
+}
+
+.etherbeing-admin-channel-status--missing .etherbeing-admin-channel-badge {
+  color: #f59e0b;
+  background: #f59e0b;
+}
+
+.etherbeing-admin-channel-status-list--compact .etherbeing-admin-channel-status {
+  padding: 0.75rem 0.85rem;
+}
+
+@media (max-width: 900px) {
+  .etherbeing-admin-dashboard-publisher {
+    grid-template-columns: 1fr;
+  }
+}
+
 :is(#content, .dashboard #content, #content-main, .login #content, .login #container) {
   position: relative;
 }
-
+#content {
+  margin: 0 auto;
+  min-width: 60vw;
+}
 .etherbeing-admin-dashboard-main,
 .etherbeing-admin-change-list-main {
   min-width: 0;
@@ -275,6 +384,9 @@ a:focus-visible {
   align-self: flex-start;
 }
 
+#content-related {
+  background: none;
+}
 :is(
   #content,
   #content-main,
@@ -1774,6 +1886,104 @@ ul.messagelist li {
 
 .etherbeing-detail-actions a:hover {
   background: color-mix(in srgb, var(--selected-bg) 85%, var(--panel-strong-bg) 15%);
+}
+
+.etherbeing-publisher-shell {
+  padding: 1.5rem;
+}
+
+.etherbeing-publisher-header h1 {
+  margin: 0 0 0.45rem;
+}
+
+.etherbeing-publisher-header p {
+  margin: 0 0 1rem;
+  color: var(--text-muted);
+}
+
+.etherbeing-publisher-kicker {
+  margin: 0 0 0.5rem;
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.etherbeing-publisher-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.etherbeing-publisher-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.etherbeing-publisher-socials ul {
+  display: grid;
+  gap: 0.75rem;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.etherbeing-publisher-socials li {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.etherbeing-editor-topline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.etherbeing-editor-shell {
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  border-radius: 1.4rem;
+  background: color-mix(in srgb, var(--panel-strong-bg) 88%, transparent 12%);
+  box-shadow: var(--shadow-soft);
+  overflow: hidden;
+}
+
+.etherbeing-editor-shell.is-fullscreen {
+  position: fixed;
+  inset: 1.25rem;
+  z-index: 1000002;
+}
+
+.etherbeing-editor-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  padding: 0.9rem;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+}
+
+.etherbeing-editor-toolbar button {
+  min-height: 2.4rem;
+  padding: 0.55rem 0.9rem;
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  background: color-mix(in srgb, var(--panel-bg) 82%, transparent 18%);
+  color: var(--primary-fg);
+  cursor: pointer;
+}
+
+.etherbeing-rich-editor {
+  min-height: 24rem;
+  padding: 1.1rem 1.2rem;
+  color: var(--primary-fg);
+  line-height: 1.7;
+  overflow: auto;
+}
+
+.etherbeing-rich-editor:focus {
+  outline: none;
 }
 
 body.etherbeing-admin-login-page {

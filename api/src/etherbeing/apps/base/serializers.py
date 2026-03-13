@@ -14,6 +14,9 @@ from .models import (
     Configuration,
     ContactGroup,
     ContactLink,
+    ContactMessage,
+    ContactThread,
+    GalleryPhoto,
     Project,
     Service,
     ServiceRequest,
@@ -33,6 +36,8 @@ class GithubSessionSerializer(Serializer):
     github_login = CharField(required=False, allow_blank=True)
     avatar_url = CharField(required=False, allow_blank=True)
     can_comment_on_gists = BooleanField(required=False)
+    recaptcha_enabled = BooleanField(required=False)
+    recaptcha_site_key = CharField(required=False, allow_blank=True)
     csrf_token = CharField()
 
 
@@ -132,6 +137,54 @@ class ServiceRequestSerializer(ModelSerializer):
         )
 
 
+class ContactMessageSerializer(ModelSerializer):
+    sender_username = SerializerMethodField()
+    is_staff_reply = SerializerMethodField()
+
+    class Meta:
+        model = ContactMessage
+        fields = (
+            "id",
+            "sender_username",
+            "is_staff_reply",
+            "content",
+            "created_at",
+        )
+
+    def get_sender_username(self, obj: ContactMessage):
+        return obj.sender.username
+
+    def get_is_staff_reply(self, obj: ContactMessage):
+        return obj.sender.is_staff
+
+
+class ContactThreadSerializer(ModelSerializer):
+    messages = ContactMessageSerializer(many=True)
+
+    class Meta:
+        model = ContactThread
+        fields = (
+            "id",
+            "subject",
+            "status",
+            "created_at",
+            "updated_at",
+            "last_message_at",
+            "messages",
+        )
+
+
+class ContactThreadCreateSerializer(Serializer):
+    subject = CharField()
+    content = CharField()
+    recaptcha_token = CharField(required=False, allow_blank=True)
+
+
+class ContactMessageCreateSerializer(Serializer):
+    content = CharField()
+    recaptcha_token = CharField(required=False, allow_blank=True)
+
+
 class ContactLinkSerializer(ModelSerializer):
     class Meta:
         model = ContactLink
@@ -146,12 +199,19 @@ class ContactGroupSerializer(ModelSerializer):
         fields = ("title", "sort_order", "links")
 
 
+class GalleryPhotoSerializer(ModelSerializer):
+    class Meta:
+        model = GalleryPhoto
+        fields = ("title", "image_url", "caption", "sort_order")
+
+
 class SiteContentSerializer(ModelSerializer):
     configuration = SerializerMethodField()
     about_highlights = AboutHighlightSerializer(many=True)
     skills = SkillSerializer(many=True)
     services = ServiceSerializer(many=True)
     contact_groups = ContactGroupSerializer(many=True)
+    gallery_photos = GalleryPhotoSerializer(many=True)
     featured_projects = SerializerMethodField()
     featured_blog_entries = SerializerMethodField()
 
@@ -169,11 +229,14 @@ class SiteContentSerializer(ModelSerializer):
             "contact_intro",
             "footer_copy",
             "footer_tagline",
+            "featured_chart_symbol",
+            "featured_chart_title",
             "strategy_business_idea",
             "about_highlights",
             "skills",
             "services",
             "contact_groups",
+            "gallery_photos",
             "featured_projects",
             "featured_blog_entries",
         )
@@ -186,5 +249,5 @@ class SiteContentSerializer(ModelSerializer):
         return ConfigurationSerializer(Configuration.get_solo()).data
 
     def get_featured_blog_entries(self, obj: SiteContent):
-        entries = BlogEntry.objects.order_by("-created_at")[:6]
+        entries = BlogEntry.objects.filter(hide_from_web=False).order_by("-created_at")[:6]
         return BlogEntrySerializer(entries, many=True).data

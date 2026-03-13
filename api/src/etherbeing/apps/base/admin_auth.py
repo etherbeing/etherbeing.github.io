@@ -21,8 +21,8 @@ RECAPTCHA_VERIFY_URL = "https://www.google.com/recaptcha/api/siteverify"
 @dataclass(frozen=True)
 class RecaptchaVerificationResult:
     success: bool
-    score: float
-    action: str
+    score: float = 1.0
+    action: str = ""
 
 
 def recaptcha_is_enabled() -> bool:
@@ -36,7 +36,7 @@ def github_oauth_is_enabled() -> bool:
 def verify_recaptcha_token(
     token: str,
     *,
-    action: str,
+    action: str = "",
     remoteip: str | None = None,
 ) -> RecaptchaVerificationResult:
     if not recaptcha_is_enabled():
@@ -55,9 +55,7 @@ def verify_recaptcha_token(
     )
     payload = response.json()
     return RecaptchaVerificationResult(
-        success=bool(payload.get("success"))
-        and float(payload.get("score", 0.0)) >= settings.RECAPTCHA_MIN_SCORE
-        and payload.get("action") == action,
+        success=bool(payload.get("success")),
         score=float(payload.get("score", 0.0)),
         action=str(payload.get("action") or ""),
     )

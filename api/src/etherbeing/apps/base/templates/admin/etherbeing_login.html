@@ -33,7 +33,7 @@
     <script defer src="{% static 'base/admin/admin-theme.js' %}"></script>
     {% if form.media %}{{ form.media }}{% endif %}
     {% if recaptcha_enabled and recaptcha_site_key %}
-    <script src="https://www.google.com/recaptcha/api.js?render={{ recaptcha_site_key }}"></script>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     {% endif %}
   </head>
   <body class="etherbeing-admin-login-page min-h-screen overflow-x-hidden bg-ether-night text-slate-100">
@@ -122,6 +122,18 @@
                 {% endif %}
               </div>
 
+              {% if recaptcha_enabled and recaptcha_site_key %}
+              <div class="space-y-2">
+                <label class="text-xs uppercase tracking-[0.18em] text-slate-300">
+                  {% translate "Human verification" %}
+                </label>
+                <div id="admin-recaptcha-checkbox" class="min-h-[78px]"></div>
+                <div id="admin-recaptcha-feedback" class="text-sm text-amber-100 hidden">
+                  {% translate "Please complete the reCAPTCHA checkbox before continuing." %}
+                </div>
+              </div>
+              {% endif %}
+
               <button type="submit" class="github-login-link !w-full">
                 {% translate "Log in" %}
               </button>
@@ -190,26 +202,53 @@
 
     <script>
       document.addEventListener("DOMContentLoaded", function () {
-        function runRecaptcha(callback) {
-          if (!window.grecaptcha) {
-            callback("");
+        const recaptchaEnabled = "{{ recaptcha_enabled|yesno:'true,false' }}" === "true";
+        const siteKey = "{{ recaptcha_site_key|escapejs }}";
+        const tokenInput = document.getElementById("id_recaptcha_token");
+        const feedback = document.getElementById("admin-recaptcha-feedback");
+        let widgetId = null;
+
+        function setFeedbackVisible(visible) {
+          if (!feedback) return;
+          feedback.classList.toggle("hidden", !visible);
+        }
+
+        function renderRecaptchaWidget() {
+          if (!recaptchaEnabled || !window.grecaptcha || widgetId !== null) {
             return;
           }
-          window.grecaptcha.ready(function () {
-            window.grecaptcha.execute("{{ recaptcha_site_key|escapejs }}", { action: "admin_login" }).then(callback);
+          const container = document.getElementById("admin-recaptcha-checkbox");
+          if (!container) return;
+          widgetId = window.grecaptcha.render(container, {
+            sitekey: siteKey,
+            callback: function (token) {
+              if (tokenInput) tokenInput.value = token;
+              setFeedbackVisible(false);
+            },
+            "expired-callback": function () {
+              if (tokenInput) tokenInput.value = "";
+            },
+            "error-callback": function () {
+              if (tokenInput) tokenInput.value = "";
+            }
           });
+        }
+
+        if (recaptchaEnabled) {
+          const intervalId = window.setInterval(function () {
+            if (window.grecaptcha && typeof window.grecaptcha.render === "function") {
+              window.clearInterval(intervalId);
+              renderRecaptchaWidget();
+            }
+          }, 150);
         }
 
         const loginForm = document.getElementById("login-form");
         if (loginForm) {
           loginForm.addEventListener("submit", function (event) {
-            const tokenInput = document.getElementById("id_recaptcha_token");
-            if (tokenInput && !tokenInput.value && "{{ recaptcha_enabled|yesno:'true,false' }}" === "true") {
+            if (tokenInput && !tokenInput.value && recaptchaEnabled) {
               event.preventDefault();
-              runRecaptcha(function (token) {
-                tokenInput.value = token;
-                loginForm.submit();
-              });
+              setFeedbackVisible(true);
             }
           });
         }
@@ -219,14 +258,16 @@
           githubButton.addEventListener("click", function (event) {
             event.preventDefault();
             const baseUrl = githubButton.getAttribute("href");
-            if ("{{ recaptcha_enabled|yesno:'true,false' }}" !== "true") {
+            if (!recaptchaEnabled) {
               window.location.assign(baseUrl);
               return;
             }
-            runRecaptcha(function (token) {
-              const nextUrl = token ? baseUrl + "?recaptcha_token=" + encodeURIComponent(token) : baseUrl;
-              window.location.assign(nextUrl);
-            });
+            if (!tokenInput || !tokenInput.value) {
+              setFeedbackVisible(true);
+              return;
+            }
+            const nextUrl = baseUrl + "?recaptcha_token=" + encodeURIComponent(tokenInput.value);
+            window.location.assign(nextUrl);
           });
         }
 

@@ -6,15 +6,26 @@ from django.conf import settings
 from django.contrib.auth import logout
 from django.core.cache import cache
 from django.middleware.csrf import get_token
+from django.utils import timezone
 from rest_framework.decorators import action
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
-from .admin_auth import begin_github_login, finish_github_login, github_oauth_is_enabled, sanitize_next_url
+from .admin_auth import (
+    begin_github_login,
+    finish_github_login,
+    github_oauth_is_enabled,
+    recaptcha_is_enabled,
+    sanitize_next_url,
+    verify_recaptcha_token,
+)
 from .serializers import (
     BlogEntryCommentSerializer,
     ConfigurationSerializer,
+    ContactMessageCreateSerializer,
+    ContactThreadCreateSerializer,
+    ContactThreadSerializer,
     GithubCommentCreateSerializer,
     GithubSessionSerializer,
     BlogEntrySerializer,
@@ -24,7 +35,16 @@ from .serializers import (
     ServiceSerializer,
     SiteContentSerializer,
 )
-from .models import BlogEntry, Configuration, Project, Service, ServiceRequest, SiteContent
+from .models import (
+    BlogEntry,
+    Configuration,
+    ContactMessage,
+    ContactThread,
+    Project,
+    Service,
+    ServiceRequest,
+    SiteContent,
+)
 from .github_api import fetch_github_json
 from .seed_data import initialize_configuration, initialize_site_content
 
@@ -40,7 +60,7 @@ class GithubViewSet(GenericViewSet):
             self.get_gist.__name__,
             self.get_comments_for_gist.__name__,
         ]:
-            return BlogEntry.objects.all().order_by("-created_at", "-updated_at")
+            return BlogEntry.objects.filter(hide_from_web=False).order_by("-created_at", "-updated_at")
         elif self.action in [self.list_projects.__name__, self.get_project.__name__]:
             return Project.objects.all().order_by("-pushed_at", "-updated_at", "-created_at")
 
@@ -92,6 +112,8 @@ class GithubViewSet(GenericViewSet):
         payload = {
             "is_authenticated": bool(user and user.is_authenticated),
             "csrf_token": get_token(request._request),
+            "recaptcha_enabled": recaptcha_is_enabled(),
+            "recaptcha_site_key": settings.RECAPTCHA_SITE_KEY,
         }
         if user and user.is_authenticated:
             payload.update(
@@ -175,14 +197,20 @@ class GithubViewSet(GenericViewSet):
         KEY = f"gist-{id}"
         if cch := cache.get(KEY):
             return Response(data=cch)
+        if BlogEntry.objects.filter(gist_id=id, hide_from_web=True).exists():
+            return Response(status=HTTPStatus.NOT_FOUND)
         try:
-            entry = BlogEntry.objects.get(gist_id=id)
+            entry = BlogEntry.objects.get(gist_id=id, hide_from_web=False)
             if not entry.content:
                 gist_data = fetch_github_json(f"gists/{id}", f"github-gist-{id}")
                 entry = BlogEntry.create_from_gist(gist_data)[0]
+                if entry.hide_from_web:
+                    return Response(status=HTTPStatus.NOT_FOUND)
         except (BlogEntry.DoesNotExist, requests.exceptions.RequestException):
             gist_data = fetch_github_json(f"gists/{id}", f"github-gist-{id}")
             entry = BlogEntry.create_from_gist(gist_data)[0]
+            if entry.hide_from_web:
+                return Response(status=HTTPStatus.NOT_FOUND)
         result = self.get_serializer(entry).data
         cache.set(KEY, result, timeout=60 * 5)
         return Response(data=result)
@@ -310,6 +338,14 @@ class SiteContentViewSet(GenericViewSet):
             if self.request.method == HTTPMethod.POST:
                 return ServiceRequestCreateSerializer
             return ServiceRequestSerializer
+        if self.action == self.contact_threads.__name__:
+            if self.request.method == HTTPMethod.POST:
+                return ContactThreadCreateSerializer
+            return ContactThreadSerializer
+        if self.action == self.contact_thread_messages.__name__:
+            if self.request.method == HTTPMethod.POST:
+                return ContactMessageCreateSerializer
+            return ContactThreadSerializer
         return super().get_serializer_class()
 
     @staticmethod
@@ -320,7 +356,21 @@ class SiteContentViewSet(GenericViewSet):
             "other_services": [],
             **(payload.get("strategy_business_idea") or {}),
         }
+        payload["featured_chart_symbol"] = payload.get("featured_chart_symbol") or "BITSTAMP:ETHUSD"
+        payload["featured_chart_title"] = payload.get("featured_chart_title") or "Ethereum / USD"
+        payload["gallery_photos"] = payload.get("gallery_photos") or []
         return payload
+
+    @staticmethod
+    def verify_contact_recaptcha(request: Request, token: str) -> bool:
+        if not recaptcha_is_enabled():
+            return True
+        result = verify_recaptcha_token(
+            token,
+            action="contact_message",
+            remoteip=request.META.get("REMOTE_ADDR"),
+        )
+        return result.success
 
     @action([HTTPMethod.GET], detail=False, url_path="content")
     def content(self, request: Request):
@@ -334,6 +384,7 @@ class SiteContentViewSet(GenericViewSet):
                 "skills",
                 "services",
                 "contact_groups__links",
+                "gallery_photos",
             )
             .filter(slug="primary")
             .first()
@@ -403,3 +454,76 @@ class SiteContentViewSet(GenericViewSet):
             ServiceRequestSerializer(service_request).data,
             status=HTTPStatus.CREATED,
         )
+
+    @action([HTTPMethod.GET, HTTPMethod.POST], detail=False, url_path="contact/threads")
+    def contact_threads(self, request: Request):
+        if not request.user.is_authenticated:
+            return Response(
+                {"detail": "Authentication is required to contact through the platform."},
+                status=HTTPStatus.UNAUTHORIZED,
+            )
+
+        if request.method == HTTPMethod.GET:
+            threads = ContactThread.objects.filter(requester=request.user).prefetch_related("messages__sender")
+            return Response(ContactThreadSerializer(threads, many=True).data)
+
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        if not self.verify_contact_recaptcha(
+            request, serializer.validated_data.get("recaptcha_token", "")
+        ):
+            return Response(
+                {"detail": "reCAPTCHA verification failed."},
+                status=HTTPStatus.BAD_REQUEST,
+            )
+
+        thread = ContactThread.objects.create(
+            requester=request.user,
+            subject=serializer.validated_data["subject"],
+        )
+        ContactMessage.objects.create(
+            thread=thread,
+            sender=request.user,
+            content=serializer.validated_data["content"],
+        )
+        thread.last_message_at = timezone.now()
+        thread.save(update_fields=["last_message_at", "updated_at"])
+        thread.refresh_from_db()
+        return Response(ContactThreadSerializer(thread).data, status=HTTPStatus.CREATED)
+
+    @action(
+        [HTTPMethod.POST],
+        detail=False,
+        url_path=r"contact/threads/(?P<pk>\d+)/messages",
+    )
+    def contact_thread_messages(self, request: Request, pk: str):
+        if not request.user.is_authenticated:
+            return Response(
+                {"detail": "Authentication is required to reply through the platform."},
+                status=HTTPStatus.UNAUTHORIZED,
+            )
+
+        thread = ContactThread.objects.filter(pk=pk, requester=request.user).first()
+        if thread is None:
+            return Response({"detail": "Conversation not found."}, status=HTTPStatus.NOT_FOUND)
+
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        if not self.verify_contact_recaptcha(
+            request, serializer.validated_data.get("recaptcha_token", "")
+        ):
+            return Response(
+                {"detail": "reCAPTCHA verification failed."},
+                status=HTTPStatus.BAD_REQUEST,
+            )
+
+        ContactMessage.objects.create(
+            thread=thread,
+            sender=request.user,
+            content=serializer.validated_data["content"],
+        )
+        thread.status = ContactThread.Status.OPEN
+        thread.last_message_at = timezone.now()
+        thread.save(update_fields=["status", "updated_at", "last_message_at"])
+        thread.refresh_from_db()
+        return Response(ContactThreadSerializer(thread).data, status=HTTPStatus.CREATED)

@@ -43,6 +43,16 @@ class BlogEntryComment(models.Model):
 
 
 class BlogEntry(models.Model):
+    class Category(models.TextChoices):
+        CYBERSECURITY = "cybersecurity", "Cybersecurity"
+        SOFTWARE_DEVELOPMENT = "software-development", "Software Development"
+        DEVOPS = "devops", "DevOps"
+        PHILOSOPHY = "philosophy", "Philosophy"
+        POLITICS = "politics", "Politics"
+        PROJECT_ADS = "project-ads", "Project Ads"
+        ARTIFICIAL_INTELLIGENCE = "artificial-intelligence", "Artificial Intelligence"
+        RESEARCHES = "researches", "Researches"
+
     id = models.AutoField(primary_key=True)
     gist_id = models.CharField(max_length=255, unique=True)
     created_at = models.DateTimeField(default=None, null=True)
@@ -51,6 +61,13 @@ class BlogEntry(models.Model):
     content = models.TextField(default="")
     html_url = models.URLField(default=None, null=True)
     image_url = models.CharField(max_length=500, default="", blank=True)
+    hide_from_web = models.BooleanField(default=False)
+    category = models.CharField(
+        max_length=64,
+        choices=Category.choices,
+        default=Category.SOFTWARE_DEVELOPMENT,
+    )
+    social_networks = models.JSONField(default=list, blank=True)
     comments = models.ManyToManyField(
         BlogEntryComment,
         blank=True,
@@ -60,6 +77,7 @@ class BlogEntry(models.Model):
     def create_from_gist(cls, gist: dict[str, Any]):
         content = cls.extract_content_from_gist(gist)
         image_url = cls.extract_image_from_gist(gist)
+        metadata = cls.extract_metadata_from_gist(gist)
         return cls.objects.update_or_create(
             gist_id=gist["id"],
             defaults={
@@ -69,6 +87,8 @@ class BlogEntry(models.Model):
                 "html_url": gist["html_url"],
                 "content": content or "",
                 "image_url": image_url or "",
+                "category": metadata.get("category") or cls.Category.SOFTWARE_DEVELOPMENT,
+                "social_networks": metadata.get("social_networks") or [],
             },
         )
 
@@ -97,10 +117,35 @@ class BlogEntry(models.Model):
     @staticmethod
     def extract_image_from_gist(gist: dict[str, Any]) -> str | None:
         files = gist.get("files", {})
-        image_file = files.get("image.png")
-        if image_file and image_file.get("raw_url"):
-            return image_file["raw_url"]
+        if preferred := files.get("image.png"):
+            if preferred.get("raw_url"):
+                return preferred["raw_url"]
+
+        for file_data in files.values():
+            filename = (file_data.get("filename") or "").lower()
+            file_type = (file_data.get("type") or "").lower()
+            language = (file_data.get("language") or "").lower()
+            is_image_name = filename.endswith(
+                (".png", ".jpg", ".jpeg", ".gif", ".webp", ".svg", ".avif")
+            )
+            is_image_type = file_type.startswith("image/")
+            if (is_image_name or is_image_type or language == "image") and file_data.get("raw_url"):
+                return file_data["raw_url"]
         return None
+
+    @staticmethod
+    def extract_metadata_from_gist(gist: dict[str, Any]) -> dict[str, Any]:
+        files = gist.get("files", {})
+        metadata_file = files.get("metadata.json")
+        if not metadata_file or not metadata_file.get("content"):
+            return {}
+        try:
+            import json
+
+            payload = json.loads(metadata_file["content"])
+        except (TypeError, ValueError):
+            return {}
+        return payload if isinstance(payload, dict) else {}
 
     @classmethod
     def update_comments_from_github(
@@ -132,6 +177,31 @@ class BlogEntry(models.Model):
 
     def __str__(self):
         return self.gist_id
+
+
+class PublishedPost(models.Model):
+    title = models.CharField(max_length=255)
+    category = models.CharField(max_length=64, choices=BlogEntry.Category.choices)
+    social_networks = models.JSONField(default=list, blank=True)
+    gist_id = models.CharField(max_length=255, blank=True, default="")
+    gist_url = models.URLField(blank=True, default="")
+    content = models.TextField(default="")
+    excerpt = models.TextField(blank=True, default="")
+    notification_results = models.JSONField(default=dict, blank=True)
+    created_by = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="published_posts",
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-created_at", "-id"]
+
+    def __str__(self):
+        return self.title
 
 
 class Project(models.Model):
@@ -202,6 +272,8 @@ class SiteContent(models.Model):
     contact_intro = models.TextField()
     footer_copy = models.CharField(max_length=255)
     footer_tagline = models.CharField(max_length=255)
+    featured_chart_symbol = models.CharField(max_length=64, default="BITSTAMP:ETHUSD")
+    featured_chart_title = models.CharField(max_length=255, default="Ethereum")
     strategy_business_idea = models.JSONField(default=dict, blank=True)
 
     def __str__(self):
@@ -342,3 +414,70 @@ class ContactLink(models.Model):
 
     def __str__(self):
         return self.label
+
+
+class GalleryPhoto(models.Model):
+    site_content = models.ForeignKey(
+        SiteContent,
+        on_delete=models.CASCADE,
+        related_name="gallery_photos",
+    )
+    title = models.CharField(max_length=255)
+    image_url = models.CharField(max_length=500)
+    caption = models.TextField(default="", blank=True)
+    sort_order = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        ordering = ["sort_order", "id"]
+
+    def __str__(self):
+        return self.title
+
+
+class ContactThread(models.Model):
+    class Status(models.TextChoices):
+        OPEN = "open", "Open"
+        REPLIED = "replied", "Replied"
+        CLOSED = "closed", "Closed"
+
+    requester = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="contact_threads",
+    )
+    subject = models.CharField(max_length=255)
+    status = models.CharField(max_length=32, choices=Status.choices, default=Status.OPEN)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    last_message_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-last_message_at", "-id"]
+
+    def __str__(self):
+        return f"{self.requester.username}: {self.subject}"
+
+
+class ContactMessage(models.Model):
+    thread = models.ForeignKey(
+        ContactThread,
+        on_delete=models.CASCADE,
+        related_name="messages",
+    )
+    sender = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="contact_messages",
+    )
+    content = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["created_at", "id"]
+
+    @property
+    def is_staff_reply(self) -> bool:
+        return bool(self.sender and self.sender.is_staff)
+
+    def __str__(self):
+        return f"{self.sender.username} -> {self.thread.subject}"

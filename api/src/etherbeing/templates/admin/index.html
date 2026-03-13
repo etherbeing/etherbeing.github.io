@@ -10,6 +10,27 @@
 
 {% block content %}
 <div id="content-main" class="etherbeing-admin-dashboard-main">
+  <section class="etherbeing-admin-dashboard-publisher">
+    <div class="etherbeing-admin-dashboard-publisher-copy">
+      <p class="etherbeing-admin-dashboard-kicker">{% translate "Publishing control" %}</p>
+      <h2>{% translate "Create and distribute a new post from the admin" %}</h2>
+      <p>{% translate "Publish rich posts as GitHub gists and fan them out through the configured social channels." %}</p>
+      <div class="etherbeing-admin-dashboard-actions">
+        <a href="{{ publish_blog_post_url }}" class="button default">{% translate "Open publisher" %}</a>
+      </div>
+    </div>
+    <ul class="etherbeing-admin-channel-status-list">
+      {% for channel in publishing_channels %}
+        <li class="etherbeing-admin-channel-status etherbeing-admin-channel-status--{{ channel.state }}">
+          <span class="etherbeing-admin-channel-badge"></span>
+          <div>
+            <strong>{{ channel.label }}</strong>
+            <small>{{ channel.detail }}</small>
+          </div>
+        </li>
+      {% endfor %}
+    </ul>
+  </section>
   {% include "admin/app_list.html" with app_list=app_list show_changelinks=True %}
 </div>
 {% endblock %}

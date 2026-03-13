@@ -1,0 +1,10 @@
+---
+import Layout from "@/components/Layout.astro";
+import InboxPage from "@/components/react/InboxPage";
+
+const apiUrl = import.meta.env.PUBLIC_API_URL;
+---
+
+<Layout>
+  <InboxPage client:only="react" apiUrl={apiUrl} />
+</Layout>

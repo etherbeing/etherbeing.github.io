@@ -55,6 +55,9 @@ tailwind.config = {
 <div class="etherbeing-nav-hint hidden items-center md:inline-flex">
   <span>{% trans "Dynamic site content, GitHub sync, and publication controls" %}</span>
 </div>
+<div class="hidden md:inline-flex">
+  <a href="{{ publish_blog_post_url }}" class="button">{% trans "Publish Post" %}</a>
+</div>
 {% endblock %}
 
 {% block footer %}
