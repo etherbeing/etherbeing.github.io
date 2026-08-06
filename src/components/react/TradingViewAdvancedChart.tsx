@@ -45,8 +45,8 @@ export default function TradingViewAdvancedChart({
       timezone: "Etc/UTC",
       theme: "dark",
       style: "1",
-      locale: "en",
       height: "1",
+      locale: "en",
       allow_symbol_change: false,
       hide_side_toolbar: false,
       calendar: false,
@@ -65,7 +65,7 @@ export default function TradingViewAdvancedChart({
   return (
     <div
       ref={containerRef}
-      className="tradingview-widget-container h-[280px] min-h-[280px] w-full md:min-h-[280px]"
+      className="tradingview-widget-container h-[340px] min-h-[340px] w-full md:h-[420px] md:min-h-[420px]"
     />
   );
 }

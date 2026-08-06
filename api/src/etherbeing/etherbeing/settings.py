@@ -13,10 +13,14 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 from ast import literal_eval
 import os
 from pathlib import Path
+import secrets
 import sys
 import dotenv
+from django.core.exceptions import ImproperlyConfigured
 
-dotenv.load_dotenv(os.environ.get("DJANGO_ENV_FILE", None), override=False)
+DJANGO_ENV_FILE = os.environ.get("DJANGO_ENV_FILE", None)
+DJANGO_ENV_VALUES = dotenv.dotenv_values(DJANGO_ENV_FILE) if DJANGO_ENV_FILE else {}
+dotenv.load_dotenv(DJANGO_ENV_FILE, override=False)
 
 
 def get_env_or_file(name: str, default: str | None = None) -> str | None:
@@ -45,6 +49,16 @@ def parse_env_literal(value: str, default):
         return default
 
 
+def parse_env_bool(name: str, default: bool) -> bool:
+    for value in (os.getenv(name), DJANGO_ENV_VALUES.get(name)):
+        if value is None:
+            continue
+        parsed = parse_env_literal(value, None)
+        if isinstance(parsed, bool):
+            return parsed
+    return default
+
+
 def parse_env_list(value: str | None, default: list[str]) -> list[str]:
     parsed = parse_env_literal(value, default)
     if isinstance(parsed, list):
@@ -69,13 +83,16 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv(
-    "SECRET_KEY", "django-insecure-)kl0=j5j%8lw3qw0x+xt-g6vi9)%@t4-^pv2qe(l0ld%jnq=&5"
-)
-
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = parse_env_literal(os.getenv("DEBUG"), False)
+DEBUG = parse_env_bool("DEBUG", False)
+
+# SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = get_env_or_file("SECRET_KEY")
+if not SECRET_KEY:
+    if DEBUG:
+        SECRET_KEY = secrets.token_urlsafe(50)
+    else:
+        raise ImproperlyConfigured("SECRET_KEY must be set when DEBUG is false.")
 
 ALLOWED_HOSTS = parse_env_literal(
     os.getenv("ALLOWED_HOSTS"),
