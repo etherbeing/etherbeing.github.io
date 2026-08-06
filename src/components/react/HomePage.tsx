@@ -1,15 +1,20 @@
-import { type ReactNode, useEffect, useState } from "react";
+import { type CSSProperties, type ReactNode, useEffect, useState } from "react";
 import Lightbox from "yet-another-react-lightbox";
 import "yet-another-react-lightbox/styles.css";
 import {
+  FaBookOpen,
+  FaBullhorn,
+  FaBriefcase,
   FaChartLine,
   FaDiscord,
   FaEnvelope,
   FaGithub,
+  FaGraduationCap,
   FaInstagram,
   FaPaypal,
   FaReddit,
   FaTelegram,
+  FaYoutube,
 } from "react-icons/fa6";
 import { FaBug, FaCoffee } from "react-icons/fa";
 import { SiBugcrowd, SiHackerone, SiTryhackme, SiX } from "react-icons/si";
@@ -63,6 +68,14 @@ type ContactGroup = {
   links: ContactLink[];
 };
 
+type TimelineEntry = {
+  year: string;
+  title: string;
+  place: string;
+  description: string;
+  tags: string[];
+};
+
 type SiteContent = {
   site_title: string;
   hero_titles: string[];
@@ -105,10 +118,185 @@ const iconMap: Record<string, ReactNode> = {
   tradingview: <FaChartLine />,
 };
 
+const publishedBooks = [
+  {
+    asin: "B0H8LL6YJB",
+    title: "Building Agentic Systems for Offensive Cybersecurity",
+    subtitle:
+      "A theory of operational intelligence for solving complex cybersecurity benchmarks",
+    authors: "Esteban Chacon, Roberto Melipillan, Houda Saadaoui, Jose Zapata",
+    url: "https://www.amazon.com/dp/B0H8LL6YJB",
+    coverUrl: "https://m.media-amazon.com/images/P/B0H8LL6YJB.01._SCLZZZZZZZ_SX500_.jpg",
+  },
+];
+
+const opportunities = [
+  {
+    title: "Volunteer Testers Wanted",
+    category: "Real estate agency testing",
+    description:
+      "We are searching for volunteer testers for our real estate agency experience. Early feedback will help shape the workflows, listings, and client-facing tools before a wider release.",
+    ctaLabel: "Contact me",
+    ctaUrl: "#contact",
+  },
+];
+
+const youtubeChannel = {
+  title: "Adversashield Technologies",
+  handle: "@adversashield",
+  url: "https://www.youtube.com/@adversashield",
+  uploadsPlaylistId: "UUYBdBIih1vbxqDfcC77PDhg",
+};
+
+const educationTimeline: TimelineEntry[] = [
+  {
+    year: "2014",
+    title: "Cybersecurity Foundations",
+    place: "Self-directed study",
+    description:
+      "Started studying cybersecurity through BackTrack Linux, networking, pentesting, and scripting with Visual Basic, shell, Python, and related tooling.",
+    tags: ["BackTrack", "Networking", "Pentesting", "Scripting"],
+  },
+  {
+    year: "2017",
+    title: "Cybersecurity and Programming Courses",
+    place: "DESOFT, Havana",
+    description:
+      "Attended cybersecurity and programming courses at DESOFT, the Havana software development company.",
+    tags: ["Cybersecurity", "Programming", "DESOFT"],
+  },
+  {
+    year: "2018",
+    title: "Lic. in Education for Computer Science",
+    place: "University studies",
+    description:
+      "Began university studies focused on computer science education, strengthening pedagogy, computing fundamentals, and technical communication.",
+    tags: ["Computer Science", "Education", "University"],
+  },
+  {
+    year: "2020",
+    title: "Computer Science Engineering",
+    place: "CUJAE",
+    description:
+      "Entered engineering school for Computer Science Engineering at CUJAE, deepening software engineering, systems, and applied computing skills.",
+    tags: ["Engineering", "CUJAE", "Software"],
+  },
+];
+
+const professionalTimeline: TimelineEntry[] = [
+  {
+    year: "2020",
+    title: "Founder, CTO, and Main Developer",
+    place: "ODINF, Havana",
+    description:
+      "Started ODINF, Informatic Operations, as a private company based in Havana, leading technology direction and core product development.",
+    tags: ["Founder", "CTO", "Development"],
+  },
+  {
+    year: "2021",
+    title: "CTO, DevOps, Cybersecurity, and Main Developer",
+    place: "GoDjango, Florida",
+    description:
+      "Started GoDjango and covered a broad technical leadership surface across DevOps, cybersecurity, software architecture, and implementation.",
+    tags: ["DevOps", "Cybersecurity", "Architecture"],
+  },
+  {
+    year: "2014-Present",
+    title: "Independent Engineering Practice",
+    place: "Company and side projects",
+    description:
+      "Built projects across many programming languages and ecosystems, including Python and Rust, both independently and inside company work.",
+    tags: ["Python", "Rust", "Products"],
+  },
+  {
+    year: "2026",
+    title: "CTO, Cybersecurity Specialist, and Main Developer",
+    place: "Adversashield Technologies, Delaware",
+    description:
+      "Started Adversashield Technologies, leading cybersecurity strategy, software development, and broader technical execution.",
+    tags: ["Cybersecurity", "CTO", "Delaware"],
+  },
+  {
+    year: "2026",
+    title: "CTO",
+    place: "ILORA LLC, Florida",
+    description:
+      "Started ILORA LLC, a game development company based in Florida, serving as CTO and helping shape the studio's technical direction.",
+    tags: ["Game Development", "CTO", "Florida"],
+  },
+];
+
 function EmptyState({ message }: { message: string }) {
   return (
     <SpotlightCard className="bg-transparent backdrop-blur-2xl cursor-default select-none">
       {message}
+    </SpotlightCard>
+  );
+}
+
+function TimelineColumn({
+  title,
+  subtitle,
+  icon,
+  entries,
+  tone,
+}: {
+  title: string;
+  subtitle: string;
+  icon: ReactNode;
+  entries: TimelineEntry[];
+  tone: "cyan" | "emerald";
+}) {
+  const toneClasses =
+    tone === "cyan"
+      ? {
+        badge: "border-cyan-300/20 bg-cyan-300/10 text-cyan-100/85",
+        dot: "border-cyan-200/60 bg-cyan-300 shadow-[0_0_22px_rgba(34,211,238,0.55)]",
+        tag: "border-cyan-300/16 bg-cyan-300/8 text-cyan-100/80",
+      }
+      : {
+        badge: "border-emerald-300/20 bg-emerald-300/10 text-emerald-100/85",
+        dot: "border-emerald-200/60 bg-emerald-300 shadow-[0_0_22px_rgba(52,211,153,0.55)]",
+        tag: "border-emerald-300/16 bg-emerald-300/8 text-emerald-100/80",
+      };
+
+  return (
+    <SpotlightCard className="timeline-panel h-full overflow-hidden border-white/10 bg-white/[0.03] p-0 backdrop-blur-2xl">
+      <div className="border-b border-white/8 bg-linear-to-br from-white/8 via-slate-950/10 to-cyan-400/12 px-6 py-5">
+        <span className={`inline-flex items-center gap-2 rounded-full border px-3 py-1 text-[0.68rem] uppercase tracking-[0.24em] ${toneClasses.badge}`}>
+          {icon}
+          Timeline
+        </span>
+        <h3 className="mt-4 text-left text-2xl font-bold text-white">{title}</h3>
+        <p className="mt-3 text-left text-sm leading-7 text-slate-300">{subtitle}</p>
+      </div>
+      <ol className="relative space-y-6 px-6 py-6 before:absolute before:bottom-7 before:left-[1.7rem] before:top-7 before:w-px before:bg-linear-to-b before:from-transparent before:via-cyan-200/30 before:to-transparent">
+        {entries.map((entry, index) => (
+          <li
+            key={`${entry.year}-${entry.title}`}
+            className="timeline-item relative pl-8"
+            style={{ "--timeline-delay": `${index * 110}ms` } as CSSProperties}
+          >
+            <span className={`absolute left-[-0.02rem] top-1.5 h-3.5 w-3.5 rounded-full border-2 ${toneClasses.dot}`} />
+            <time className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-400">
+              {entry.year}
+            </time>
+            <h4 className="mt-2 text-left text-lg font-bold text-white">{entry.title}</h4>
+            <p className="mt-1 text-left text-sm font-semibold text-cyan-100/80">{entry.place}</p>
+            <p className="mt-3 text-left text-sm leading-7 text-slate-300">{entry.description}</p>
+            <ul className="mt-4 flex flex-wrap gap-2">
+              {entry.tags.map((tag) => (
+                <li
+                  key={tag}
+                  className={`rounded-full border px-3 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.16em] ${toneClasses.tag}`}
+                >
+                  {tag}
+                </li>
+              ))}
+            </ul>
+          </li>
+        ))}
+      </ol>
     </SpotlightCard>
   );
 }
@@ -276,6 +464,28 @@ export default function HomePage({ apiUrl }: { apiUrl: string }) {
         </div>
       </section>
 
+      <section id="background" className="py-20 space-y-6 md:w-[120%] md:-ml-[10%]">
+        <div className="text-center">
+          <GlowingHeader>Background</GlowingHeader>
+        </div>
+        <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
+          <TimelineColumn
+            title="Educational Background"
+            subtitle="A path from low-level curiosity into formal computer science, cybersecurity, and engineering foundations."
+            icon={<FaGraduationCap />}
+            entries={educationTimeline}
+            tone="cyan"
+          />
+          <TimelineColumn
+            title="Professional Background"
+            subtitle="Companies, leadership roles, and hands-on engineering work across security, DevOps, software, and games."
+            icon={<FaBriefcase />}
+            entries={professionalTimeline}
+            tone="emerald"
+          />
+        </div>
+      </section>
+
       <section id="core-skills" className="py-20 space-y-6">
         <GlowingHeader>Core Skills</GlowingHeader>
         <ul className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -369,6 +579,88 @@ export default function HomePage({ apiUrl }: { apiUrl: string }) {
         </div>
       </section>
 
+      <section id="published-books" className="py-20 space-y-6">
+        <GlowingHeader>Published Books</GlowingHeader>
+        <div className="grid grid-cols-1 place-items-center gap-5">
+          {publishedBooks.map((book) => (
+            <SpotlightCard
+              key={book.asin}
+              spotlightColor="rgba(0, 229, 255, 0.24)"
+              className="group w-full max-w-[24rem] overflow-hidden border-white/10 bg-white/[0.03] p-0 backdrop-blur-2xl"
+            >
+              <a
+                href={book.url}
+                target="_blank"
+                rel="noreferrer"
+                className="block h-full"
+              >
+                <div className="relative flex min-h-[31rem] items-end justify-center overflow-hidden bg-slate-950">
+                  <img
+                    src={book.coverUrl}
+                    alt={`${book.title} book cover`}
+                    className="absolute inset-0 h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]"
+                  />
+                  <div className="absolute inset-0 bg-linear-to-t from-slate-950 via-slate-950/20 to-transparent" />
+                  <div className="relative w-full px-5 py-5">
+                    <span className="inline-flex items-center gap-2 rounded-full border border-cyan-300/20 bg-cyan-300/10 px-3 py-1 text-[0.68rem] uppercase tracking-[0.24em] text-cyan-100/85">
+                      <FaBookOpen />
+                      Amazon
+                    </span>
+                    <h3 className="mt-4 text-left text-2xl font-bold text-white">
+                      {book.title}
+                    </h3>
+                    <p className="mt-3 text-left text-sm leading-6 text-slate-300">
+                      {book.subtitle}
+                    </p>
+                  </div>
+                </div>
+                <div className="space-y-4 px-6 py-5">
+                  <p className="text-sm leading-6 text-slate-300">{book.authors}</p>
+                  <div className="flex items-center justify-between border-t border-white/8 pt-4 text-sm">
+                    <span className="text-slate-400">ASIN {book.asin}</span>
+                    <span className="font-semibold text-cyan-200">View book {"->"}</span>
+                  </div>
+                </div>
+              </a>
+            </SpotlightCard>
+          ))}
+        </div>
+      </section>
+
+      <section id="opportunities" className="py-20 space-y-6">
+        <GlowingHeader>Opportunities</GlowingHeader>
+        <div className="grid grid-cols-1 gap-5">
+          {opportunities.map((opportunity) => (
+            <SpotlightCard
+              key={opportunity.title}
+              spotlightColor="rgba(16, 185, 129, 0.22)"
+              className="mx-auto w-full max-w-3xl overflow-hidden border-white/10 bg-white/[0.03] p-0 backdrop-blur-2xl"
+            >
+              <div className="border-b border-white/8 bg-linear-to-br from-emerald-400/14 via-slate-950/10 to-cyan-400/14 px-6 py-5">
+                <span className="inline-flex items-center gap-2 rounded-full border border-emerald-300/20 bg-emerald-300/10 px-3 py-1 text-[0.68rem] uppercase tracking-[0.24em] text-emerald-100/85">
+                  <FaBullhorn />
+                  Advertisement
+                </span>
+                <h3 className="mt-4 text-left text-2xl font-bold text-white">
+                  {opportunity.title}
+                </h3>
+                <p className="mt-3 text-left text-xs uppercase tracking-[0.22em] text-cyan-200/80">
+                  {opportunity.category}
+                </p>
+              </div>
+              <div className="space-y-5 px-6 py-5">
+                <p className="text-sm leading-7 text-slate-300">{opportunity.description}</p>
+                <a href={opportunity.ctaUrl} className="inline-flex">
+                  <StarBorder as={"button"} className="cursor-pointer">
+                    {opportunity.ctaLabel}
+                  </StarBorder>
+                </a>
+              </div>
+            </SpotlightCard>
+          ))}
+        </div>
+      </section>
+
       <section id="projects" className="py-20 space-y-4">
         <GlowingHeader>Projects</GlowingHeader>
         {content.featured_projects.length ? (
@@ -389,6 +681,48 @@ export default function HomePage({ apiUrl }: { apiUrl: string }) {
             </StarBorder>
           </a>
         </div>
+      </section>
+
+      <section id="youtube" className="py-20 space-y-6">
+          <GlowingHeader>YouTube</GlowingHeader>
+          <SpotlightCard className="overflow-hidden border-white/10 bg-white/[0.03] p-0 backdrop-blur-2xl">
+            <div className="border-b border-white/8 bg-linear-to-br from-red-500/16 via-slate-950/10 to-cyan-400/14 px-6 py-5">
+              <span className="inline-flex items-center gap-2 rounded-full border border-red-300/20 bg-red-300/10 px-3 py-1 text-[0.68rem] uppercase tracking-[0.24em] text-red-100/85">
+                <FaYoutube />
+                Channel
+              </span>
+              <h3 className="mt-4 text-left text-2xl font-bold text-white">
+                {youtubeChannel.title}
+              </h3>
+              <p className="mt-3 text-left text-sm leading-7 text-slate-300">
+                Cybersecurity, tech, programming, and field notes from {youtubeChannel.handle}.
+              </p>
+            </div>
+            <div className="space-y-5 p-5">
+              <div className="aspect-video w-full overflow-hidden rounded-[1.2rem] border border-white/10 bg-black">
+                <iframe
+                  className="h-full w-full"
+                  src={`https://www.youtube.com/embed/videoseries?list=${youtubeChannel.uploadsPlaylistId}`}
+                  title={`${youtubeChannel.title} YouTube uploads`}
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowFullScreen
+                  loading="lazy"
+                />
+              </div>
+              <div className="flex flex-col items-start justify-between gap-4 border-t border-white/8 pt-4 text-sm sm:flex-row sm:items-center">
+                <span className="text-slate-400">Latest public uploads</span>
+                <a
+                  href={youtubeChannel.url}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center gap-2 font-semibold text-cyan-200 transition hover:text-white"
+                >
+                  <FaYoutube />
+                  Open channel
+                </a>
+              </div>
+            </div>
+          </SpotlightCard>
       </section>
 
       <section id="blog" className="py-20 space-y-4">

@@ -42,7 +42,7 @@
     {
       "label": "backend: runserver",
       "type": "shell",
-      "command": "/usr/bin/python3 src/etherbeing/manage.py runserver 127.0.0.1:8000",
+      "command": "/usr/bin/python3 src/etherbeing/manage.py runserver 127.0.0.1:7000",
       "options": {
         "cwd": "${workspaceFolder}/api",
         "env": {
@@ -66,7 +66,7 @@
     {
       "label": "backend: ensure db",
       "type": "shell",
-      "command": "docker compose exec -T postgres sh -lc \"createdb -U postgres_etherbeing etherbeing_db 2>/dev/null || true\"",
+      "command": "docker compose exec -T postgres sh -lc \"createdb -U \\\"$(cat /run/secrets/postgres_user)\\\" \\\"$POSTGRES_DB\\\" 2>/dev/null || true\"",
       "options": {
         "cwd": "${workspaceFolder}"
       },
@@ -76,7 +76,7 @@
     {
       "label": "backend: wait for postgres",
       "type": "shell",
-      "command": "docker compose exec -T postgres sh -lc \"until pg_isready -U postgres_etherbeing -d postgres; do sleep 1; done\"",
+      "command": "docker compose exec -T postgres sh -lc \"until pg_isready -U \\\"$(cat /run/secrets/postgres_user)\\\" -d \\\"$POSTGRES_DB\\\"; do sleep 1; done\"",
       "options": {
         "cwd": "${workspaceFolder}"
       },

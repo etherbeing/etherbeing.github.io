@@ -17,9 +17,13 @@ const navs: Array<{
       label: "Info",
       links: [
         { label: "About", href: "#about" },
+        { label: "Background", href: "#background" },
         { label: "Core Skills", href: "#core-skills" },
         { label: "Services", href: "#services" },
+        { label: "Published Books", href: "#published-books" },
+        { label: "Opportunities", href: "#opportunities" },
         { label: "Projects", href: "#projects" },
+        { label: "YouTube", href: "#youtube" },
         { label: "Blog", href: "#blog" },
         { label: "Projects Archive", href: "/projects" },
         { label: "Blog Archive", href: "/blog" },

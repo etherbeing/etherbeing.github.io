@@ -79,13 +79,13 @@ h2 {
 @property --nav-height {
     syntax: "<length>";
     inherits: false;
-    initial-value: 345px;
+    initial-value: 430px;
 }
 @media screen and (max-width: 768px) {
     @property --nav-height {
         syntax: "<length>";
         inherits: false;
-        initial-value: 670px;
+        initial-value: 850px;
     }
 }
 
@@ -178,6 +178,62 @@ h2 {
     display: block;
     width: 100%;
     height: auto;
+}
+
+.timeline-panel {
+    animation: fade-up 0.8s ease-out both;
+}
+
+.timeline-item {
+    animation: timeline-item-rise 0.7s ease-out both;
+    animation-delay: var(--timeline-delay, 0ms);
+}
+
+.timeline-item::before {
+    content: "";
+    position: absolute;
+    left: -0.28rem;
+    top: 0.45rem;
+    width: 1.15rem;
+    height: 1.15rem;
+    border-radius: 9999px;
+    background: rgba(255, 255, 255, 0.08);
+    filter: blur(6px);
+    transform: scale(0.75);
+    animation: timeline-pulse 2.8s ease-in-out infinite;
+    animation-delay: var(--timeline-delay, 0ms);
+}
+
+.timeline-item:hover {
+    transform: translateX(0.25rem);
+    transition: transform 0.25s ease;
+}
+
+@keyframes timeline-item-rise {
+    from {
+        opacity: 0;
+        transform: translateY(18px);
+        filter: blur(8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+        filter: blur(0);
+    }
+}
+
+@keyframes timeline-pulse {
+    0%,
+    100% {
+        opacity: 0.35;
+        transform: scale(0.8);
+    }
+
+    50% {
+        opacity: 0.85;
+        transform: scale(1.15);
+    }
 }
 
 @media (min-width: 768px) {

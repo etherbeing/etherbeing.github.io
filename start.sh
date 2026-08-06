@@ -4,6 +4,7 @@ ROOT_DIRECTORY=$(pwd)
 TMP_PIDS=$ROOT_DIRECTORY/.temp
 API_DIRECTORY=$ROOT_DIRECTORY/api/
 REDIS_SERVER_DATA=/tmp/redis/
+API_PORT=${API_PORT:-7000}
 
 mkdir -p $TMP_PIDS
 mkdir -p $REDIS_SERVER_DATA
@@ -45,7 +46,7 @@ echo $! > $REDIS_PID
 # API server
 API_PID=$TMP_PIDS/api.pid
 cd $API_DIRECTORY
-uv run src/etherbeing/manage.py runserver &
+uv run src/etherbeing/manage.py runserver 127.0.0.1:$API_PORT &
 echo $! > $API_PID
 
 # Frontend server

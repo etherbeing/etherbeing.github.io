@@ -118,7 +118,7 @@ python3 src/etherbeing/manage.py init_site_content
 
 ```bash
 cd api
-python3 src/etherbeing/manage.py runserver 127.0.0.1:8000
+python3 src/etherbeing/manage.py runserver 127.0.0.1:7000
 ```
 
 ### 5. Run the frontend
@@ -133,7 +133,7 @@ Frontend default URL:
 
 Backend default URL:
 
-- `http://127.0.0.1:8000`
+- `http://127.0.0.1:7000`
 
 ## Environment Notes
 
