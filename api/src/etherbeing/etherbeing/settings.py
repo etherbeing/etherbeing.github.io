@@ -16,7 +16,21 @@ from pathlib import Path
 import sys
 import dotenv
 
-dotenv.load_dotenv(os.environ.get("DJANGO_ENV_FILE", None), override=True)
+dotenv.load_dotenv(os.environ.get("DJANGO_ENV_FILE", None), override=False)
+
+
+def get_env_or_file(name: str, default: str | None = None) -> str | None:
+    file_path = os.getenv(f"{name}_FILE")
+    if file_path:
+        resolved_path = Path(file_path)
+        env_file = os.getenv("DJANGO_ENV_FILE")
+        if not resolved_path.is_absolute() and env_file:
+            resolved_path = Path(env_file).resolve().parent / resolved_path
+        try:
+            return resolved_path.read_text(encoding="utf-8").strip()
+        except OSError:
+            return default
+    return os.getenv(name, default)
 
 
 def parse_env_literal(value: str, default):
@@ -134,15 +148,15 @@ ASGI_APPLICATION = "etherbeing.asgi.application"
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
-if "test" not in sys.argv and os.getenv("DBNAME"):
+if "test" not in sys.argv and get_env_or_file("DBNAME"):
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.postgresql",
-            "NAME": os.getenv("DBNAME"),
-            "USER": os.getenv("DBUSER"),
-            "PASSWORD": os.getenv("DBPASS"),
-            "HOST": os.getenv("DBHOST"),
-            "PORT": int(os.getenv("DBPORT", 5432)),
+            "NAME": get_env_or_file("DBNAME"),
+            "USER": get_env_or_file("DBUSER"),
+            "PASSWORD": get_env_or_file("DBPASS"),
+            "HOST": get_env_or_file("DBHOST"),
+            "PORT": int(get_env_or_file("DBPORT", "5432")),
         }
     }
 else:

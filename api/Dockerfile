@@ -30,7 +30,7 @@ RUN uv sync --frozen --no-dev
 COPY . .
 
 # ---- runtime ----
-EXPOSE 8000
+EXPOSE 7000
 
 WORKDIR /app/src/etherbeing
 
