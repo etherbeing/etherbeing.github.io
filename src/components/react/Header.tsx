@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import SpotlightCard from "./SpotlightCard";
 import { Sling as Hamburger } from "hamburger-react";
 import { GoArrowUpRight } from "react-icons/go";
@@ -48,9 +48,33 @@ const navs: Array<{
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState<boolean | undefined>();
+  const [navHeight, setNavHeight] = useState<number>(0);
+  const navContentRef = useRef<HTMLDivElement | null>(null);
   const apiUrl = import.meta.env.PUBLIC_API_URL;
   const { session, isLoading, login, logout } = useGithubSession(apiUrl);
   const { isOnline, showOfflineSnackbar } = useOnlineStatus();
+
+  useLayoutEffect(() => {
+    if (isOpen === undefined) return;
+
+    const updateNavHeight = () => {
+      const contentHeight = navContentRef.current?.scrollHeight ?? 0;
+      const viewportLimit = Math.max(280, window.innerHeight - 120);
+      setNavHeight(Math.min(contentHeight, viewportLimit));
+    };
+
+    updateNavHeight();
+    window.addEventListener("resize", updateNavHeight);
+    const resizeObserver = new ResizeObserver(updateNavHeight);
+    if (navContentRef.current) {
+      resizeObserver.observe(navContentRef.current);
+    }
+
+    return () => {
+      window.removeEventListener("resize", updateNavHeight);
+      resizeObserver.disconnect();
+    };
+  }, [isOpen, isLoading, session.is_authenticated]);
 
   return (
     <header className="z-20 fixed w-screen flex items-center justify-center mt-10">
@@ -94,76 +118,79 @@ export default function Header() {
             <nav
               style={{
                 animationDelay: `${navs.length * 100}ms`,
+                height: isOpen ? `${navHeight}px` : "0px",
               }}
-              className={`text-center mt-3 w-full overflow-hidden transition-all duration-300 h-0 ${isOpen ? "nav-expand" : "nav-collapse"}`}
+              className={`mt-3 w-full overflow-hidden text-center transition-[height] duration-300 ease-in-out ${isOpen ? "nav-expand overflow-y-auto" : "nav-collapse"}`}
             >
-              {session.is_authenticated ? (
-                <Button
-                  type="button"
-                  onClick={() => void logout()}
-                  className="text-sm inline-flex items-center"
-                >
-                  <FaGithub className="mr-2" />
-                  Logout @{session.github_login || session.username}
-                </Button>
-              ) : (
-                <Button
-                  type="button"
-                  disabled={isLoading}
-                  onClick={() => login()}
-                  className="text-sm inline-flex items-center disabled:opacity-60"
-                >
-                  <FaGithub className="mr-2" />
-                  {isLoading ? "Loading login..." : "Login with GitHub"}
-                </Button>
-              )}
-              <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-3">
-                {navs.map((nav, i) => (
-                  <SpotlightCard
-                    key={i}
-                    className={`mt-5 w-full flex flex-col gap-3 translate-y-100 opacity-0`}
-                    style={{
-                      animationDelay: `${i * 100 + 100}ms`,
-                      backgroundColor: oklchGradient(
-                        0,
-                        10,
-                        0.05,
-                        300,
-                        i,
-                        navs.length,
-                      ),
-                    }}
+              <div ref={navContentRef} className="pb-1">
+                {session.is_authenticated ? (
+                  <Button
+                    type="button"
+                    onClick={() => void logout()}
+                    className="text-sm inline-flex items-center"
                   >
-                    <h3 className="text-lg font-bold cursor-default">{nav.label}</h3>
-                    <div className="flex flex-col gap-3">
-                      {nav.links.map((link, i) => (
-                        <a
-                          onClick={(e) => {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            const target = new URL(e.currentTarget.href);
-                            const hash = target.hash;
-                            let section = hash ? document.querySelector(hash) : null;
-                            if (section) {
-                              section.scrollIntoView({
-                                behavior: "smooth",
-                              });
-                            } else {
-                              location.assign(`${target.pathname}${target.search}${target.hash}`);
-                            }
-                            setIsOpen(false);
-                          }}
-                          key={i}
-                          href={link.href}
-                          className="text-sm inline-flex items-center"
-                        >
-                          <GoArrowUpRight className="mr-2" />
-                          {link.label}
-                        </a>
-                      ))}
-                    </div>
-                  </SpotlightCard>
-                ))}
+                    <FaGithub className="mr-2" />
+                    Logout @{session.github_login || session.username}
+                  </Button>
+                ) : (
+                  <Button
+                    type="button"
+                    disabled={isLoading}
+                    onClick={() => login()}
+                    className="text-sm inline-flex items-center disabled:opacity-60"
+                  >
+                    <FaGithub className="mr-2" />
+                    {isLoading ? "Loading login..." : "Login with GitHub"}
+                  </Button>
+                )}
+                <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-3">
+                  {navs.map((nav, i) => (
+                    <SpotlightCard
+                      key={i}
+                      className="nav-menu-card mt-5 w-full flex flex-col gap-3"
+                      style={{
+                        animationDelay: `${i * 100 + 100}ms`,
+                        backgroundColor: oklchGradient(
+                          0,
+                          10,
+                          0.05,
+                          300,
+                          i,
+                          navs.length,
+                        ),
+                      }}
+                    >
+                      <h3 className="text-lg font-bold cursor-default">{nav.label}</h3>
+                      <div className="flex flex-col gap-3">
+                        {nav.links.map((link, i) => (
+                          <a
+                            onClick={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              const target = new URL(e.currentTarget.href);
+                              const hash = target.hash;
+                              let section = hash ? document.querySelector(hash) : null;
+                              if (section) {
+                                section.scrollIntoView({
+                                  behavior: "smooth",
+                                });
+                              } else {
+                                location.assign(`${target.pathname}${target.search}${target.hash}`);
+                              }
+                              setIsOpen(false);
+                            }}
+                            key={i}
+                            href={link.href}
+                            className="text-sm inline-flex items-center"
+                          >
+                            <GoArrowUpRight className="mr-2" />
+                            {link.label}
+                          </a>
+                        ))}
+                      </div>
+                    </SpotlightCard>
+                  ))}
+                </div>
               </div>
             </nav>
           </>
