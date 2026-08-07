@@ -34,6 +34,7 @@ EXPOSE 7000
 
 WORKDIR /app/src/etherbeing
 
-RUN yes yes | uv run manage.py collectstatic && chmod +x /app/entrypoint.sh
+RUN SECRET_KEY=build-only-collectstatic-secret \
+    uv run manage.py collectstatic --noinput && chmod +x /app/entrypoint.sh
 
 ENTRYPOINT "/app/entrypoint.sh"
